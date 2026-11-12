@@ -740,7 +740,7 @@ class Sim{
     switch(h.key){
       case 'volta':{const sx=h.x,sz=h.z;h.x+=fx*5.5;h.z+=fz*5.5;this.confine(h,0.5);h.iframes=Math.max(h.iframes,0.3);
         for(const e of this.enemies){if(e.dead||(e.ey||0)>1.8)continue;if(segDist2(e.x,e.z,sx,sz,h.x,h.z)<(e.def.r+1.2)**2)this.damage(e,H.dmg*mul,H.stag*mul,sx,sz,kn,h);}
-        this.ev({k:'bolt',x1:sx,z1:sz,x2:h.x,z2:h.z,c:0xfff066});this.ev({k:'kickfx',id:h.id,x:r2(h.x),z:r2(h.z),face:h.face,big:true,x1:r2(sx),z1:r2(sz)});this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0xfff066,big:true,face:h.face,heavy:true});break;}
+        this.ev({k:'bolt',x1:sx,z1:sz,x2:h.x,z2:h.z,c:0xfff066});this.ev({k:'kickfx',id:h.id,x:r2(h.x),z:r2(h.z),face:h.face,big:true,x1:r2(sx),z1:r2(sz)});this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0x4db8ff,big:false,face:h.face,heavy:true});break;}
       case 'roca':{for(const e of this.enemies){if(e.dead||(e.ey||0)>1.8)continue;if(dist2(e,h)<(3.4+e.def.r)**2)this.damage(e,H.dmg*mul,H.stag*mul,h.x,h.z,kn,h);}
         this.ev({k:'ring',x:h.x,z:h.z,r:3.4,c:0xff9a1a});this.ev({k:'burst',x:h.x,z:h.z,c:0x8b5a2b,n:18});this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0xff9a1a,big:true,heavy:true});this.ev({k:'shake',a:0.5});break;}
       case 'sombra':{if(tgt){const sx=h.x,sz=h.z,dx=tgt.x-h.x,dz=tgt.z-h.z,l=Math.hypot(dx,dz)||1;h.x=tgt.x+dx/l*(tgt.def.r+0.8);h.z=tgt.z+dz/l*(tgt.def.r+0.8);h.face=Math.atan2(-dx,-dz);
@@ -1579,8 +1579,8 @@ class World{
       case 'skybolt':F.skybolt(ev.x,ev.z,ev.c,ev.big);Snd.play('zap');if(ev.big){this.scorch(ev.x,ev.z,3.2);this.shake=Math.max(this.shake,0.6);this.later.push({t:0.08,fn:()=>F.bolt(ev.x+1.5,ev.z-1,ev.x,ev.z,0xffffff,14,0.2)});}break;
       case 'kickfx':{const m=this.heroM.get(ev.id);if(m){m.surgeT=Math.max(m.surgeT||0,ev.big?0.7:0.4);m.surgeC=0x7fd8ff;}
         const R=ev.big?1.6:1.25,N=7,a0=ev.face-1.3,a1=ev.face+1.3,pts=[];for(let i=0;i<=N;i++){const a=a0+(a1-a0)*i/N;pts.push([ev.x+Math.sin(a)*R,ev.z+Math.cos(a)*R,0.45+Math.sin(i/N*Math.PI)*0.9]);}
-        for(let i=0;i<N;i++){const A=pts[i],B=pts[i+1];F.bolt(A[0],A[1],B[0],B[1],0x7fd8ff,A[2],B[2]);if(i%2===0)F.bolt(A[0],A[1],B[0],B[1],0xffffff,A[2],B[2]);}
-        const fx=ev.x+Math.sin(ev.face)*R,fz=ev.z+Math.cos(ev.face)*R;F.flash(fx,1,fz,0xbfefff,ev.big?2.6:1.8);
+        for(let i=0;i<N;i++){const A=pts[i],B=pts[i+1];F.bolt(A[0],A[1],B[0],B[1],0x4db8ff,A[2],B[2]);if(i===3)F.bolt(A[0],A[1],B[0],B[1],0xffffff,A[2],B[2]);}
+        const fx=ev.x+Math.sin(ev.face)*R,fz=ev.z+Math.cos(ev.face)*R;F.flash(fx,1,fz,0x7fd8ff,ev.big?1.3:0.9);
         for(let k=0;k<(ev.big?22:12);k++){const a=ev.face+(Math.random()-0.5)*2,v=6+Math.random()*9;F.p({x:fx,y:0.9,z:fz,c:k%3?0x7fd8ff:0xffffff,tex:'star',vx:Math.sin(a)*v,vz:Math.cos(a)*v,vy:Math.random()*5,g:12,s:0.4,s1:0.05,life:0.35});}
         if(ev.big&&ev.x1!=null){const dx=ev.x-ev.x1,dz=ev.z-ev.z1,L=Math.hypot(dx,dz)||1;F.bolt(ev.x1,ev.z1,ev.x,ev.z,0xffffff,0.6,1.0);
           for(let d=0;d<L;d+=0.5){const t=d/L;F.p({x:ev.x1+dx*t,y:0.5+Math.random()*0.8,z:ev.z1+dz*t,c:0x7fd8ff,s:1.0,s1:0.1,life:0.3+t*0.2,op:0.5});}this.shake=Math.max(this.shake,0.25);}
