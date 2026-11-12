@@ -587,7 +587,7 @@ class World{
     const grass=this.mesh(new THREE.PlaneGeometry(260,260),this.toon(0x6fbf4a),0,-0.02,0,false);grass.rotation.x=-Math.PI/2;grass.receiveShadow=true;S.add(grass);
     const plaza=this.mesh(new THREE.CylinderGeometry(ARENA_R+0.8,ARENA_R+1.4,0.6,56),this.toon(0xe3d3ad),0,-0.3,0,false);plaza.receiveShadow=true;S.add(plaza);
     for(const [r,c] of [[6,0xc9b78e],[12,0xd2c19a],[18,0xc9b78e]]){const g=new THREE.RingGeometry(r-0.15,r+0.15,64);g.rotateX(-Math.PI/2);const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:c}));m.position.y=0.01;S.add(m);}
-    const star=new THREE.Mesh(new THREE.CircleGeometry(2.4,5),new THREE.MeshBasicMaterial({color:0xb83280}));star.rotation.x=-Math.PI/2;star.position.y=0.02;S.add(star);
+    const star=new THREE.Mesh(new THREE.RingGeometry(1.6,2.1,40),new THREE.MeshBasicMaterial({color:0xc9b78e}));star.rotation.x=-Math.PI/2;star.position.y=0.02;S.add(star);
     const pil=new THREE.CylinderGeometry(0.45,0.55,2.4,8),cry=new THREE.OctahedronGeometry(0.5),pm=this.toon(0xbfb5a0),cm=this.toon(0x7fd8ff,{emissive:0x2a7fbf});
     this.crystals=[];
     for(let i=0;i<20;i++){const a=i/20*TAU;const x=Math.sin(a)*(ARENA_R+0.9),z=Math.cos(a)*(ARENA_R+0.9);const p=this.mesh(pil,pm,x,1.2,z);p.receiveShadow=true;S.add(p);
@@ -715,7 +715,7 @@ class World{
     if(n){cx/=n;cz/=n;}else{cx=me.x;cz=me.z;}
     const tx=me.x*0.55+cx*0.45,tz=me.z*0.55+cz*0.45;
     let spread=0;for(const h of view.heroes)spread=Math.max(spread,Math.hypot(h.x-tx,h.z-tz));
-    const dist=clamp(16+spread*0.45,16,24);
+    const dist=clamp(12.5+spread*0.45,12.5,21);
     if(!this.camInit){this.camT.set(tx,0,tz);this.camInit=true;}
     this.camT.x+=(tx-this.camT.x)*(1-Math.exp(-dt*5));this.camT.z+=(tz-this.camT.z)*(1-Math.exp(-dt*5));
     this.camD=(this.camD||dist)+(dist-(this.camD||dist))*(1-Math.exp(-dt*2));
