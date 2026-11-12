@@ -159,6 +159,38 @@ body.slowfx #vign{opacity:1}
 .fbot{position:relative;z-index:2;display:flex;gap:10px;justify-content:center;align-items:center;padding:8px 0 14px}
 #hthumbs{position:relative;z-index:2;display:flex;gap:6px;justify-content:center;padding:8px 0 4px}
 #hthumbs .th{width:70px}#hthumbs .th img,#hthumbs .th .ph{width:60px;height:60px}
+#story{position:fixed;inset:0;display:none;flex-direction:column;background:linear-gradient(115deg,#070a1c,#141a44 50%,#070a1c);z-index:6;overflow:auto}
+.sgrid{position:relative;z-index:2;display:grid;grid-template-columns:260px 1fr;gap:14px;padding:8px 16px 16px}
+.slist{display:flex;flex-direction:column;gap:10px}
+.scard{border-radius:12px;padding:12px;cursor:pointer;border:3px solid transparent;transform:skew(-4deg);position:relative;min-height:96px}
+.scard>*{transform:skew(4deg)}.scard.on{border-color:#ffd23f;box-shadow:0 0 18px rgba(255,210,63,.6)}
+.scard small{font-weight:800;font-size:12px;opacity:.9}.scard b{display:block;font-family:Bangers;font-size:26px;letter-spacing:1px;text-shadow:0 2px 0 #000;line-height:1.05}
+.scard .prog{font-size:12px;font-weight:800;margin-top:4px}.scard.lock{filter:saturate(.5) brightness(.75)}
+.spanel{background:rgba(5,8,25,.75);border-radius:14px;padding:12px 16px}
+.spanel h2{margin:0;font-family:Bangers;font-size:40px;letter-spacing:2px;color:#ffd23f}
+.spanel .syn{font-size:14px;line-height:1.4;opacity:.95;margin:4px 0 10px}
+.etapas{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.et{border-radius:12px;overflow:hidden;cursor:pointer;border:3px solid transparent;position:relative;background:#111}
+.et.on{border-color:#ffd23f}.et.lock{filter:grayscale(.8) brightness(.6)}
+.et .top{height:84px;position:relative}.et .top img{position:absolute;right:4px;bottom:0;height:100%}
+.et .num{position:absolute;left:8px;top:4px;font-family:Bangers;font-size:34px;color:#fff;text-shadow:0 3px 0 #000}
+.et .st{position:absolute;right:6px;top:4px;font-size:20px}
+.et .nm{padding:6px 8px;font-family:Bangers;font-size:19px;letter-spacing:1px}.et .bs{padding:0 8px 8px;font-size:11px;font-weight:800;opacity:.85}
+.sdet{display:grid;grid-template-columns:1fr 300px;gap:14px;margin-top:12px}
+.sdet h3{margin:0 0 4px;font-family:Bangers;font-size:28px;letter-spacing:1px}
+.enlist{display:flex;gap:8px;flex-wrap:wrap}
+.en{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.06);border-radius:10px;padding:6px 8px;width:calc(50% - 4px)}
+.en img,.en .ph{width:52px;height:52px;border-radius:8px;object-fit:cover;background:#2a2040;flex:none}
+.en b{font-family:Bangers;font-size:17px;letter-spacing:1px;display:block}.en span{font-size:11px;opacity:.85}
+.bosscard{border-radius:14px;overflow:hidden;background:linear-gradient(160deg,#3a0a12,#120612);border:3px solid #ff3b4a;position:relative}
+.bosscard img{width:100%;height:190px;object-fit:cover;display:block;background:#2a0a14}
+.bosscard .bn{position:absolute;left:0;right:0;top:150px;text-align:center;font-family:Bangers;font-size:30px;color:#fff;text-shadow:0 3px 0 #000,0 0 14px #ff3b4a}
+.bosscard .bt{padding:10px 12px;font-size:13px;line-height:1.35}
+.bosscard .lbl{position:absolute;left:8px;top:8px;background:#ff3b4a;font-family:Bangers;padding:1px 10px;font-size:16px}
+#stagechip{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+.chipst{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.08);border-radius:12px;padding:6px 14px;border:2px solid #ffd23f}
+.chipst img{width:44px;height:44px;border-radius:8px;object-fit:cover}
+.chipst b{font-family:Bangers;font-size:22px;letter-spacing:1px;display:block;line-height:1}.chipst span{font-size:12px;font-weight:800;opacity:.85}
 /* menu */
 
 .panel{width:min(980px,96vw);text-align:center;padding:14px}
@@ -276,7 +308,6 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
   <div id="tvwrap"><canvas id="tv"></canvas></div>
   <div id="placas"></div>
   <div class="mbot">
-    <div style="text-align:center;font-weight:800;font-size:13px;opacity:.85;margin-bottom:6px">Historia 1 · La invasión de obsidiana — elige etapa</div>
     <div id="stages"></div>
     <div class="row">
       <button class="btn" id="b-solo">▶ Jugar</button>
@@ -301,6 +332,10 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
   <div id="selgrid"></div>
   <div id="selslots"></div><div class="slotname" id="selnames"></div>
   <div class="row" style="position:relative;z-index:2;padding-bottom:16px"><button class="btn" id="b-selok">Listo</button></div>
+</div>
+<div id="story" class="stripes">
+  <div class="mtop"><div class="mtitle">HISTORIAS</div><button class="btn" id="b-stclose">← Volver</button></div>
+  <div class="sgrid"><div class="slist" id="slist"></div><div class="spanel" id="spanel"></div></div>
 </div>
 <div id="heroes" class="stripes">
   <div id="hthumbs"></div>
@@ -1640,6 +1675,28 @@ class Input{
   }
 }
 
+// ---------------- Historias (textos) ----------------
+const STORIES=[
+  {id:'obsidiana',name:'La invasión de obsidiana',sub:'Historia 1',bg:'linear-gradient(135deg,#3a0a05,#ff5a1a 60%,#ffd23f)',
+   syn:'Una noche, un volcán dormido despertó justo debajo de la ciudad. De sus grietas salieron los Gólems de obsidiana: soldados de roca negra con fuego en el pecho, que obedecen a El Coloso, un gigante que quiere convertir la ciudad en su reino de lava. La policía no puede con ellos, el ejército tampoco… solo queda la Alianza Heroica.',
+   stages:[
+    {lvl:1,txt:'Los primeros gólems salieron por las alcantarillas y tomaron la plaza. Los dirige El Capataz, un gólem enorme que da órdenes a gritos. Si no lo detienen ahora, mañana serán cientos.',
+     boss:'Fuerte y testarudo: golpea el piso con sus puños de piedra. Tiene armadura, así que rómpela con golpes fuertes antes de atacar con todo.'},
+    {lvl:4,txt:'Los gólems están cargando barcos con cristales de lava para llevarlos al volcán. Desde lo alto de los muelles vigila El Centinela, que dispara ráfagas de fuego a cualquiera que se acerque.',
+     boss:'Ataca de lejos con tres bolas de lava a la vez. Acércate rápido, no te quedes en sus líneas rojas y rómpele la guardia cuando te tenga cerca.'},
+    {lvl:7,txt:'En una fábrica abandonada, los gólems están construyendo más soldados con los cristales robados. La guardan los Gemelos de Magma, dos hermanos que nunca pelean solos.',
+     boss:'Son dos y embisten en línea recta. Sepáralos, esquiva sus embestidas y usen sinergias: juntos ustedes también son más fuertes.'},
+    {lvl:10,txt:'El corazón del volcán. El Coloso despertó por completo y quiere hacer erupción sobre toda la ciudad. Es la batalla final: todo el equipo, todos los poderes, toda la Alianza.',
+     boss:'Un gigante con armadura: golpe de área, embestida y lluvia de lava. Cuando está débil llama refuerzos. ¡Guarden la Alianza Extrema para él!'}]},
+  {id:'hielo',name:'El reino helado',sub:'Historia 2',locked:true,bg:'linear-gradient(135deg,#0a2a5a,#7fd8ff 60%,#ffffff)',
+   syn:'Escarcha recibe una carta congelada: su tía, la Reina Escarcha, cubrió su reino de hielo eterno y ahora marcha hacia el sur con un ejército de soldados de cristal. Para salvar a su familia, la princesa tendrá que pelear contra la suya.',
+   teaser:['Bosque nevado','Cuevas de cristal','La fortaleza','La cumbre'],bosses:['Lobo de escarcha','Guardián de cristal','General invernal','La Reina Escarcha']},
+  {id:'sombras',name:'La fisura de las sombras',sub:'Historia 3',locked:true,bg:'linear-gradient(135deg,#12021f,#8e44ad 60%,#ff4dff)',
+   syn:'Una grieta se abre en el cielo y por ella entran criaturas que se alimentan de la luz. Sombra las reconoce: vienen del lugar donde él nació. Esta vez, el fantasma del callejón tendrá que contar su secreto.',
+   teaser:['Ruinas antiguas','El laberinto','La nave flotante','El núcleo'],bosses:['Devoraluz','Reina araña','Capitán del vacío','El Devorador']}
+];
+const ENEMY_INFO={grunt:'Soldado básico de roca. Golpea de cerca.',shooter:'Dispara bolas de lava desde lejos. Avisa con una línea roja.',escudero:'Su escudo para los golpes ligeros de frente: usa golpe fuerte.',brute:'Grande y con armadura. No se detiene con golpes ligeros.'};
+
 // ---------------- Progreso guardado ----------------
 function loadProgress(){try{return +(localStorage.getItem('ah_unlocked')||0);}catch(e){return 0;}}
 function saveProgress(n){try{if(n>loadProgress())localStorage.setItem('ah_unlocked',String(n));}catch(e){}renderStages();}
@@ -1672,7 +1729,7 @@ const NET_HINT='No se pudo conectar. Revisa tu internet e inténtalo de nuevo.';
 const canvas=document.getElementById('c');
 const sim=new Sim();const world=new World(canvas);const hud=new HUD();const input=new Input();
 loadAssets((n,tot)=>{const el=document.getElementById('loadst');if(el)el.textContent=n<tot?`Cargando personajes… ${Math.round(n/tot*100)}%`:'';})
-  .then(()=>{for(const map of [world.heroM,world.enemyM]){for(const m of map.values())world.scene.remove(m.g);map.clear();}try{Preview.makeThumbs();renderPick();if($('sel').style.display==='flex')renderSel();if($('heroes').style.display==='flex'){Preview.key=null;Preview.setHero(heroTab);renderHeroes();}}catch(e){console.warn(e);}const el=document.getElementById('loadst');if(el)el.textContent='';})
+  .then(()=>{for(const map of [world.heroM,world.enemyM]){for(const m of map.values())world.scene.remove(m.g);map.clear();}try{Preview.makeThumbs();renderPick();renderStages();if($('story').style.display==='flex')renderStory();if($('sel').style.display==='flex')renderSel();if($('heroes').style.display==='flex'){Preview.key=null;Preview.setHero(heroTab);renderHeroes();}}catch(e){console.warn(e);}const el=document.getElementById('loadst');if(el)el.textContent='';})
   .catch(e=>{console.warn('modelos',e);const el=document.getElementById('loadst');if(el)el.textContent='';});
 let mode='menu',localIdx=0,chosen='volta',diff='facil',stageSel=0;
 let peer=null,conns=[],hostConn=null,latest=null,pendingEv=[],netEv=[],netT=0,sendT=0;
@@ -1684,7 +1741,7 @@ if(!team.includes(chosen))chosen=team[0];
 // renderPick: ver más abajo (pantalla El Equipo)
 // pantalla de héroes: miniaturas + ficha con modelo 3D
 let heroTab='volta',slotSel=0;
-const Preview={r:null,m:null,key:null,back:0,thumbs:{},last:0,
+const Preview={r:null,m:null,key:null,back:0,thumbs:{},ethumbs:{},last:0,
   init(){if(this.r)return;const c=document.getElementById('pv');
     this.r=new THREE.WebGLRenderer({canvas:c,antialias:true,alpha:true});this.r.setPixelRatio(Math.min(devicePixelRatio||1,2));this.r.outputColorSpace=THREE.SRGBColorSpace;
     this.scene=new THREE.Scene();this.scene.add(new THREE.HemisphereLight(0xffffff,0x445577,1.5));const dl=new THREE.DirectionalLight(0xffffff,1.6);dl.position.set(3,5,4);this.scene.add(dl);
@@ -1709,6 +1766,9 @@ const Preview={r:null,m:null,key:null,back:0,thumbs:{},last:0,
     for(const k of HERO_ORDER){const [mn,tint]=HERO_MODEL[k];const A=world.makeAnimated(mn,tint,1.95);sc.add(A.obj);
       const a=A.mixer.clipAction(ASSETS.clips['Idle']);a.play();A.mixer.update(0.4);A.obj.rotation.y=0.35;
       r.setClearColor(HEROES[k].color,0.35);r.render(sc,cam);this.thumbs[k]=c.toDataURL('image/png');sc.remove(A.obj);}
+    this.ethumbs={};for(const k in ENEMY_MODEL){const [mn,tint]=ENEMY_MODEL[k];const A=world.makeAnimated(mn,tint,1.95);sc.add(A.obj);
+      const cl=ASSETS.clips[ENEMIES[k].boss?'Taunt':'Idle']||ASSETS.clips['Idle'];const a=A.mixer.clipAction(cl);a.play();A.mixer.update(0.5);A.obj.rotation.y=0.3;
+      r.setClearColor(ENEMIES[k].boss?0x5a0a1a:0x2a2040,1);r.render(sc,cam);this.ethumbs[k]=c.toDataURL('image/png');sc.remove(A.obj);}
     r.dispose();try{r.forceContextLoss();}catch(e){}}
 };
 function heroFace(k){const t=Preview.thumbs[k];const d=HEROES[k];return t?`<img src="${t}" alt="">`:`<div class="ph" style="background:linear-gradient(135deg,#${d.color.toString(16).padStart(6,'0')},#${d.accent.toString(16).padStart(6,'0')})">${d.name[0]}</div>`;}
@@ -1749,8 +1809,33 @@ const TeamView={r:null,ms:[],key:'',last:0,lw:0,lh:0,
     for(const m of this.ms){m.back-=dt;const idle=m.k==='roca'?'Unarmed_Idle':'Idle';if(m.back<=0&&m.cur!==m.actions[idle])world.playA(m,idle,{fade:0.3});m.mixer.update(dt);}
     this.outline.render(this.scene,this.cam);}
 };
-let tvLoop=0;function tvFrame(now){if($('menu').style.display==='none'||$('sel').style.display==='flex'||$('heroes').style.display==='flex'){tvLoop=0;return;}TeamView.tick(now);tvLoop=requestAnimationFrame(tvFrame);}
+let tvLoop=0;function tvFrame(now){if($('menu').style.display==='none'||$('sel').style.display==='flex'||$('heroes').style.display==='flex'||$('story').style.display==='flex'){tvLoop=0;return;}TeamView.tick(now);tvLoop=requestAnimationFrame(tvFrame);}
 function startTV(){if(!tvLoop)tvLoop=requestAnimationFrame(tvFrame);}
+// ----- Historias -----
+let storySel=0,stageView=0;
+function openStory(){gesture();storySel=0;stageView=stageSel;$('story').style.display='flex';renderStory();}
+function renderStory(){const un=loadProgress();
+  $('slist').innerHTML=STORIES.map((S,i)=>{const done=i===0?Math.min(un,STORY.stages.length):0;
+    return `<div class="scard${i===storySel?' on':''}${S.locked?' lock':''}" data-i="${i}" style="background:${S.bg}"><small>${S.sub}</small><b>${S.name}</b><div class="prog">${S.locked?'🔒 Próximamente':`★ ${done} de ${STORY.stages.length} etapas`}</div></div>`;}).join('');
+  const S=STORIES[storySel];let h=`<h2>${S.name}</h2><p class="syn">${S.syn}</p>`;
+  if(S.locked){h+=`<div class="etapas">${S.teaser.map((n,i)=>`<div class="et lock"><div class="top" style="background:${S.bg}"><span class="num">${i+1}</span><span class="st">🔒</span></div><div class="nm">${n}</div><div class="bs">Jefe: ${S.bosses[i]}</div></div>`).join('')}</div>
+    <p class="syn" style="margin-top:12px;opacity:.75">Esta historia llega pronto. Termina la Historia 1 para estar listo: aquí los enemigos serán de nivel 10 a 20.</p>`;}
+  else{
+    h+=`<div class="etapas">${STORY.stages.map((st,i)=>{const bk=stageBoss(st),lock=i>un,done=i<un;return `<div class="et${i===stageView?' on':''}${lock?' lock':''}" data-e="${i}"><div class="top" style="background:${STAGE_BG[st.theme]}">${Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:''}<span class="num">${i+1}</span><span class="st">${lock?'🔒':done?'⭐':''}</span></div><div class="nm">${st.name}</div><div class="bs">Jefe: ${ENEMIES[bk].name}</div></div>`;}).join('')}</div>`;
+    const st=STORY.stages[stageView],T=S.stages[stageView],bk=stageBoss(st),lock=stageView>un;
+    const kinds={};for(const W of st.waves)for(const k in W)if(!ENEMIES[k].boss)kinds[k]=(kinds[k]||0)+W[k];
+    const enl=Object.entries(kinds).map(([k,n])=>`<div class="en">${Preview.ethumbs[k]?`<img src="${Preview.ethumbs[k]}">`:'<div class="ph"></div>'}<div><b>${ENEMIES[k].name} ×${n}</b><span>${ENEMY_INFO[k]||''}</span></div></div>`).join('');
+    h+=`<div class="sdet"><div><h3>Etapa ${stageView+1} · ${st.name}</h3><p class="syn">${T.txt}</p>
+      <div style="font-weight:800;margin:6px 0">Nivel recomendado: ${T.lvl} · ${st.waves.length} oleadas · Enemigos que encontrarás:</div><div class="enlist">${enl}</div>
+      <div class="row" style="justify-content:flex-start">${lock?'<b style="color:#ff9a9a">🔒 Completa la etapa anterior para desbloquearla</b>':`<button class="btn" id="b-stplay">▶ Jugar etapa</button><button class="btn sm" id="b-stpick">Elegir y volver</button>`}</div></div>
+      <div class="bosscard"><span class="lbl">JEFE</span>${Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:'<img>'}<div class="bn">${ENEMIES[bk].name}</div><div class="bt">${T.boss}</div></div></div>`;}
+  $('spanel').innerHTML=h;
+  document.querySelectorAll('#slist [data-i]').forEach(el=>el.onclick=()=>{storySel=+el.dataset.i;renderStory();});
+  document.querySelectorAll('#spanel [data-e]').forEach(el=>el.onclick=()=>{stageView=+el.dataset.e;renderStory();});
+  const pl=$('b-stplay');if(pl)pl.onclick=()=>{stageSel=stageView;$('story').style.display='none';renderStages();startLocal('solo');};
+  const pk=$('b-stpick');if(pk)pk.onclick=()=>{stageSel=stageView;$('story').style.display='none';renderStages();renderPick();};
+}
+$('b-stclose').onclick=()=>{$('story').style.display='none';renderPick();};
 // ----- Elige tus héroes -----
 let selSlot=0;
 function openSel(){selSlot=Math.max(0,team.indexOf(chosen));$('sel').style.display='flex';renderSel();}
@@ -1817,11 +1902,11 @@ $('b-hplay').onclick=()=>{const k=heroTab;if(!team.includes(k)){team[team.indexO
 
 renderPick();
 const STAGE_BG={ciudad:'linear-gradient(135deg,#3d8ef0,#6fbf4a)',puerto:'linear-gradient(135deg,#2b8bd8,#b98a5a)',fabrica:'linear-gradient(135deg,#4a4a4f,#d9a400)',volcan:'linear-gradient(135deg,#3a0a05,#ff5a1a)'};
-function renderStages(){const box=$('stages');box.innerHTML='';const un=loadProgress();
-  STORY.stages.forEach((s,i)=>{const el=document.createElement('div');const lock=i>un;el.className='sc'+(i===stageSel?' sel':'')+(lock?' lock':'')+(i<un?' done':'');el.style.background=STAGE_BG[s.theme];
-    const boss=s.waves[s.waves.length-1];const bk=Object.keys(boss).find(k=>ENEMIES[k].boss);
-    el.innerHTML=`<b>${i+1}. ${s.name}</b><span>Jefe: ${ENEMIES[bk].name}</span>`;
-    el.onclick=()=>{if(lock)return;stageSel=i;renderStages();};box.appendChild(el);});}
+function stageBoss(st){const W=st.waves[st.waves.length-1];return Object.keys(W).find(k=>ENEMIES[k].boss);}
+function renderStages(){const box=$('stages');const st=STORY.stages[stageSel],bk=stageBoss(st);const un=loadProgress();
+  box.innerHTML=`<div id="stagechip"><div class="chipst">${Preview.ethumbs&&Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:''}<div><span>${STORIES[0].sub} · ${STORIES[0].name} · Etapa ${stageSel+1} de ${STORY.stages.length}</span><b>${st.name}</b><span>Jefe: ${ENEMIES[bk].name} · ${Math.min(un,STORY.stages.length)} de ${STORY.stages.length} completadas</span></div></div>
+    <button class="btn sm" id="b-story" style="background:#ffd23f;font-size:20px">📖 Historias</button></div>`;
+  $('b-story').onclick=()=>openStory();}
 renderStages();
 $('b-heroes').onclick=()=>openFicha(chosen);
 document.querySelectorAll('[data-diff]').forEach(b=>b.onclick=()=>{diff=b.dataset.diff;document.querySelectorAll('[data-diff]').forEach(x=>x.classList.toggle('on',x===b));});
@@ -1906,7 +1991,7 @@ function frame(now){
 requestAnimationFrame(frame);
 // ---------------- Anti-zoom para Safari en iPad ----------------
 (function(){
-  const inMenu=t=>t&&t.closest&&t.closest('#menu,#sel,#heroes');
+  const inMenu=t=>t&&t.closest&&t.closest('#menu,#sel,#heroes,#story');
   for(const ev of ['gesturestart','gesturechange','gestureend'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
   document.addEventListener('touchstart',e=>{if(e.touches.length>1||!inMenu(e.target))e.preventDefault();},{passive:false});
   document.addEventListener('touchmove',e=>{if(e.touches.length>1||!inMenu(e.target))e.preventDefault();},{passive:false});
