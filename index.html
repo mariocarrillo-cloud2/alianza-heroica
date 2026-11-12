@@ -1346,7 +1346,7 @@ class World{
   makeAnimated(name,tint,height){
     const src=ASSETS.models[name];if(src.mx)height*=1.12;const obj=SkeletonUtils.clone(src.scene);obj.scale.multiplyScalar(height/src.h);
     const mats=[];obj.traverse(o=>{if(o.isMesh){o.castShadow=true;o.frustumCulled=false;const om=o.material;
-      const nm=src.mx?om.clone():new THREE.MeshToonMaterial({map:om.map||null,color:tint,gradientMap:this.grad});o.material=nm;mats.push(nm);}});
+      const nm=src.mx?(()=>{const c=om.clone();c.userData.outlineParameters=NO_OUTLINE;for(const k of ['map','normalMap','roughnessMap'])if(c[k]){c[k].anisotropy=8;}return c;})():new THREE.MeshToonMaterial({map:om.map||null,color:tint,gradientMap:this.grad});o.material=nm;mats.push(nm);}});
     const mixer=new THREE.AnimationMixer(obj);mixer.mx=!!src.mx;return {obj,mats,mixer};
   }
   playA(m,name,opt={}){const clip=clipFor(m.mixer,name);if(!clip)return;let a=m.actions[name];if(!a){a=m.mixer.clipAction(clip);m.actions[name]=a;}
