@@ -1525,7 +1525,7 @@ class World{
         const wasKd=m.base==='down';this.animTick(m,v.air?'air':v.kd?'down':v.stun?'stun':m.spd>0.6?'run':'idle',dt);if(wasKd&&!v.kd)this.oneShot(m,'Lie_StandUp',0.5);}
       if(m.shieldM)m.shieldM.visible=!!v.guard;
       else{m.inner.rotation.z=v.stun?Math.sin(t*10)*0.15:0;m.inner.rotation.x=v.kd?-1.3:0;}
-      const em=v.flash?0xffffff:v.frz?0x4aa8ff:v.windup?((Math.floor(t*10)%2)?0xff2020:0x550000):(v.stun?0x554400:v.burn?0x552000:v.elite?((Math.floor(t*4)%2)?0x5a4000:0x2a1c00):(v.slow||v.wet?0x16385a:0));for(const mt of m.mats)mt.emissive.setHex(em);
+      const em=v.flash?(ENEMIES[v.kind].boss?0x6a5a5a:0x9a9090):v.frz?0x4aa8ff:v.windup?((Math.floor(t*10)%2)?0xff2020:0x550000):(v.stun?0x554400:v.burn?0x552000:v.elite?((Math.floor(t*4)%2)?0x5a4000:0x2a1c00):(v.slow||v.wet?0x16385a:0));for(const mt of m.mats)mt.emissive.setHex(em);
       m.al.position.y=m.ar.position.y=0.75+(v.windup?0.55:0);
       if(!m.anim)m.inner.position.y=v.windup?0.1:Math.abs(Math.sin(t*6+v.id))*0.05;
       m.bars.quaternion.copy(q);if(m.bw){m.hpF.scale.x=Math.max(0.001,m.bw*v.hp/v.maxHp);if(m.stF)m.stF.scale.x=Math.max(0.001,m.bw*v.stag/v.maxStag);}
