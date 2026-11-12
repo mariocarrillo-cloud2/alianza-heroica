@@ -856,7 +856,7 @@ function startLocal(m){sim.controllers=['ai','ai','ai','ai'];localIdx=HERO_ORDER
 function nextAI(from){for(let k=1;k<=4;k++){const j=(from+k)%4;if(sim.controllers[j]==='ai')return j;}return -1;}
 
 $('b-solo').onclick=()=>{gesture();startLocal('solo');};
-$('b-menu').onclick=()=>toMenu();
+$('b-menu').addEventListener('pointerup',e=>{e.preventDefault();toMenu();});
 
 $('b-host').onclick=()=>{gesture();
   if(!window.Peer){status('No se pudo cargar el módulo de conexión. '+NET_HINT);return;}
