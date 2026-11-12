@@ -1003,25 +1003,25 @@ class FX{
     const tex=FXTEX[o.tex||'glow'];if(M.map!==tex){M.map=tex;M.needsUpdate=true;}
     const bl=o.normal?THREE.NormalBlending:THREE.AdditiveBlending;if(M.blending!==bl){M.blending=bl;M.needsUpdate=true;}
     M.color.setHex(o.c);M.rotation=o.rot??Math.random()*6.28;q.s.position.set(o.x,o.y,o.z);
-    q.vx=o.vx||0;q.vy=o.vy||0;q.vz=o.vz||0;q.g=o.g||0;q.drag=o.drag??1;q.life=q.max=o.life||0.5;q.s0=o.s||0.5;q.s1=o.s1??q.s0*0.2;q.op=o.op??1;q.spin=o.spin||0;
+    q.vx=o.vx||0;q.vy=o.vy||0;q.vz=o.vz||0;q.g=o.g||0;q.drag=o.drag??1;q.life=q.max=o.life||0.5;q.s0=(o.s||0.5)*0.85;q.s1=(o.s1??(o.s||0.5)*0.2)*0.85;q.op=o.op??0.7;q.spin=o.spin||0;
     q.s.scale.setScalar(q.s0);M.opacity=q.op;}
-  flash(x,y,z,c,s=2,life=0.18){this.p({x,y,z,c,s,s1:s*1.4,life,tex:'glow'});this.p({x,y,z,c:0xffffff,s:s*0.5,s1:s*0.2,life:life*0.8,tex:'star'});}
+  flash(x,y,z,c,s=2,life=0.18){s=Math.min(s,3)*0.6;this.p({x,y,z,c,s,s1:s*1.3,life,tex:'glow',op:0.45});this.p({x,y,z,c:0xffffff,s:s*0.6,s1:s*0.2,life:life*0.8,tex:'star',op:0.6});}
   burst(x,y,z,c,n,spd=6){n=Math.min(n,40);
     for(let k=0;k<n;k++){const a=Math.random()*6.28,b=Math.random()*1.2,u=0.4+Math.random();
       this.p({x,y,z,c,tex:k%3?'glow':'star',vx:Math.cos(a)*Math.cos(b)*spd*u,vy:Math.sin(b)*spd*u+1.5,vz:Math.sin(a)*Math.cos(b)*spd*u,g:9,drag:0.96,s:0.35+Math.random()*0.35,s1:0.05,life:0.35+Math.random()*0.4});}
-    this.flash(x,y,z,c,1.2+n*0.04);}
+    this.flash(x,y,z,c,1+n*0.03);}
   ring(x,z,r,c){const q=this.rings[this.ri++%this.rings.length];q.m.visible=true;q.m.material.color.setHex(c);q.m.position.set(x,0.12,z);q.r=r;q.life=q.max=0.5;
     if(r>=3)this.shell(x,0.2,z,r*0.75,c);
-    const n=Math.min(18,6+Math.round(r*2));for(let k=0;k<n;k++){const a=k/n*6.28;this.p({x:x+Math.cos(a)*0.5,y:0.3,z:z+Math.sin(a)*0.5,c,vx:Math.cos(a)*r*2.2,vz:Math.sin(a)*r*2.2,vy:0.6,drag:0.93,s:0.45,s1:0.1,life:0.45});}}
+    const n=Math.min(12,4+Math.round(r*1.5));for(let k=0;k<n;k++){const a=k/n*6.28;this.p({x:x+Math.cos(a)*0.5,y:0.3,z:z+Math.sin(a)*0.5,c,vx:Math.cos(a)*r*2.2,vz:Math.sin(a)*r*2.2,vy:0.6,drag:0.93,s:0.4,s1:0.1,life:0.45});}}
   shell(x,y,z,r,c){const q=this.shells[this.shi++%this.shells.length];q.m.visible=true;q.m.material.color.setHex(c);q.m.position.set(x,y,z);q.r=r;q.life=q.max=0.4;}
   arc(x,z,face,c,big,y=0.9){const a=this.arcs[this.ai++%this.arcs.length];a.m.visible=true;a.m.material.color.setHex(c);a.m.position.set(x,y,z);a.m.rotation.set(0,face-Math.PI/2,0);a.m.scale.setScalar(big?1.7:1.15);a.life=0.18;}
   line(pts,c,life=0.25,glow=true){const g=new THREE.BufferGeometry().setFromPoints(pts);
     const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));l.material.userData.outlineParameters=NO_OUTLINE;this.scene.add(l);this.lines.push({l,life,max:life});
-    if(glow)for(let i=0;i<pts.length;i+=1){const P=pts[i];this.p({x:P.x,y:P.y,z:P.z,c,s:0.9,s1:0.5,life:life*1.2});}}
+    if(glow)for(let i=0;i<pts.length;i+=2){const P=pts[i];this.p({x:P.x,y:P.y,z:P.z,c,s:0.8,s1:0.4,life:Math.min(0.3,life),op:0.6});}}
   bolt(x1,z1,x2,z2,c,y1=1,y2=1){const pts=[];const n=9;for(let i=0;i<=n;i++){const t=i/n,j=(i===0||i===n)?0:0.6;pts.push(new THREE.Vector3(x1+(x2-x1)*t+(Math.random()-0.5)*j,y1+(y2-y1)*t+(Math.random()-0.5)*j,z1+(z2-z1)*t+(Math.random()-0.5)*j));}
     this.line(pts,c);this.flash(x2,Math.max(0.6,y2),z2,c,1.6);for(let k=0;k<5;k++)this.p({x:x2,y:Math.max(0.6,y2),z:z2,c,tex:'star',vx:(Math.random()-0.5)*8,vy:Math.random()*5,vz:(Math.random()-0.5)*8,g:10,s:0.4,s1:0.05,life:0.3});}
   skybolt(x,z,c,big){for(let k=0;k<(big?3:1);k++)this.bolt(x+(Math.random()-0.5)*(big?3:0.5),z+(Math.random()-0.5)*(big?3:0.5),x,z,c,16,0.2);
-    this.pillar(x,z,c,big?3:1.2,big?14:9,0.35);this.ring(x,z,big?5:2.5,c);this.flash(x,0.5,z,c,big?6:3,0.3);}
+    this.pillar(x,z,c,big?1.8:0.8,big?14:9,0.35);this.ring(x,z,big?5:2.5,c);this.flash(x,0.5,z,c,big?3:2,0.3);}
   pillar(x,z,c,r,h,life=0.6){const m=new THREE.Mesh(this.pillarGeo,addMat({map:FXTEX.beam,color:c}));m.position.set(x,0,z);m.scale.set(r,h,r);this.scene.add(m);this.pillars.push({m,life,max:life,r});}
   beam(a,b,c){const pts=[];for(let i=0;i<=12;i++){const t=i/12;pts.push(new THREE.Vector3(a.x+(b.x-a.x)*t,1.2+Math.sin(t*Math.PI)*2.5,a.z+(b.z-a.z)*t));}this.line(pts,c,0.9);}
   cone(x,z,face,r,c){const m=new THREE.Mesh(this.coneGeo,addMat({color:c,opacity:0.45}));m.position.set(x,0.15,z);m.rotation.y=face-Math.PI/2;m.scale.setScalar(r);this.scene.add(m);this.lines.push({l:m,life:0.3,max:0.3,cone:true});
@@ -1035,9 +1035,9 @@ class FX{
       const t=1-q.life/q.max,dr=Math.pow(q.drag,dt*60);q.vx*=dr;q.vz*=dr;q.vy=q.vy*dr-q.g*dt;s.position.x+=q.vx*dt;s.position.y+=q.vy*dt;s.position.z+=q.vz*dt;
       if(s.position.y<0.05){s.position.y=0.05;q.vy*=-0.3;}s.scale.setScalar(q.s0+(q.s1-q.s0)*t);s.material.opacity=q.op*(t<0.15?1:1-(t-0.15)/0.85);}
     for(const q of this.rings){if(q.life<=0)continue;q.life-=dt;const pr=1-q.life/q.max;const sc=q.r*(0.2+0.8*(1-(1-pr)*(1-pr)));q.m.scale.set(sc,1,sc);q.m.material.opacity=1-pr;if(q.life<=0)q.m.visible=false;}
-    for(const q of this.shells){if(q.life<=0)continue;q.life-=dt;const pr=1-q.life/q.max;q.m.scale.setScalar(q.r*(0.3+0.7*Math.sqrt(pr)));q.m.material.opacity=0.55*(1-pr);if(q.life<=0)q.m.visible=false;}
+    for(const q of this.shells){if(q.life<=0)continue;q.life-=dt;const pr=1-q.life/q.max;q.m.scale.setScalar(q.r*(0.3+0.7*Math.sqrt(pr)));q.m.material.opacity=0.22*(1-pr);if(q.life<=0)q.m.visible=false;}
     for(const a of this.arcs){if(a.life<=0)continue;a.life-=dt;a.m.material.opacity=Math.max(0,a.life/0.18);if(a.life<=0)a.m.visible=false;}
-    for(let i=this.pillars.length-1;i>=0;i--){const q=this.pillars[i];q.life-=dt;const pr=1-q.life/q.max;q.m.material.opacity=Math.max(0,1-pr);q.m.scale.x=q.m.scale.z=q.r*(1-pr*0.6);if(q.life<=0){this.scene.remove(q.m);q.m.material.dispose();this.pillars.splice(i,1);}}
+    for(let i=this.pillars.length-1;i>=0;i--){const q=this.pillars[i];q.life-=dt;const pr=1-q.life/q.max;q.m.material.opacity=Math.max(0,0.45*(1-pr));q.m.scale.x=q.m.scale.z=q.r*(1-pr*0.6);if(q.life<=0){this.scene.remove(q.m);q.m.material.dispose();this.pillars.splice(i,1);}}
     for(let i=this.lines.length-1;i>=0;i--){const b=this.lines[i];b.life-=dt;b.l.material.opacity=Math.max(0,b.life/b.max)*(b.cone?0.45:1);
       if(b.cone){const s=b.l.scale.x*(1+dt*2);b.l.scale.setScalar(s);}
       if(b.life<=0){this.scene.remove(b.l);if(b.l.geometry!==this.coneGeo)b.l.geometry.dispose();b.l.material.dispose();this.lines.splice(i,1);}}
@@ -1289,8 +1289,8 @@ class World{
       const up=v.syn?0.9:(m.castT>0?0.5:0);
       m.fr.position.z=0.05+pa*0.6+(v.syn?0.3:0);m.fl.position.z=0.05+(m.castT>0||v.syn?0.4:0);m.fl.position.y=m.fr.position.y=0.92+up;
       }
-      m.aura.material.opacity=v.syn?0.35+Math.sin(t*30)*0.1:0;m.aura.scale.y=v.syn?1+Math.sin(t*20)*0.1:1;
-      const hurt=m.hurtT>0;for(const mt of m.mats)mt.emissive.setHex(hurt?0xff2020:(m.castT>0||v.syn?0x444444:0));
+      m.aura.material.opacity=v.syn?0.18+Math.sin(t*30)*0.06:0;m.aura.scale.y=v.syn?1+Math.sin(t*20)*0.1:1;
+      const hurt=m.hurtT>0;for(const mt of m.mats)mt.emissive.setHex(hurt?0xff2020:(m.castT>0||v.syn?0x1a1a1a:0));
       m.shield.visible=v.shield;if(v.shield)m.shield.scale.setScalar(1+Math.sin(t*8)*0.04);
       m.g.visible=!(v.blink&&Math.floor(t*14)%2===0);
       if(!v.down&&Math.random()<dt*(v.moving?7:4)){const F=this.fx,x=P.x,z=P.z,y=P.y;
@@ -1394,10 +1394,10 @@ class World{
       case 'synready':{const h=view.heroes[ev.id];if(h){F.ring(h.x,h.z,3,0x3ddc84);T.add(h.x,3,h.z,'🤝 ¡Sinergia lista!','#3ddc84');}break;}
       case 'frz':F.ring(ev.x,ev.z,ev.r*2,0xbff4ff);F.burst(ev.x,1,ev.z,0xdff8ff,8,4);break;
       case 'die':if(!ev.prop){F.smoke(ev.x,0.6,ev.z,0x3a3040,4,1.2);}if(ev.prop){F.burst(ev.x,0.6,ev.z,0xa8743e,14,6);Snd.play('crate');break;}F.burst(ev.x,0.8,ev.z,ev.boss?0xff4dff:0xff7a1a,ev.boss?40:14,ev.boss?12:7);Snd.play('die');break;
-      case 'syn':{const a=view.heroes[ev.ida],b=view.heroes[ev.idb];if(a&&b){F.beam(a,b,ev.c);F.pillar(a.x,a.z,ev.c,1.2,14,1.2);F.pillar(b.x,b.z,ev.c,1.2,14,1.2);}F.shell(ev.x,1,ev.z,6,ev.c);F.pillar(ev.x,ev.z,ev.c,3,20,1);for(const id of [ev.ida,ev.idb])this.oneShot(this.heroM.get(id),'Spellcast_Long',1.1);
+      case 'syn':{const a=view.heroes[ev.ida],b=view.heroes[ev.idb];if(a&&b){F.beam(a,b,ev.c);F.pillar(a.x,a.z,ev.c,0.9,12,1);F.pillar(b.x,b.z,ev.c,0.9,12,1);}F.shell(ev.x,1,ev.z,6,ev.c);F.pillar(ev.x,ev.z,ev.c,1.6,18,0.9);for(const id of [ev.ida,ev.idb])this.oneShot(this.heroM.get(id),'Spellcast_Long',1.1);
         F.ring(ev.x,ev.z,7,ev.c);F.ring(ev.x,ev.z,4,0xffffff);F.burst(ev.x,1.5,ev.z,ev.c,40,10);F.burst(ev.x,1.5,ev.z,0xffd23f,20,8);
         this.cine={t:1.3,x:ev.x,z:ev.z};hud.synergy(ev.name,ev.a,ev.b,ev.c);Snd.play('syn');break;}
-      case 'ult':{F.ring(ev.x,ev.z,30,0xffd23f);F.ring(ev.x,ev.z,20,0xff4dff);F.shell(ev.x,1,ev.z,14,0xffd23f);F.pillar(ev.x,ev.z,0xffd23f,4,30,1.2);
+      case 'ult':{F.ring(ev.x,ev.z,30,0xffd23f);F.ring(ev.x,ev.z,20,0xff4dff);F.shell(ev.x,1,ev.z,14,0xffd23f);F.pillar(ev.x,ev.z,0xffd23f,2.5,30,1.2);
         for(const id of ev.ids||[]){const h=view.heroes[id];if(h){F.pillar(h.x,h.z,HEROES[h.key].color,1.4,20,1);F.beam(h,{x:ev.x,z:ev.z},HEROES[h.key].color);}}
         for(let i=0;i<40;i++){const a=Math.random()*6.28,r=Math.random()*14;F.p({x:ev.x+Math.cos(a)*r,y:0.5,z:ev.z+Math.sin(a)*r,c:[0xffd23f,0xff4dff,0x7fd8ff][i%3],vy:8+Math.random()*6,s:0.8,s1:0.1,life:0.9,tex:'star'});}
         hud.flash(ev.name,ev.n);Snd.play('ult');break;}
