@@ -364,12 +364,13 @@ const ASSETS={ready:false,models:{},clips:{}};
 // Modelos Meshy (esqueleto Mixamo): [archivo, null, 'mx']. Comparten assets/mx_anims.glb.
 const MX_MODELS=['volta'];
 // Nombre de animación del juego -> [clip Mixamo, inicio s, fin s] (fin null = completo)
-const MX_MAP={Idle:['Combat_Stance'],Unarmed_Idle:['Combat_Stance'],Running_A:['RunFast'],Jump_Full_Short:['Regular_Jump',0.25,1.6],
-  Death_A:['Knock_Down'],Lie_StandUp:['Arise'],Hit_A:['Hit_Reaction',0,0.8],Hit_B:['Hit_Reaction',0,1.2],Blocking:['Block1',1.0,2.0],
-  Cheer:['Victory_Fist_Pump'],'2H_Melee_Attack_Spinning':['Roundhouse_Kick',0.5,1.7],Dodge_Forward:['Quick_Step_and_Spin_Dodge',0.15,1.0],
-  Spellcast_Raise:['Skill_01'],Spellcast_Long:['Charged_Spell_Cast'],Spellcast_Shoot:['Skill_01'],
-  MX_Combo1:['Triple_Combo_Attack',0.1,0.95],MX_Combo2:['Triple_Combo_Attack',0.95,1.75],MX_Combo3:['Triple_Combo_Attack',1.75,2.7],
-  MX_Kick:['Roundhouse_Kick',0.5,1.6],MX_Cast:['Skill_01'],MX_Charge:['Charged_Spell_Cast',0.3,1.8],MX_Release:['Charged_Spell_Cast',1.4,2.6],MX_Sweep:['Double_Combo_Attack',0.3,1.1],MX_SlamJump:['Jumping_Punch',0.3,1.8],MX_FlyKick:['Flying_Fist_Kick',0.8,2.0],MX_JumpPunch:['Jumping_Punch',0.9,1.8],MX_Double:['Double_Combo_Attack',0.3,1.7]};
+const MX_MAP={Idle:['MXA_FightIdle'],Unarmed_Idle:['MXA_FightIdle'],Running_A:['MXA_FastRun'],Jump_Full_Short:['MXA_Jump',0,0.93],
+  Death_A:['MXA_KnockDown',0,2.2],Lie_StandUp:['MXA_GetUp',3.8,6.4],Hit_A:['MXA_Hit',0,0.8],Hit_B:['MXA_Hit',0,1.3],Blocking:['MXA_Block',0.35,0.95],
+  Cheer:['MXA_Victory',0,2.3],'2H_Melee_Attack_Spinning':['MXA_HurricaneKick',0.25,1.35],Dodge_Forward:['MXA_Roll',0.15,1.3],
+  Spellcast_Raise:['MXA_Cast1H',0.4,1.1],Spellcast_Long:['MXA_AreaCharge',0.2,1.4],Spellcast_Shoot:['MXA_Cast1H',0.4,1.1],
+  MX_Combo1:['MXA_Punching',0.1,0.55],MX_Combo2:['MXA_CrossPunch',0.6,1.35],MX_Combo3:['MXA_MmaKick',0.1,0.95],
+  MX_Kick:['MXA_FlyingKick',0.3,1.1],MX_FlyKick:['MXA_FlyingKick',0.3,1.1],MX_JumpPunch:['Jumping_Punch',0.9,1.8],MX_Double:['Double_Combo_Attack',0.3,1.7],
+  MX_Cast:['MXA_Cast1H',0.4,1.1],MX_Charge:['MXA_AreaCharge',0.2,1.4],MX_Release:['MXA_AreaBurst',1.2,2.2],MX_Sweep:['MXA_Cast1H3',0.4,1.1],MX_SlamJump:['MXA_Slam2H',0.4,1.4]};
 const HERO_MODEL={volta:['volta',null,'mx'],roca:['Barbarian',0xffc890],brisa:['Mage',0xc8ffd8],sombra:['Rogue_Hooded',0xd8b8ff],escarcha:['Mage',0xbfe6ff],fenix:['Knight',0xffbf90]};
 const ENEMY_MODEL={escudero:['Skeleton_Warrior',0xc8d0e0],grunt:['Skeleton_Minion',0xb8a8c8],shooter:['Skeleton_Mage',0xffb890],brute:['Skeleton_Warrior',0x9aa8c8],capataz:['Skeleton_Warrior',0xd89a60],centinela:['Skeleton_Mage',0x80c8ff],gemelo:['Skeleton_Rogue',0xff8a70],boss:['Skeleton_Warrior',0xb070ff]};
 const HERO_ANIM={volta:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},
