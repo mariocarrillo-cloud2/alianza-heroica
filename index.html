@@ -386,7 +386,8 @@ async function loadAssets(onP){
   const an=await L.loadAsync('assets/anims.glb');for(const c of an.animations)ASSETS.clips[c.name]=c;onP(++n,tot);
   if(MX_MODELS.length){const mx=await L.loadAsync('assets/mx_anims.glb');const raw={};
     for(const c of mx.animations){for(const t of c.tracks)if(/Hips\.position$/.test(t.name)){const v=t.values,x0=v[0],z0=v[2];for(let i=0;i<v.length;i+=3){v[i]=x0;v[i+2]=z0;}}raw[c.name]=c;}
-    ASSETS.mx={};for(const k in MX_MAP){const [cn,t0,t1]=MX_MAP[k],c=raw[cn];if(!c)continue;
+    try{const r=await fetch('assets/mxa.json');if(r.ok)for(const c of await r.json()){const C=THREE.AnimationClip.parse(c);raw['MXA_'+c.name]=C;}}catch(e){}
+    ASSETS.mx={};for(const k in raw)if(k.startsWith('MXA_'))ASSETS.mx[k]=raw[k];for(const k in MX_MAP){const [cn,t0,t1]=MX_MAP[k],c=raw[cn];if(!c)continue;
       ASSETS.mx[k]=t0==null?c:THREE.AnimationUtils.subclip(c,k,Math.round(t0*30),Math.round((t1??c.duration)*30),30);}}
   await Promise.all(names.map(async nm=>{const g=await L.loadAsync('assets/'+nm+'.glb');g.scene.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(g.scene);
     const mx=MX_MODELS.includes(nm);if(mx)g.scene.traverse(o=>{if(o.isMesh){const m=o.material;m.metalness=0;m.metalnessMap=null;m.roughness=0.72;m.roughnessMap=null;m.side=THREE.FrontSide;m.needsUpdate=true;}});
@@ -1823,7 +1824,7 @@ const Preview={r:null,m:null,key:null,back:0,thumbs:{},ethumbs:{},last:0,
     const c=this.r.domElement,w=c.clientWidth,h=c.clientHeight;if(!w||!h)return;
     if(w!==this.lw||h!==this.lh){this.lw=w;this.lh=h;this.r.setSize(w,h,false);const asp=w/h,th=Math.tan(THREE.MathUtils.degToRad(this.cam.fov/2));
       const mx=this.m&&this.m.mixer.mx,hh=mx?1.42:1.5,hw=mx?0.75:1.2,cy=mx?1.05:0.95;const dist=Math.max(hh/th,hw/(th*asp))*1.05;this.cam.aspect=asp;this.cam.position.set(0,cy+0.15,dist);this.cam.lookAt(0,cy,0);this.cam.updateProjectionMatrix();}
-    if(this.m){this.back-=dt;if(this.back<=0&&this.m.cur!==this.m.actions['Idle'])world.playA(this.m,'Idle',{fade:0.25});this.m.mixer.update(dt);this.m.obj.rotation.y=Math.sin(now/1600)*0.6;}
+    const DBG=new URLSearchParams(location.search).get('anim');if(this.m){this.back-=dt;if(DBG&&this.m.mixer.mx&&ASSETS.mx[DBG]){if(this.m.cur!==this.m.actions[DBG])world.playA(this.m,DBG,{fade:0.2});}else if(this.back<=0&&this.m.cur!==this.m.actions['Idle'])world.playA(this.m,'Idle',{fade:0.25});this.m.mixer.update(dt);this.m.obj.rotation.y=Math.sin(now/1600)*0.6;}
     this.outline.render(this.scene,this.cam);},
   makeThumbs(){if(!ASSETS.ready)return;const c=document.createElement('canvas');c.width=c.height=160;
     const r=new THREE.WebGLRenderer({canvas:c,antialias:true,alpha:true,preserveDrawingBuffer:true});r.outputColorSpace=THREE.SRGBColorSpace;
