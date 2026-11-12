@@ -1773,7 +1773,7 @@ const Preview={r:null,m:null,key:null,back:0,thumbs:{},ethumbs:{},last:0,
   tick(now){const dt=Math.min(0.05,(now-(this.last||now))/1000);this.last=now;if(!this.r)return;
     const c=this.r.domElement,w=c.clientWidth,h=c.clientHeight;if(!w||!h)return;
     if(w!==this.lw||h!==this.lh){this.lw=w;this.lh=h;this.r.setSize(w,h,false);const asp=w/h,th=Math.tan(THREE.MathUtils.degToRad(this.cam.fov/2));
-      const mx=this.m&&this.m.mixer.mx,hh=mx?1.25:1.45,hw=mx?0.7:1.15,cy=mx?1.1:1.0;const dist=Math.max(hh/th,hw/(th*asp))*1.05;this.cam.aspect=asp;this.cam.position.set(0,cy+0.15,dist);this.cam.lookAt(0,cy,0);this.cam.updateProjectionMatrix();}
+      const mx=this.m&&this.m.mixer.mx,hh=mx?1.42:1.5,hw=mx?0.75:1.2,cy=mx?1.05:0.95;const dist=Math.max(hh/th,hw/(th*asp))*1.05;this.cam.aspect=asp;this.cam.position.set(0,cy+0.15,dist);this.cam.lookAt(0,cy,0);this.cam.updateProjectionMatrix();}
     if(this.m){this.back-=dt;if(this.back<=0&&this.m.cur!==this.m.actions['Idle'])world.playA(this.m,'Idle',{fade:0.25});this.m.mixer.update(dt);this.m.obj.rotation.y=Math.sin(now/1600)*0.6;}
     this.outline.render(this.scene,this.cam);},
   makeThumbs(){if(!ASSETS.ready)return;const c=document.createElement('canvas');c.width=c.height=160;
