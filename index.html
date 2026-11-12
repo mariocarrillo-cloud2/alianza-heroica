@@ -77,18 +77,22 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 #joyzone{position:absolute;left:0;top:30%;bottom:0;width:42%;pointer-events:auto;touch-action:none}
 #joy{position:absolute;width:130px;height:130px;margin:-65px 0 0 -65px;border-radius:50%;background:rgba(255,255,255,.12);border:3px solid rgba(255,255,255,.35);left:110px;top:calc(100% - 120px)}
 #knob{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;background:rgba(255,255,255,.55)}
-#btns{position:absolute;right:14px;bottom:14px;width:400px;height:270px;pointer-events:none}
-#t-atk{width:104px;height:104px;right:0;bottom:0;background:rgba(255,77,77,.6);font-size:42px}
-#t-jmp{width:64px;height:64px;right:14px;bottom:114px;background:rgba(61,220,132,.55);font-size:28px}
-#t-hvy{width:72px;height:72px;right:116px;bottom:4px;background:rgba(255,140,40,.6);font-size:30px}
-#t-dodge{width:60px;height:60px;right:196px;bottom:6px;font-size:26px}
-#t-blk{width:58px;height:58px;right:262px;bottom:6px;background:rgba(120,160,255,.55);font-size:28px}
-#t-a1{width:66px;height:66px;right:92px;bottom:120px}
-#t-a2{width:66px;height:66px;right:168px;bottom:100px}
-#t-a3{width:66px;height:66px;right:244px;bottom:84px}
-#t-a4{width:66px;height:66px;right:320px;bottom:70px}
-#t-ult{width:56px;height:56px;right:22px;bottom:190px}
-#t-sw{width:46px;height:46px;right:110px;bottom:196px;font-size:20px}
+#btns{position:absolute;right:12px;bottom:12px;width:470px;height:470px;pointer-events:none;transform-origin:100% 100%}
+#t-atk{width:124px;height:124px;right:58px;bottom:58px}
+#t-hvy{width:82px;height:82px;right:207px;bottom:79px}
+#t-dodge{width:80px;height:80px;right:171px;bottom:171px}
+#t-jmp{width:82px;height:82px;right:79px;bottom:207px}
+#t-blk{width:70px;height:70px;right:312px;bottom:69px}
+#t-a1{width:76px;height:76px;right:296px;bottom:160px}
+#t-a2{width:76px;height:76px;right:251px;bottom:235px}
+#t-a3{width:76px;height:76px;right:182px;bottom:287px}
+#t-a4{width:76px;height:76px;right:98px;bottom:309px}
+#t-ult{width:78px;height:78px;right:230px;bottom:362px}
+#t-sw{width:54px;height:54px;right:82px;bottom:411px}
+#btns .ab{border:3px solid rgba(255,255,255,.55);box-shadow:0 5px 12px rgba(0,0,0,.3);background:rgba(14,20,42,.66)}
+#btns .ab svg{width:42%;height:42%}#t-atk svg{width:40%;height:40%}
+#btns .ab small{font-size:10px;font-weight:900;line-height:1.05;max-width:66px}
+#t-atk{background:rgba(226,84,60,.9)!important;border-color:#fff!important}#t-hvy{background:rgba(232,140,52,.88)!important}#t-jmp{background:rgba(52,170,100,.88)!important}#t-blk{background:rgba(70,96,170,.88)!important}#t-ult{border-color:#ffd23f!important;color:#ffd23f}
 #t-atk::before,#t-jmp::before,#t-hvy::before,#t-dodge::before,#t-blk::before,#t-sw::before{display:none}
 #ultb{position:absolute;left:0;right:0;top:30%;text-align:center;font-size:50px;color:#ffd23f;text-shadow:0 4px 0 #7a1f8a,0 0 24px #ff4dff;display:none}
 #ultb small{display:block;font-size:24px;color:#fff;text-shadow:0 2px 0 #000}
@@ -388,6 +392,7 @@ async function loadAssets(onP){
 }
 
 function addEnv(r,scene,i=0.9){const pm=new THREE.PMREMGenerator(r);scene.environment=pm.fromScene(new RoomEnvironment(),0.04).texture;scene.environmentIntensity=i;pm.dispose();}
+const BICON={"atk": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>", "jmp": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 21V8M6 13l6-6 6 6M5 3h14\"/></svg>", "hvy": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 12l-8.5 8.5a2.1 2.1 0 0 1-3-3L12 9\"/><path d=\"M17.6 6.4L14 2.8 11 5.8l7.2 7.2 3-3z\"/></svg>", "dodge": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 8h11a3 3 0 1 0-3-3\"/><path d=\"M3 16h15a3 3 0 1 1-3 3\"/><path d=\"M3 12h18\"/></svg>", "blk": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>", "sw": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 7h13l-4-4M17 17H4l4 4\"/></svg>"};
 function clipFor(mixer,name){if(mixer&&mixer.mx)return ASSETS.mx[name]||ASSETS.mx.Idle;return ASSETS.clips[name];}
 // SIM-START ================================================================
 const TAU=Math.PI*2;
@@ -1601,8 +1606,8 @@ class HUD{
     const btns=document.getElementById('btns'),tray=document.getElementById('tray');this.ab={};
     const mk=(parent,id,slot,cls)=>{const b=document.createElement('button');b.className='ab '+(cls||'');b.id=id;b.dataset.b=slot;
       b.innerHTML=`<span class="ic"></span><small></small><span class="cd"></span><span class="k"></span>`;parent.appendChild(b);return b;};
-    const basics={atk:['👊',''],jmp:['⤒','Saltar'],hvy:['🔨','Fuerte'],dodge:['💨',''],blk:['🛡','Bloquear'],sw:['⇄','']};
-    for(const s in basics){const b=mk(btns,'t-'+s,s);b.querySelector('.ic').textContent=basics[s][0];b.querySelector('small').textContent=basics[s][1];}
+    const basics={atk:'Golpe',jmp:'Saltar',hvy:'Fuerte',dodge:'Esquivar',blk:'Bloquear',sw:''};
+    for(const s in basics){const b=mk(btns,'t-'+s,s);b.querySelector('.ic').remove();b.insertAdjacentHTML('afterbegin',BICON[s]);b.querySelector('small').textContent=basics[s];}
     for(const s of [...SLOTS,'ult']){this.ab[s]=[mk(btns,'t-'+s,s),mk(tray,'r-'+s,s)];}
     SLOTS.forEach((s,i)=>this.ab[s].forEach(b=>{const c=CAT_INFO[SLOT_CATS[i]].c;b.style.background=c+'55';b.dataset.cat=c;}));
     this.combo=document.getElementById('combo');this.ultb=document.getElementById('ultb');this.bossAr=document.querySelector('#boss .ar i');this.bossArW=document.querySelector('#boss .ar');
@@ -1930,7 +1935,7 @@ document.querySelectorAll('[data-diff]').forEach(b=>b.onclick=()=>{diff=b.datase
 $('b-fs').onclick=()=>{const el=document.documentElement;try{(el.requestFullscreen||el.webkitRequestFullscreen).call(el);}catch(e){status('En iPad: Compartir → Agregar a inicio para pantalla completa.');}};
 const gesture=()=>{Snd.init();if(Snd.ctx&&Snd.ctx.state==='suspended')Snd.ctx.resume();};
 function enterGame(m){mode=m;$('menu').style.display='none';$('hud').style.display='block';Snd.muted=false;
-  const touch=('ontouchstart' in window)||navigator.maxTouchPoints>0;$('touch').style.display=touch?'block':'none';$('help').style.display=touch?'none':'block';$('tray').style.display=touch?'none':'flex';}
+  const touch=('ontouchstart' in window)||navigator.maxTouchPoints>0;$('touch').style.display=touch?'block':'none';$('btns').style.transform='scale('+Math.max(0.7,Math.min(1,innerHeight/800,innerWidth/1050)).toFixed(3)+')';$('help').style.display=touch?'none':'block';$('tray').style.display=touch?'none':'flex';}
 function toMenu(msg){
   if(peer){try{peer.destroy();}catch(e){}peer=null;}conns=[];hostConn=null;latest=null;
   mode='menu';Snd.muted=true;sim.controllers=['ai','ai','ai','ai'];sim.reset('facil',0);localIdx=0;
