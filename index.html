@@ -71,6 +71,8 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 .ab.noen{--rc:#4da6ff}.ab.noen .ic{opacity:.5}
 .ab.ready{box-shadow:0 0 14px var(--rc)}
 .ab.act{background:rgba(255,255,255,.4)}
+.ab.join{animation:joinp .35s infinite alternate;background:#ffd23f!important;color:#111;z-index:5}
+@keyframes joinp{from{transform:scale(1.1);box-shadow:0 0 10px #ffd23f}to{transform:scale(1.45);box-shadow:0 0 34px #ff4dff}}
 #touch{position:fixed;inset:0;display:none;pointer-events:none}
 #joyzone{position:absolute;left:0;top:30%;bottom:0;width:42%;pointer-events:auto;touch-action:none}
 #joy{position:absolute;width:130px;height:130px;margin:-65px 0 0 -65px;border-radius:50%;background:rgba(255,255,255,.12);border:3px solid rgba(255,255,255,.35);left:110px;top:calc(100% - 120px)}
@@ -139,6 +141,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 #pv{width:284px;height:300px;display:block}
 #hname{font-family:Bangers;font-size:44px;line-height:1}#htitle{font-weight:800;opacity:.85;font-size:14px}
 .bio{font-size:14px;line-height:1.35;margin:0 0 8px;opacity:.95}
+.atkrow{display:flex;gap:8px;align-items:center;font-size:13px;margin-bottom:5px}.atkl{font-family:Bangers;font-size:17px;min-width:96px}.atkt{background:rgba(255,255,255,.12);border-radius:8px;padding:2px 8px;font-weight:800;white-space:nowrap}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
 .stat small{font-weight:800;font-size:11px;opacity:.8}.stat .sb{display:flex;gap:2px;margin-top:2px}.stat .sb i{flex:1;height:8px;border-radius:3px;background:#2a3060}.stat .sb i.on{background:#ffd23f}
 .lvlrow{display:flex;gap:12px;align-items:center;margin-bottom:8px}
@@ -253,7 +256,7 @@ const HERO_ANIM={volta:{atk:['Dualwield_Melee_Attack_Slice','Dualwield_Melee_Att
   brisa:{atk:['Spellcast_Shoot']},escarcha:{atk:['Spellcast_Shoot']},
   sombra:{atk:['Dualwield_Melee_Attack_Stab','Dualwield_Melee_Attack_Slice','Dualwield_Melee_Attack_Stab']},
   fenix:{atk:['1H_Melee_Attack_Slice_Diagonal','1H_Melee_Attack_Slice_Horizontal','1H_Melee_Attack_Chop']}};
-const HEAVY_ANIM={volta:'1H_Melee_Attack_Jump_Chop',sombra:'1H_Melee_Attack_Jump_Chop',roca:'Unarmed_Melee_Attack_Kick',fenix:'2H_Melee_Attack_Slice',brisa:'Spellcast_Long',escarcha:'Spellcast_Long'};
+const HEAVY_ANIM={volta:'Dualwield_Melee_Attack_Stab',sombra:'Dualwield_Melee_Attack_Stab',roca:'1H_Melee_Attack_Jump_Chop',fenix:'2H_Melee_Attack_Spinning',brisa:'Spellcast_Long',escarcha:'Spellcast_Long'};
 async function loadAssets(onP){
   const L=new GLTFLoader();const names=[...new Set([...Object.values(HERO_MODEL),...Object.values(ENEMY_MODEL)].map(x=>x[0]))];
   let n=0;const tot=names.length+1;
@@ -357,6 +360,14 @@ const ELEM={volta:'rayo',roca:'tierra',brisa:'viento',sombra:'sombra',escarcha:'
 const PASSIVE={volta:'⚡ Doble esquive: puede esquivar dos veces seguidas.',roca:'🪨 Inamovible: no sale volando y recibe 15% menos daño.',
   brisa:'🍃 Levitación: los golpes al suelo le hacen la mitad.',sombra:'🗡 Puñalada: 50% más de daño por la espalda.',
   escarcha:'❄ Piel helada: quien la golpea queda lento.',fenix:'🔥 Renacer: una vez por etapa se levanta solo al caer.'};
+const ATK_TYPE={melee:{n:'Cuerpo a cuerpo',ic:'👊'},ranged:{n:'Distancia',ic:'🏹'},area:{n:'Área',ic:'💥'},dash:{n:'Embestida',ic:'💨'},blink:{n:'Teletransporte',ic:'🌀'}};
+const ATK_INFO={
+  volta:{l:['melee','Cortes rápidos con dagas. El 3er golpe salta como chispa a otro enemigo.'],h:['dash','Tajo relámpago: cruza en línea recta cortando a todos.']},
+  roca:{l:['melee','Puñetazos lentos pero muy fuertes.'],h:['area','Terremoto: golpea el piso y derriba a todos a su alrededor.']},
+  brisa:{l:['ranged','Ráfagas de viento a distancia.'],h:['ranged','Vendaval: ráfaga enorme que empuja muy lejos.']},
+  sombra:{l:['melee','Cuchilladas muy veloces.'],h:['blink','Golpe fantasma: aparece detrás del enemigo y lo apuñala.']},
+  escarcha:{l:['ranged','Fragmentos de hielo que frenan.'],h:['ranged','Lanza glacial: atraviesa y congela al primero que toca.']},
+  fenix:{l:['melee','Espadazos que dejan quemado al enemigo.'],h:['area','Giro de llamas: corte en círculo que deja fuego en el piso.']}};
 const ELEM_INFO={rayo:'⚡ Rayo',tierra:'🪨 Tierra',viento:'🍃 Viento',sombra:'🌑 Sombra',hielo:'❄ Hielo',fuego:'🔥 Fuego'};
 for(const k in HERO_META){const H=HEROES[k],M=HERO_META[k];H.elem=ELEM[k];H.passive=PASSIVE[k];H.title=M.title;H.bio=M.bio;H.stats=M.st;H.load=M.load;for(const id in H.abil)H.abil[id].cat=M.cat[id];
   const a=H.attack;H.heavy=a.type==='melee'?{dmg:Math.round(a.dmg[2]*1.6),stag:Math.round(a.stag[2]*2.4),range:a.range+0.4,arc:a.arc+0.2,cd:0.75}:{dmg:a.dmg[2]*2,stag:a.stag[2]*3,cd:0.8};}
@@ -567,6 +578,8 @@ class Sim{
       for(const e of this.enemies){if(e.dead||Math.abs((e.ey||0)-h.y)>(h.air?2.2:1.5))continue;const dx=e.x-h.x,dz=e.z-h.z,dd=Math.hypot(dx,dz);
         if(dd<=a.range+e.def.r&&(dd<0.9||angDiff(Math.atan2(dx,dz),h.face)<a.arc))this.damage(e,a.dmg[i],a.stag[i],h.x,h.z,i===2?6:2,h);}
       this.hitKind='ability';
+      if(i===2&&h.key==='volta'){const near=this.enemies.filter(e=>!e.dead&&!e.def.prop&&dist2(e,h)<36).sort((p,q)=>dist2(p,h)-dist2(q,h));const t2=near[1]||near[0];
+        if(t2){this.hitKind='ability';this.damage(t2,7,6,h.x,h.z,1,h);this.ev({k:'bolt',x1:h.x,z1:h.z,x2:t2.x,z2:t2.z,c:0xfff066});}}
       this.ev({k:'swing',id:h.id,x:h.x+fx*1.1,z:h.z+fz*1.1,c:h.def.accent,big:i===2,face:h.face});
     }else{
       this.proj({kind:a.pk||'wind',x:h.x+fx*0.8,z:h.z+fz*0.8,vx:fx*20,vz:fz*20,dmg:a.dmg[i],stag:a.stag[i],life:0.7,r:0.5,pierce:i===2,owner:h,slow:a.pk==='ice',hk:'light'});
@@ -577,15 +590,30 @@ class Sim{
     const a=h.def.attack,H=h.def.heavy;
     if(h.air&&a.type==='melee'){h.diving=true;h.vy=-18;h.atkCd=0.5;this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:h.def.accent,big:true,face:h.face,heavy:true});return;}
     const fin=h.comboW>0&&h.combo>=1;h.comboW=0;h.combo=0;
-    h.atkCd=H.cd;h.lockT=0.3;this.autoFace(h,a.type==='ranged'?14:5);const fx=Math.sin(h.face),fz=Math.cos(h.face);
-    this.hitKind=fin?'finisher':'heavy';const mul=fin?1.3:1;
-    if(a.type==='melee'){h.kx+=fx*6;h.kz+=fz*6;
-      for(const e of this.enemies){if(e.dead||(e.ey||0)>1.8)continue;const dx=e.x-h.x,dz=e.z-h.z,dd=Math.hypot(dx,dz);
-        if(dd<=H.range+e.def.r&&(dd<0.9||angDiff(Math.atan2(dx,dz),h.face)<H.arc))this.damage(e,H.dmg*mul,H.stag*mul,h.x,h.z,fin?11:8,h);}
-      this.ev({k:'swing',id:h.id,x:h.x+fx*1.3,z:h.z+fz*1.3,c:fin?0xffd23f:h.def.accent,big:true,face:h.face,heavy:true});this.ev({k:'shake',a:fin?0.45:0.3});
-    }else{this.proj({kind:a.pk||'wind',x:h.x+fx*0.8,z:h.z+fz*0.8,vx:fx*24,vz:fz*24,dmg:H.dmg*mul,stag:H.stag*mul,life:0.8,r:0.95,pierce:true,owner:h,knock:fin?10:7,big:true,hk:this.hitKind});
-      this.ev({k:'swing',id:h.id,x:h.x+fx*0.8,z:h.z+fz*0.8,c:0xffffff,big:true,ranged:true,heavy:true});}
-    if(fin)this.ev({k:'txt',x:h.x,z:h.z,s:'¡REMATE!',c:'#ffd23f'});
+    h.atkCd=H.cd;h.lockT=0.3;const tgt=this.autoFace(h,['volta','sombra'].includes(h.key)?8:a.type==='ranged'?14:5);let fx=Math.sin(h.face),fz=Math.cos(h.face);
+    this.hitKind=fin?'finisher':'heavy';const mul=fin?1.3:1,kn=fin?11:8;
+    const hitArc=(range,arc)=>{for(const e of this.enemies){if(e.dead||(e.ey||0)>1.8)continue;const dx=e.x-h.x,dz=e.z-h.z,dd=Math.hypot(dx,dz);
+        if(dd<=range+e.def.r&&(dd<0.9||angDiff(Math.atan2(dx,dz),h.face)<arc))this.damage(e,H.dmg*mul,H.stag*mul,h.x,h.z,kn,h);}};
+    switch(h.key){
+      case 'volta':{const sx=h.x,sz=h.z;h.x+=fx*5.5;h.z+=fz*5.5;this.confine(h,0.5);h.iframes=Math.max(h.iframes,0.3);
+        for(const e of this.enemies){if(e.dead||(e.ey||0)>1.8)continue;if(segDist2(e.x,e.z,sx,sz,h.x,h.z)<(e.def.r+1.2)**2)this.damage(e,H.dmg*mul,H.stag*mul,sx,sz,kn,h);}
+        this.ev({k:'bolt',x1:sx,z1:sz,x2:h.x,z2:h.z,c:0xfff066});this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0xfff066,big:true,face:h.face,heavy:true});break;}
+      case 'roca':{for(const e of this.enemies){if(e.dead||(e.ey||0)>1.8)continue;if(dist2(e,h)<(3.4+e.def.r)**2)this.damage(e,H.dmg*mul,H.stag*mul,h.x,h.z,kn,h);}
+        this.ev({k:'ring',x:h.x,z:h.z,r:3.4,c:0xff9a1a});this.ev({k:'burst',x:h.x,z:h.z,c:0x8b5a2b,n:18});this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0xff9a1a,big:true,heavy:true});this.ev({k:'shake',a:0.5});break;}
+      case 'sombra':{if(tgt){const sx=h.x,sz=h.z,dx=tgt.x-h.x,dz=tgt.z-h.z,l=Math.hypot(dx,dz)||1;h.x=tgt.x+dx/l*(tgt.def.r+0.8);h.z=tgt.z+dz/l*(tgt.def.r+0.8);h.face=Math.atan2(-dx,-dz);
+          this.damage(tgt,H.dmg*mul*1.2,H.stag*mul,h.x,h.z,kn,h);h.iframes=Math.max(h.iframes,0.3);this.ev({k:'burst',x:sx,z:sz,c:0x8e44ad,n:10});this.ev({k:'burst',x:h.x,z:h.z,c:0x8e44ad,n:10});}
+        else hitArc(H.range,H.arc);this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0xc58cff,big:true,face:h.face,heavy:true});break;}
+      case 'fenix':{for(const e of this.enemies){if(e.dead||(e.ey||0)>1.8)continue;if(dist2(e,h)<(3+e.def.r)**2)this.damage(e,H.dmg*mul,H.stag*mul,h.x,h.z,kn,h);}
+        this.zone({kind:'static',x:h.x,z:h.z,r:3,t:2.5,max:2.5,tick:0.2,owner:h,c:0xff6a1a,burn:true});
+        this.ev({k:'ring',x:h.x,z:h.z,r:3,c:0xff8a3d});this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0xff8a3d,big:true,heavy:true});this.ev({k:'shake',a:0.35});break;}
+      case 'brisa':{this.proj({kind:'wind',x:h.x+fx*0.8,z:h.z+fz*0.8,vx:fx*22,vz:fz*22,dmg:H.dmg*mul,stag:H.stag*mul,life:0.75,r:1.5,pierce:true,owner:h,knock:fin?18:15,big:true,hk:this.hitKind});
+        this.ev({k:'cone',x:h.x,z:h.z,face:h.face,r:5,c:0xe8fff2});this.ev({k:'swing',id:h.id,x:h.x+fx*0.8,z:h.z+fz*0.8,c:0xffffff,big:true,ranged:true,heavy:true});break;}
+      case 'escarcha':{this.proj({kind:'ice',x:h.x+fx*0.8,z:h.z+fz*0.8,vx:fx*26,vz:fz*26,dmg:H.dmg*mul,stag:H.stag*mul,life:0.8,r:0.9,pierce:true,owner:h,knock:fin?10:6,big:true,hk:this.hitKind,freeze1:1.2,slow:true});
+        this.ev({k:'swing',id:h.id,x:h.x+fx*0.8,z:h.z+fz*0.8,c:0xbff4ff,big:true,ranged:true,heavy:true});break;}
+      default:{if(a.type==='melee'){h.kx+=fx*6;h.kz+=fz*6;hitArc(H.range,H.arc);this.ev({k:'swing',id:h.id,x:h.x+fx*1.3,z:h.z+fz*1.3,c:h.def.accent,big:true,face:h.face,heavy:true});}
+        else this.proj({kind:a.pk||'wind',x:h.x+fx*0.8,z:h.z+fz*0.8,vx:fx*24,vz:fz*24,dmg:H.dmg*mul,stag:H.stag*mul,life:0.8,r:0.95,pierce:true,owner:h,knock:7,big:true,hk:this.hitKind});}
+    }
+    if(fin){this.ev({k:'txt',x:h.x,z:h.z,s:'¡REMATE!',c:'#ffd23f'});this.ev({k:'shake',a:0.45});}
     this.hitKind='ability';
   }
   dashStrike(h){h.dodgeEndT=-9;h.atkCd=0.45;h.lockT=0.25;this.autoFace(h,6);const fx=Math.sin(h.face),fz=Math.cos(h.face);h.kx+=fx*16;h.kz+=fz*16;
@@ -829,6 +857,7 @@ class Sim{
       for(const e of this.enemies){if(e.dead||p.hit.includes(e.id))continue;
         if(dist2(p,e)<(e.def.r+p.r)**2){this.curMul=p.mul||1;if(p.hk)this.hitKind=p.hk;this.damage(e,p.dmg,p.stag,p.x-p.vx*0.05,p.z-p.vz*0.05,p.knock,p.owner);
           if(p.slow)e.slowT=Math.max(e.slowT,1.2);
+          if(p.freeze1){this.freeze(e,p.freeze1);p.freeze1=0;}
           if(p.aoe){for(const o of this.enemies)if(o!==e&&!o.dead&&dist2(o,p)<(p.aoe+o.def.r)**2)this.damage(o,p.dmg*0.7,p.stag*0.7,p.x,p.z,p.knock,p.owner);
             this.ev({k:'ring',x:p.x,z:p.z,r:p.aoe,c:0xff8a3d});this.ev({k:'burst',x:p.x,z:p.z,c:0xff6a1a,n:16});this.ev({k:'sfx',s:'boom'});}
           this.curMul=1;this.hitKind='ability';p.hit.push(e.id);
@@ -845,7 +874,7 @@ class Sim{
         for(const e of this.enemies){if(e.dead||e.def.boss||e.def.prop)continue;const dx=z.x-e.x,dz=z.z-e.z,D=Math.hypot(dx,dz);if(D<z.r+2.5&&D>0.3){e.x+=dx/D*5*dt;e.z+=dz/D*5*dt;}if(D<z.r+1)e.wetT=3;}
         if(z.tick<=0){z.tick=z.kind==='storm'?0.25:0.3;const dm=z.kind==='storm'?9:6;
           for(const e of this.enemies)if(!e.dead&&dist2(e,z)<(z.r+e.def.r)**2){this.damage(e,dm,8,z.x,z.z,0,z.kind==='storm'?null:z.owner);if(z.kind==='storm'&&rng()<0.3)this.ev({k:'skybolt',x:e.x,z:e.z,c:z.c});}}}
-      else if(z.kind==='static'){z.tick-=dt;if(z.tick<=0){z.tick=0.35;for(const e of this.enemies)if(!e.dead&&dist2(e,z)<(z.r+e.def.r)**2){this.damage(e,6,10,z.x,z.z,1,z.owner);this.ev({k:'bolt',x1:z.x,z1:z.z,x2:e.x,z2:e.z,c:z.c||0x7fd8ff});}}}
+      else if(z.kind==='static'){z.tick-=dt;if(z.tick<=0){z.tick=0.35;for(const e of this.enemies)if(!e.dead&&dist2(e,z)<(z.r+e.def.r)**2){this.damage(e,6,10,z.x,z.z,1,z.owner);if(z.burn){e.burnT=3;e.burnSrc=z.owner;}else this.ev({k:'bolt',x1:z.x,z1:z.z,x2:e.x,z2:e.z,c:z.c||0x7fd8ff});}}}
       else if(z.kind==='blizzard'){z.tick-=dt;for(const e of this.enemies)if(!e.dead&&dist2(e,z)<(z.r+e.def.r)**2){e.slowT=0.4;e.wetT=3;}
         if(z.tick<=0){z.tick=0.4;for(const e of this.enemies)if(!e.dead&&dist2(e,z)<(z.r+e.def.r)**2)this.damage(e,6,8,z.x,z.z,0,z.owner);}}
       else if(z.kind==='smoke'){z.tick-=dt;for(const e of this.enemies)if(!e.dead&&dist2(e,z)<(z.r+e.def.r)**2){e.blindT=0.4;if(!e.def.boss&&e.windup>0){e.windup=0;this.zones=this.zones.filter(q=>q.eid!==e.id);}}
@@ -1333,6 +1362,7 @@ class World{
       if(v.kind==='tornado'||v.kind==='storm'){for(let i=0;i<2;i++){const a=R()*6.28,rr=v.r*(0.3+R()*0.7);F.p({x:v.x+Math.cos(a)*rr,y:R()*3.5,z:v.z+Math.sin(a)*rr,c:v.c||0xe8fff2,tex:'smoke',normal:true,op:0.45,vx:-Math.sin(a)*6,vz:Math.cos(a)*6,vy:2.5,drag:0.95,s:0.6,s1:1.2,life:0.5});}
         if(v.kind==='storm'&&R()<dt*6)F.smoke(v.x+(R()-0.5)*v.r*2,7,v.z+(R()-0.5)*v.r*2,0x445066,1,2.5);}
       else if(v.kind==='blizzard'){for(let i=0;i<3;i++){const a=R()*6.28,rr=v.r*Math.sqrt(R());F.p({x:v.x+Math.cos(a)*rr,y:4+R()*2,z:v.z+Math.sin(a)*rr,c:0xffffff,tex:'star',vy:-6,vx:3,s:0.3,s1:0.15,life:0.8});}if(R()<dt*8)F.smoke(v.x+(R()-0.5)*v.r,0.5,v.z+(R()-0.5)*v.r,0xdff4ff,1,1.6);}
+      else if(v.kind==='static'&&v.c===0xff6a1a){if(R()<dt*25){const a=R()*6.28,rr=v.r*Math.sqrt(R());F.fire(v.x+Math.cos(a)*rr,0.2,v.z+Math.sin(a)*rr,1,0.7);}}
       else if(v.kind==='static'){if(R()<dt*20){const a=R()*6.28;F.p({x:v.x+Math.cos(a)*v.r,y:0.4+R()*1.4,z:v.z+Math.sin(a)*v.r,c:v.c||0x7fd8ff,tex:'star',s:0.7,s1:0.1,life:0.18});}}
       else if(v.kind==='smoke'){if(R()<dt*14){const a=R()*6.28,rr=v.r*Math.sqrt(R());F.smoke(v.x+Math.cos(a)*rr,0.3,v.z+Math.sin(a)*rr,0x2a1a3a,1,1.8);}}
       else if(v.kind==='delayed'){const y=14*(1-pr);F.p({x:v.x,y,z:v.z,c:v.c||0xffffff,s:1.8,s1:1.6,life:0.06});F.p({x:v.x,y:y+0.6,z:v.z,c:v.c||0xffffff,s:0.9,s1:0.1,life:0.35});
@@ -1445,7 +1475,7 @@ class HUD{
     this.ab.ult.forEach(b=>{b.querySelector('.ic').textContent='★';b.querySelector('small').textContent='Alianza';b.style.setProperty('--rc','#ff4dff');});
   }
   set(key,el,prop,val){if(this.c[key]===val)return;this.c[key]=val;if(prop==='text')el.textContent=val;else if(prop==='html')el.innerHTML=val;else if(prop==='w')el.style.width=val+'%';else el.style[prop]=val;}
-  setPad(pad){for(const s of [...SLOTS,'ult']){const k=this.ab[s][1].querySelector('.k');if(k)k.textContent=(pad?PADLBL:KEYLBL)[s];}}
+  setPad(pad){this.pad=pad;for(const s of [...SLOTS,'ult']){const k=this.ab[s][1].querySelector('.k');if(k)k.textContent=(pad?PADLBL:KEYLBL)[s];}}
   update(view,focus){
     view.heroes.forEach((h,i)=>{const C=this.cards[i];const d=HEROES[h.key];
       this.set('nm'+i,C.nm,'text',d.name);C.nm.style.color=SLOT_COL[i];
@@ -1458,7 +1488,11 @@ class HUD{
     this.set('ally',this.allyF,'w',view.ally);const full=view.ally>=100;this.ally.classList.toggle('full',full);
     const b=view.enemies.find(e=>ENEMIES[e.kind].boss);this.set('bv',this.boss,'display',b?'block':'none');
     if(b){this.set('bl',this.bossL,'text',ENEMIES[b.kind].name);this.set('bhp',this.bossHp,'w',Math.round(b.hp/b.maxHp*100));this.set('bst',this.bossSt,'w',Math.round(b.stag/b.maxStag*100));this.set('bar',this.bossAr,'w',b.maxArmor?Math.round(b.armor/b.maxArmor*100):0);this.set('barv',this.bossArW,'display',b.maxArmor&&b.armor>0?'block':'none');}
-    if(view.ult){this.set('ub',this.ultb,'display','block');this.set('ubt',this.ultb,'html',`¡ALIANZA EXTREMA!<small>¡Únanse! Botón ★ Alianza · ${view.ult.n} de 4 héroes</small>`);}else this.set('ub',this.ultb,'display','none');
+    if(view.ult){const joined=view.ult.m.includes(focus);const how=document.getElementById('touch').style.display==='block'?'TOCA ★':this.pad?'PRESIONA RT':'PRESIONA E';
+      this.set('ub',this.ultb,'display','block');
+      this.set('ubt',this.ultb,'html',joined?`¡ALIANZA EXTREMA!<small>¡Estás dentro! Esperando a los demás · ${view.ult.n} de 4 · ${Math.ceil(view.ult.t*10)/10}s</small>`:`¡${how} PARA UNIRTE!<small>Alianza Extrema · ${view.ult.n} de 4 héroes · quedan ${Math.ceil(view.ult.t*10)/10}s</small>`);
+      for(const b of this.ab.ult)b.classList.toggle('join',!joined);}
+    else{this.set('ub',this.ultb,'display','none');for(const b of this.ab.ult)b.classList.remove('join');}
     document.body.classList.toggle('slowfx',!!view.slowmo);
     const show=view.bannerT<2.8||view.phase==='win'||view.phase==='lose';
     this.set('bn',this.banner,'html',view.banner+(view.bannerSub?`<small>${view.bannerSub}</small>`:''));this.set('bo',this.banner,'opacity',show?'1':'0');
@@ -1568,7 +1602,7 @@ if(!team.includes(chosen))chosen=team[0];
 function renderPick(){pick.innerHTML='';
   $('teamnote').textContent=team.length<4?`Elige ${4-team.length} héroe${4-team.length===1?'':'s'} más`:'Listo · toca 🎮 para elegir con quién juegas tú';
   HERO_ORDER.forEach(k=>{const d=HEROES[k],P=profiles[k];const inT=team.includes(k),me=k===chosen;const el=document.createElement('div');el.className='hc'+(inT?' sel':'')+(me?' me':'');el.dataset.k=k;
-  el.innerHTML=`${Preview.thumbs[k]?`<img class="face" src="${Preview.thumbs[k]}" style="background:${hex(d.color)}55">`:`<div class="sw" style="background:linear-gradient(135deg,#${d.color.toString(16).padStart(6,'0')},#${d.accent.toString(16).padStart(6,'0')})"></div>`}<b>${d.name}</b> <span style="font-weight:800;font-size:13px">Nv ${P.lvl}${P.pts?' · ⭐'+P.pts:''}</span><p>${d.desc}<br>${P.load.map(a=>d.abil[a].ic).join(' ')}</p>
+  el.innerHTML=`${Preview.thumbs[k]?`<img class="face" src="${Preview.thumbs[k]}" style="background:${hex(d.color)}55">`:`<div class="sw" style="background:linear-gradient(135deg,#${d.color.toString(16).padStart(6,'0')},#${d.accent.toString(16).padStart(6,'0')})"></div>`}<b>${d.name}</b> <span style="font-weight:800;font-size:13px">Nv ${P.lvl}${P.pts?' · ⭐'+P.pts:''}</span><p>${ATK_TYPE[ATK_INFO[k].l[0]].ic} ${ATK_TYPE[ATK_INFO[k].l[0]].n} · ${ATK_TYPE[ATK_INFO[k].h[0]].ic} ${ATK_TYPE[ATK_INFO[k].h[0]].n}<br>${P.load.map(a=>d.abil[a].ic).join(' ')}</p>
     ${inT?`<button class="btn sm${me?' on':''} pl" data-me="${k}">🎮 ${me?'Juegas tú':'Jugar con este'}</button>`:'<div class="addt">+ Agregar al equipo</div>'}`;
   el.onclick=e=>{const b=e.target.closest('[data-me]');if(b){chosen=k;renderPick();return;}
     if(inT){if(team.length>1){team=team.filter(x=>x!==k);if(chosen===k)chosen=team[0];}}else if(team.length<4){team.push(k);}else{status('Tu equipo ya tiene 4. Quita uno primero.');return;}
@@ -1620,7 +1654,7 @@ function renderHeroes(){
     return `<div class="op${eq?' eq':''}${lock?' lock':''}">${eq?'<span class="tagq">EQUIPADO</span>':''}<span class="ic">${ab.ic}</span><b>${ab.name}</b>
       <p><span style="color:${cat.c};font-weight:800">${cat.ic} ${cat.n}</span> · ${ab.info} · Energía ${ab.cost} · Recarga ${ab.cd}s</p><div class="stars">${'★'.repeat(rk)}${'☆'.repeat(MAX_RANK-rk)}</div>
       ${lock?`<p>🔒 Se desbloquea en nivel ${ab.unlock}</p>`:`<div style="margin-top:4px">${eq?'':`<button class="btn sm on" data-eq="${id}">Equipar aquí</button>`}${rk<MAX_RANK?`<button class="btn sm" data-up="${id}" ${P.pts?'':'disabled style="opacity:.4"'}>Mejorar ⭐</button>`:'<b style="font-size:13px">¡Rango máximo!</b>'}</div>`}</div>`;}).join('');
-  $('hright').innerHTML=`<p class="bio">${d.bio}</p><p class="bio"><b>Elemento:</b> ${ELEM_INFO[d.elem]} &nbsp;·&nbsp; <b>Pasiva:</b> ${d.passive}</p><div class="stats">${stats}</div>
+  $('hright').innerHTML=`<p class="bio">${d.bio}</p><p class="bio"><b>Elemento:</b> ${ELEM_INFO[d.elem]} &nbsp;·&nbsp; <b>Pasiva:</b> ${d.passive}</p>${(()=>{const A=ATK_INFO[k];const row=(lbl,x)=>`<div class="atkrow"><span class="atkl">${lbl}</span><span class="atkt">${ATK_TYPE[x[0]].ic} ${ATK_TYPE[x[0]].n}</span><span>${x[1]}</span></div>`;return row('Golpe ligero',A.l)+row('Golpe fuerte',A.h);})()}<div class="stats">${stats}</div>
     <div class="lvlrow"><span class="bang" style="font-size:26px">Nivel ${P.lvl}</span><div><div class="xpbar"><i style="width:${P.lvl>=MAX_LVL?100:Math.round(P.xp/need*100)}%"></i></div><small>${P.lvl>=MAX_LVL?'Nivel máximo':P.xp+' / '+need+' XP'}</small></div><span class="pts">⭐ ${P.pts} punto${P.pts===1?'':'s'} para mejorar</span></div>
     <div class="slots4">${slots}</div>
     <div class="optt" style="color:${SC.c}">${SC.ic} Elige tu poder ${SC.n} — ${SC.d}</div><div class="opts">${opts}</div><p class="bio" style="margin-top:10px;opacity:.8;font-size:12px"><b>Combos de elementos</b> (con poderes o golpe fuerte): 🔥 sobre congelado = Vapor · ⚡ sobre mojado = Electrocutado · 🍃 sobre quemado = Tormenta de fuego · 🪨 sobre congelado = Hielo roto · ❄ sobre quemado = Choque térmico</p>`;
