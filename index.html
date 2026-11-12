@@ -355,23 +355,38 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 // Personajes 3D: KayKit Adventurers y Skeletons (CC0, Kay Lousberg). [modelo, tinte]
 const ASSETS={ready:false,models:{},clips:{}};
-const HERO_MODEL={volta:['Rogue',0xfff0a8],roca:['Barbarian',0xffc890],brisa:['Mage',0xc8ffd8],sombra:['Rogue_Hooded',0xd8b8ff],escarcha:['Mage',0xbfe6ff],fenix:['Knight',0xffbf90]};
+// Modelos Meshy (esqueleto Mixamo): [archivo, null, 'mx']. Comparten assets/mx_anims.glb.
+const MX_MODELS=['volta'];
+// Nombre de animación del juego -> [clip Mixamo, inicio s, fin s] (fin null = completo)
+const MX_MAP={Idle:['Combat_Stance'],Unarmed_Idle:['Combat_Stance'],Running_A:['RunFast'],Jump_Full_Short:['Regular_Jump',0.25,1.6],
+  Death_A:['Knock_Down'],Lie_StandUp:['Arise'],Hit_A:['Hit_Reaction',0,0.8],Hit_B:['Hit_Reaction',0,1.2],Blocking:['Block1',1.0,2.0],
+  Cheer:['Victory_Fist_Pump'],'2H_Melee_Attack_Spinning':['Roundhouse_Kick',0.5,1.7],Dodge_Forward:['Quick_Step_and_Spin_Dodge',0.15,1.0],
+  Spellcast_Raise:['Skill_01'],Spellcast_Long:['Charged_Spell_Cast'],Spellcast_Shoot:['Skill_01'],
+  MX_Combo1:['Triple_Combo_Attack',0.1,0.95],MX_Combo2:['Triple_Combo_Attack',0.95,1.75],MX_Combo3:['Triple_Combo_Attack',1.75,2.7],
+  MX_Kick:['Roundhouse_Kick',0.5,1.6],MX_FlyKick:['Flying_Fist_Kick',0.8,2.0],MX_JumpPunch:['Jumping_Punch',0.9,1.8],MX_Double:['Double_Combo_Attack',0.3,1.7]};
+const HERO_MODEL={volta:['volta',null,'mx'],roca:['Barbarian',0xffc890],brisa:['Mage',0xc8ffd8],sombra:['Rogue_Hooded',0xd8b8ff],escarcha:['Mage',0xbfe6ff],fenix:['Knight',0xffbf90]};
 const ENEMY_MODEL={escudero:['Skeleton_Warrior',0xc8d0e0],grunt:['Skeleton_Minion',0xb8a8c8],shooter:['Skeleton_Mage',0xffb890],brute:['Skeleton_Warrior',0x9aa8c8],capataz:['Skeleton_Warrior',0xd89a60],centinela:['Skeleton_Mage',0x80c8ff],gemelo:['Skeleton_Rogue',0xff8a70],boss:['Skeleton_Warrior',0xb070ff]};
-const HERO_ANIM={volta:{atk:['Dualwield_Melee_Attack_Slice','Dualwield_Melee_Attack_Stab','Dualwield_Melee_Attack_Slice']},
+const HERO_ANIM={volta:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},
   roca:{idle:'Unarmed_Idle',atk:['Unarmed_Melee_Attack_Punch_A','Unarmed_Melee_Attack_Punch_B','Unarmed_Melee_Attack_Kick']},
   brisa:{atk:['Spellcast_Shoot']},escarcha:{atk:['Spellcast_Shoot']},
   sombra:{atk:['Dualwield_Melee_Attack_Stab','Dualwield_Melee_Attack_Slice','Dualwield_Melee_Attack_Stab']},
   fenix:{atk:['1H_Melee_Attack_Slice_Diagonal','1H_Melee_Attack_Slice_Horizontal','1H_Melee_Attack_Chop']}};
-const HEAVY_ANIM={volta:'Dualwield_Melee_Attack_Stab',sombra:'Dualwield_Melee_Attack_Stab',roca:'1H_Melee_Attack_Jump_Chop',fenix:'2H_Melee_Attack_Spinning',brisa:'Spellcast_Long',escarcha:'Spellcast_Long'};
+const HEAVY_ANIM={volta:'MX_Kick',sombra:'Dualwield_Melee_Attack_Stab',roca:'1H_Melee_Attack_Jump_Chop',fenix:'2H_Melee_Attack_Spinning',brisa:'Spellcast_Long',escarcha:'Spellcast_Long'};
 async function loadAssets(onP){
   const L=new GLTFLoader();const names=[...new Set([...Object.values(HERO_MODEL),...Object.values(ENEMY_MODEL)].map(x=>x[0]))];
   let n=0;const tot=names.length+1;
   const an=await L.loadAsync('assets/anims.glb');for(const c of an.animations)ASSETS.clips[c.name]=c;onP(++n,tot);
-  await Promise.all(names.map(async nm=>{const g=await L.loadAsync('assets/'+nm+'.glb');const box=new THREE.Box3().setFromObject(g.scene);
-    ASSETS.models[nm]={scene:g.scene,h:(box.max.y-box.min.y)||2};onP(++n,tot);}));
+  if(MX_MODELS.length){const mx=await L.loadAsync('assets/mx_anims.glb');const raw={};
+    for(const c of mx.animations){for(const t of c.tracks)if(/Hips\.position$/.test(t.name)){const v=t.values,x0=v[0],z0=v[2];for(let i=0;i<v.length;i+=3){v[i]=x0;v[i+2]=z0;}}raw[c.name]=c;}
+    ASSETS.mx={};for(const k in MX_MAP){const [cn,t0,t1]=MX_MAP[k],c=raw[cn];if(!c)continue;
+      ASSETS.mx[k]=t0==null?c:THREE.AnimationUtils.subclip(c,k,Math.round(t0*30),Math.round((t1??c.duration)*30),30);}}
+  await Promise.all(names.map(async nm=>{const g=await L.loadAsync('assets/'+nm+'.glb');g.scene.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(g.scene);
+    const mx=MX_MODELS.includes(nm);if(mx)g.scene.traverse(o=>{if(o.isMesh){const m=o.material;m.metalness=0;m.metalnessMap=null;m.roughness=0.72;m.roughnessMap=null;m.side=THREE.FrontSide;m.needsUpdate=true;}});
+    ASSETS.models[nm]={scene:g.scene,h:(box.max.y-box.min.y)||2,mx};onP(++n,tot);}));
   ASSETS.ready=true;
 }
 
+function clipFor(mixer,name){if(mixer&&mixer.mx)return ASSETS.mx[name]||ASSETS.mx.Idle;return ASSETS.clips[name];}
 // SIM-START ================================================================
 const TAU=Math.PI*2;
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
@@ -1312,12 +1327,12 @@ class World{
     return m;
   }
   makeAnimated(name,tint,height){
-    const src=ASSETS.models[name];const obj=SkeletonUtils.clone(src.scene);obj.scale.setScalar(height/src.h);
+    const src=ASSETS.models[name];const obj=SkeletonUtils.clone(src.scene);obj.scale.multiplyScalar(height/src.h);
     const mats=[];obj.traverse(o=>{if(o.isMesh){o.castShadow=true;o.frustumCulled=false;const om=o.material;
-      const nm=new THREE.MeshToonMaterial({map:om.map||null,color:tint,gradientMap:this.grad});o.material=nm;mats.push(nm);}});
-    return {obj,mats,mixer:new THREE.AnimationMixer(obj)};
+      const nm=src.mx?om.clone():new THREE.MeshToonMaterial({map:om.map||null,color:tint,gradientMap:this.grad});o.material=nm;mats.push(nm);}});
+    const mixer=new THREE.AnimationMixer(obj);mixer.mx=!!src.mx;return {obj,mats,mixer};
   }
-  playA(m,name,opt={}){const clip=ASSETS.clips[name];if(!clip)return;let a=m.actions[name];if(!a){a=m.mixer.clipAction(clip);m.actions[name]=a;}
+  playA(m,name,opt={}){const clip=clipFor(m.mixer,name);if(!clip)return;let a=m.actions[name];if(!a){a=m.mixer.clipAction(clip);m.actions[name]=a;}
     if(m.cur===a&&!opt.once)return;
     a.reset();a.setLoop(opt.once?THREE.LoopOnce:THREE.LoopRepeat,Infinity);a.clampWhenFinished=!!opt.clamp;a.timeScale=opt.dur?clip.duration/opt.dur:(opt.speed||1);a.setEffectiveWeight(1);
     if(m.cur&&m.cur!==a)a.crossFadeFrom(m.cur,opt.fade??0.1,false);else a.fadeIn(opt.fade??0.1);a.play();m.cur=a;}
@@ -1764,7 +1779,7 @@ const Preview={r:null,m:null,key:null,back:0,thumbs:{},ethumbs:{},last:0,
     const sc=new THREE.Scene();sc.add(new THREE.HemisphereLight(0xffffff,0x445577,1.6));const dl=new THREE.DirectionalLight(0xffffff,1.5);dl.position.set(2,4,5);sc.add(dl);
     const cam=new THREE.PerspectiveCamera(26,1,0.1,30);cam.position.set(0,1.55,3.1);cam.lookAt(0,1.3,0);
     for(const k of HERO_ORDER){const [mn,tint]=HERO_MODEL[k];const A=world.makeAnimated(mn,tint,1.95);sc.add(A.obj);
-      const a=A.mixer.clipAction(ASSETS.clips['Idle']);a.play();A.mixer.update(0.4);A.obj.rotation.y=0.35;
+      const a=A.mixer.clipAction(clipFor(A.mixer,'Idle'));a.play();A.mixer.update(0.4);A.obj.rotation.y=0.35;
       r.setClearColor(HEROES[k].color,0.35);r.render(sc,cam);this.thumbs[k]=c.toDataURL('image/png');sc.remove(A.obj);}
     this.ethumbs={};for(const k in ENEMY_MODEL){const [mn,tint]=ENEMY_MODEL[k];const A=world.makeAnimated(mn,tint,1.95);sc.add(A.obj);
       const cl=ASSETS.clips[ENEMIES[k].boss?'Taunt':'Idle']||ASSETS.clips['Idle'];const a=A.mixer.clipAction(cl);a.play();A.mixer.update(0.5);A.obj.rotation.y=0.3;
