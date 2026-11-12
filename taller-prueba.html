@@ -201,7 +201,7 @@ function silhouette(c,cx,gy,ppm,opt={}){
     if(ex.includes('Cuernos'))out.push(`<path d="M${cx-tw*0.5} ${top+H*0.14}l${-tw*0.25} ${-H*0.14} ${tw*0.45} ${H*0.1}Z M${cx+tw*0.5} ${top+H*0.14}l${tw*0.25} ${-H*0.14} ${-tw*0.45} ${H*0.1}Z" fill="${col2}"/>`);return out.join('');}
   // brazos
   const armY=neck+tw*0.15,armL=(legS-neck)*1.05,ang=18;
-  const arm=(sx,dy=0)=>`<rect x="${cx+sx*(tw/2)-aw/2}" y="${armY+dy}" width="${aw}" height="${armL}" rx="${Math.min(aw/2,8)}" fill="${col}" transform="rotate(${sx*ang} ${cx+sx*(tw/2)} ${armY+dy})"/>`;
+  const arm=(sx,dy=0)=>`<rect x="${cx+sx*(tw/2)-aw/2}" y="${armY+dy}" width="${aw}" height="${armL}" rx="${Math.min(aw/2,8)}" fill="${col}" transform="rotate(${-sx*ang} ${cx+sx*(tw/2)} ${armY+dy})"/>`;
   out.push(arm(-1),arm(1));if(ex.includes('4 brazos'))out.push(arm(-1,armL*0.35),arm(1,armL*0.35));
   // piernas
   out.push(`<rect x="${cx-tw*0.06-lw}" y="${legS-4}" width="${lw}" height="${gy-legS+4}" rx="${Math.min(lw/2,8)}" fill="${col2}"/><rect x="${cx+tw*0.06}" y="${legS-4}" width="${lw}" height="${gy-legS+4}" rx="${Math.min(lw/2,8)}" fill="${col2}"/>`);
@@ -224,12 +224,12 @@ function heightScene(c){const W=460,Hh=280,gy=262,maxH=Math.max(2.2,num(c.cuerpo
   g.push(`<text x="110" y="${gy+15}" fill="#a9b0d6" font-size="11" text-anchor="middle" font-weight="800">Adulto 1.75</text><text x="170" y="${gy+15}" fill="#a9b0d6" font-size="11" text-anchor="middle" font-weight="800">Niño 1.40</text>`);
   g.push(silhouette(c,320,gy,ppm));g.push(`<text x="320" y="${gy+15}" fill="#ffd23f" font-size="12" text-anchor="middle" font-weight="900">${(c.nombre||'Tu personaje').replace(/[<>&"]/g,'')} ${num(c.cuerpo.altura,0.3,6,1.7).toFixed(2)} m</text>`);
   return `<svg viewBox="0 0 ${W} ${Hh}" style="width:100%;height:auto;background:#0f1430;border-radius:16px" role="img" aria-label="Comparación de altura">${g.join('')}</svg>`;}
-function miniAvatar(c){const ppm=110/Math.max(1.9,num(c.cuerpo?.altura,0.3,6,1.7)+0.2);return `<svg viewBox="0 0 120 150" width="100%" height="150" aria-hidden="true">${silhouette(fill(newChar(),c),60,142,ppm)}</svg>`;}
+function miniAvatar(c){const ppm=128/Math.max(1.25,num(c.cuerpo?.altura,0.3,6,1.7)+0.08);return `<svg viewBox="0 0 120 150" width="100%" height="150" aria-hidden="true">${silhouette(fill(newChar(),c),60,142,ppm)}</svg>`;}
 function radar(stats){const R=70,cx=95,cy=88,n=STATS.length;const pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*R*v/5,cy+Math.sin(a)*R*v/5];};
   let g='';for(const L of [1,2,3,4,5])g+=`<polygon points="${STATS.map((_,i)=>pt(i,L).join(',')).join(' ')}" fill="none" stroke="#2c3561"/>`;
   g+=`<polygon points="${STATS.map(([k],i)=>pt(i,num(stats[k],1,5,1)).join(',')).join(' ')}" fill="#ff5a5f55" stroke="#ff5a5f" stroke-width="2"/>`;
   STATS.forEach(([k,l],i)=>{const [x,y]=pt(i,6.3);g+=`<text x="${x}" y="${y}" fill="#a9b0d6" font-size="11" font-weight="800" text-anchor="middle">${l}</text>`;});
-  return `<svg viewBox="0 0 190 180" style="width:100%;max-width:280px" role="img" aria-label="Gráfica de estadísticas">${g}</svg>`;}
+  return `<svg viewBox="-22 0 234 182" style="width:100%;max-width:300px" role="img" aria-label="Gráfica de estadísticas">${g}</svg>`;}
 
 /* ===================== controles ===================== */
 function chips(opts,val,onCh,multi){const box=el('div',{class:'chips'});const draw=()=>{box.replaceChildren(...opts.map(o=>{const v=o.v??o,l=o.l??o;const on=multi?val().includes(v):val()===v;
@@ -264,7 +264,7 @@ function render(){tabs();const app=$('#app');app.replaceChildren();
 
 /* ===================== galería ===================== */
 function galeria(){const fs=[['todos','Todos'],['heroe','Héroes'],['enemigo','Enemigos'],['jefe','Jefes']];
-  const list=[...ST.pjs.entries()].map(([id,d])=>({id,d})).filter(x=>ST.filtro==='todos'||x.d.tipo===ST.filtro).sort((a,b)=>(a.d.tipo||'').localeCompare(b.d.tipo||'')||(b.d.actualizado||0)-(a.d.actualizado||0));
+  const list=[...ST.pjs.entries()].map(([id,d])=>({id,d})).filter(x=>ST.filtro==='todos'||x.d.tipo===ST.filtro).sort((a,b)=>({heroe:0,jefe:1,enemigo:2}[a.d.tipo]??3)-({heroe:0,jefe:1,enemigo:2}[b.d.tipo]??3)||(a.d.creado||0)-(b.d.creado||0));
   const create=async tipo=>{const id=uid();const d=newChar(tipo);d.por=who();ST.pjs.set(id,d);go('pj',id);markDirty();};
   return el('div',{},
     el('div',{class:'filters'},fs.map(([v,l])=>el('button',{class:'chip'+(ST.filtro===v?' on':''),onclick:()=>{ST.filtro=v;render();}},l))),
@@ -280,7 +280,7 @@ function galeria(){const fs=[['todos','Todos'],['heroe','Héroes'],['enemigo','E
 const PJ_STEPS=['Identidad','Cuerpo','Apariencia','Combate','Poderes','Sinergias','Historia','Referencias','Comentarios','Resumen'];
 function editorPJ(){const d=ST.cur.data;const ch=()=>markDirty();const body=el('div',{class:'panel'});
   const steps=el('div',{class:'steps'},PJ_STEPS.map((s,i)=>el('button',{class:'step'+(ST.step===i?' on':''),onclick:()=>{ST.step=i;render();}},(i+1)+'. '+s)));
-  const sec=[secIdent,secCuerpo,secApar,secCombate,secPoderes,secSiner,secHist,secRefs,secComments,secResumen][ST.step];body.append(...[sec(d,ch)].flat());
+  const sec=[secIdent,secCuerpo,secApar,secCombate,secPoderes,secSiner,secHist,secRefs,secComments,secResumen][ST.step];body.append(...[sec(d,ch)].flat(9).filter(x=>x!=null&&x!==false));
   body.append(el('div',{class:'row',style:'margin-top:18px;justify-content:space-between'},
     ST.step>0?el('button',{class:'btn',onclick:()=>{ST.step--;render();}},'← Atrás'):el('span'),
     ST.step<PJ_STEPS.length-1?el('button',{class:'btn pri',onclick:()=>{ST.step++;render();window.scrollTo(0,0);}},'Siguiente: '+PJ_STEPS[ST.step+1]+' →'):el('button',{class:'btn pri',onclick:()=>go('galeria')},'Terminar')));
@@ -290,7 +290,7 @@ function sideCard(d){const e=estOf(d.estado);return [
   el('div',{class:'panel',style:'padding:12px'},el('div',{id:'sideSil',svg:miniAvatar(d)}),el('h2',{style:'font-size:28px;color:var(--y)'},d.nombre||'Sin nombre'),el('div',{style:'color:#a9b0d6'},d.titulo||''),
     el('div',{class:'row',style:'margin-top:8px'},el('span',{class:'badge'},(TIPOS.find(t=>t.v===d.tipo)||TIPOS[0]).l),el('span',{class:'badge '+e.c},e.l))),
   d.combate?el('div',{class:'panel',style:'padding:12px;text-align:center'},el('div',{id:'sideRadar',svg:radar(d.combate.stats)})):null];}
-function refreshSide(){const s=$('#side');if(s&&ST.cur)s.replaceChildren(...[ST.cur.kind==='pj'?sideCard(ST.cur.data):sideStory(ST.cur.data)].flat().filter(Boolean));}
+function refreshSide(){const s=$('#side');if(s&&ST.cur)s.replaceChildren(...[ST.cur.kind==='pj'?sideCard(ST.cur.data):sideStory(ST.cur.data)].flat(9).filter(Boolean));}
 
 function secIdent(d,ch){return [el('h2',{style:'font-size:30px'},'¿Quién es?'),
   ...lab('Tipo de personaje'),chips(TIPOS,()=>d.tipo,v=>{d.tipo=v||'heroe';ch();}),
@@ -408,7 +408,7 @@ function listaHistorias(){const list=[...ST.hist.entries()].map(([id,d])=>({id,d
 const H_STEPS=['General','Arco','Etapas','Referencias','Comentarios','Resumen'];
 function editorHist(){const d=ST.cur.data;const ch=()=>markDirty();const body=el('div',{class:'panel'});
   const steps=el('div',{class:'steps'},H_STEPS.map((s,i)=>el('button',{class:'step'+(ST.step===i?' on':''),onclick:()=>{ST.step=i;render();}},(i+1)+'. '+s)));
-  body.append(...[[hGeneral,hArco,hEtapas,secRefs,secComments,hResumen][ST.step](d,ch)].flat());
+  body.append(...[[hGeneral,hArco,hEtapas,secRefs,secComments,hResumen][ST.step](d,ch)].flat(9).filter(x=>x!=null&&x!==false));
   body.append(el('div',{class:'row',style:'margin-top:18px;justify-content:space-between'},ST.step>0?el('button',{class:'btn',onclick:()=>{ST.step--;render();}},'← Atrás'):el('span'),
     ST.step<H_STEPS.length-1?el('button',{class:'btn pri',onclick:()=>{ST.step++;render();window.scrollTo(0,0);}},'Siguiente: '+H_STEPS[ST.step+1]+' →'):el('button',{class:'btn pri',onclick:()=>go('historias')},'Terminar')));
   return el('div',{},el('div',{class:'row',style:'margin-bottom:10px'},el('button',{class:'btn sm',onclick:()=>go('historias')},'← Historias'),el('span',{class:'save',id:'savest'},'')),steps,
