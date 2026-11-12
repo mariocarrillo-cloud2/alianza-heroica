@@ -1103,8 +1103,8 @@ class World{
     this.camD+=(dist-this.camD)*(this.cine&&this.cine.t>0?1-Math.exp(-dt*6):1-Math.exp(-dt*2));
     this.shake=Math.max(0,this.shake-dt*2.2);const s=this.shake*this.shake*0.8;
     const orbit=this.cine&&this.cine.t>0?Math.sin(this.cine.t*1.5)*0.35:0;
-    this.cam.position.set(this.camT.x+Math.sin(orbit)*this.camD*0.82+(Math.random()-0.5)*s,this.camD*1.05+(Math.random()-0.5)*s,this.camT.z+Math.cos(orbit)*this.camD*0.82);
-    this.cam.lookAt(this.camT.x,0.8,this.camT.z);
+    this.cam.position.set(this.camT.x+Math.sin(orbit)*this.camD*1.0+(Math.random()-0.5)*s,this.camD*0.8+(Math.random()-0.5)*s,this.camT.z+Math.cos(orbit)*this.camD*1.0);
+    this.cam.lookAt(this.camT.x,1.0,this.camT.z-1.5);
     this.sun.position.set(this.camT.x+10,24,this.camT.z+8);this.sun.target.position.set(this.camT.x,0,this.camT.z);
     this.texts.update(dt,this.cam,this.w,this.h);
     this.outline.render(this.scene,this.cam);
