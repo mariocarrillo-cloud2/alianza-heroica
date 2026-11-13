@@ -43,7 +43,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 function show(html) { box.style.display = 'flex'; box.innerHTML = `<div class="card">${html}</div>`; }
 function hide() { box.style.display = 'none'; }
 function setNet(ok) { const d = bar.querySelector('.dot'); if (d) d.classList.toggle('off', !ok); }
-function showBar(name) { bar.style.display = 'flex'; bar.innerHTML = `<span class="dot"></span>🎮 ${esc(name)}${isDad(user) ? '<a href="admin.html" target="_blank" rel="noopener" style="background:#7fd8ff;color:#111;border-radius:10px;padding:4px 10px;text-decoration:none">⚙️ Panel de administrador</a>' : ''}<button id="acc-out">Cambiar jugador</button>`; bar.querySelector('#acc-out').onclick = logout; }
+function showBar(name) { bar.style.display = 'flex'; bar.innerHTML = `<span class="dot"></span>🎮 ${esc(name)}${isDad(user) ? '<a href="admin.html?v=6" target="_blank" rel="noopener" style="background:#7fd8ff;color:#111;border-radius:10px;padding:4px 10px;text-decoration:none">⚙️ Panel de administrador</a>' : ''}<button id="acc-out">Cambiar jugador</button>`; bar.querySelector('#acc-out').onclick = logout; }
 const recent = () => { try { return JSON.parse(ls.get('ah_recent') || '[]'); } catch (e) { return []; } };
 const addRecent = n => { const r = recent().filter(x => nameKey(x) !== nameKey(n)); r.unshift(n); ls.set('ah_recent', JSON.stringify(r.slice(0, 6))); };
 
