@@ -378,7 +378,7 @@ const MX_MAP={Idle:['MXA_FightIdle'],Unarmed_Idle:['MXA_FightIdle'],Running_A:['
   MX_Kick:['MXA_FlyingKick',0.3,1.1],MX_FlyKick:['MXA_FlyingKick',0.3,1.1],MX_JumpPunch:['Jumping_Punch',0.9,1.8],MX_Double:['Double_Combo_Attack',0.3,1.7],
   MX_Cast:['MXA_Cast1H',0.4,1.1],MX_Charge:['MXA_AreaCharge',0.2,1.4],MX_Release:['MXA_AreaBurst',1.2,2.2],MX_Sweep:['MXA_Cast1H3',0.4,1.1],MX_SlamJump:['MXA_Slam2H',0.4,1.4]};
 const HERO_MODEL={volta:['volta',null,'mx'],roca:['Barbarian',0xffc890],brisa:['Mage',0xc8ffd8],sombra:['Rogue_Hooded',0xd8b8ff],escarcha:['Mage',0xbfe6ff],fenix:['Knight',0xffbf90]};
-const ENEMY_MODEL={escudero:['Skeleton_Warrior',0xc8d0e0],grunt:['Skeleton_Minion',0xb8a8c8],shooter:['Skeleton_Mage',0xffb890],brute:['Skeleton_Warrior',0x9aa8c8],capataz:['Skeleton_Warrior',0xd89a60],centinela:['Skeleton_Mage',0x80c8ff],gemelo:['Skeleton_Rogue',0xff8a70],boss:['Skeleton_Warrior',0xb070ff]};
+const ENEMY_MODEL={escudero:['Skeleton_Warrior',0xc8d0e0],grunt:['Skeleton_Minion',0xb8a8c8],shooter:['Skeleton_Mage',0xffb890],brute:['Skeleton_Warrior',0x9aa8c8],capataz:['Skeleton_Warrior',0xd89a60],centinela:['Skeleton_Mage',0x80c8ff],gemelo:['Skeleton_Rogue',0xff8a70],chispa:['Skeleton_Minion',0xffb040],saltador:['Skeleton_Rogue',0x8cffb0],invocador:['Skeleton_Mage',0xd08cff],boss:['Skeleton_Warrior',0xb070ff]};
 const HERO_ANIM={volta:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},
   roca:{idle:'Unarmed_Idle',atk:['Unarmed_Melee_Attack_Punch_A','Unarmed_Melee_Attack_Punch_B','Unarmed_Melee_Attack_Kick']},
   brisa:{atk:['Spellcast_Shoot']},escarcha:{atk:['Spellcast_Shoot']},
@@ -555,6 +555,9 @@ const ENEMIES={
   grunt:{name:'Gólem',hp:62,speed:3.6,dmg:10,range:1.5,windup:0.55,cd:1.25,r:0.6,stag:0,color:0x3b2f35,scale:1,xp:8},
   shooter:{name:'Lanzalava',hp:46,speed:2.8,dmg:9,range:9,windup:0.85,cd:2.8,r:0.6,stag:0,color:0x5a2a1a,scale:1.05,ranged:true,xp:10},
   escudero:{name:'Escudero',hp:95,speed:2.8,dmg:14,range:1.7,windup:0.7,cd:1.6,r:0.75,stag:0,color:0x3a3a48,scale:1.25,shield:true,xp:14},
+  chispa:{name:'Chispero',hp:34,speed:5.4,dmg:18,range:2.2,windup:1.0,cd:9,r:0.5,stag:0,color:0x5a3a1a,scale:0.78,ai:'kamikaze',boom:true,xp:8},
+  saltador:{name:'Saltador',hp:85,speed:3.6,dmg:16,range:2.3,windup:0.9,cd:3.4,r:0.6,stag:0,color:0x2a4a3a,scale:1.1,ai:'leap',xp:14},
+  invocador:{name:'Invocador',hp:72,speed:2.8,dmg:0,range:0,windup:0.8,cd:6,r:0.6,stag:0,color:0x3a2a5a,scale:1.15,ai:'summon',xp:18},
   crate:{name:'Caja',hp:20,speed:0,dmg:0,range:0,windup:1,cd:9,r:0.75,stag:0,color:0x9a6a3a,scale:1,prop:true,xp:2},
   brute:{name:'Bruto',armor:120,hp:270,speed:2.6,dmg:22,range:2.2,windup:1.0,cd:2.3,r:1.0,stag:80,color:0x2f3550,scale:1.7,xp:25},
   capataz:{name:'El Capataz',armor:400,hp:1000,speed:2.5,dmg:22,range:2.6,windup:1.1,cd:2.8,r:1.5,stag:170,color:0x4a3b2a,scale:2.4,boss:true,slam:4.2,xp:120},
@@ -564,10 +567,10 @@ const ENEMIES={
 };
 // ----- Historia 1 -----
 const STORY={name:'La invasión de obsidiana',stages:[
-  {name:'Plaza central',theme:'ciudad',lvl:1,waves:[{grunt:5},{grunt:6,shooter:1,escudero:1},{grunt:4,capataz:1}]},
-  {name:'El puerto',theme:'puerto',lvl:1.35,waves:[{grunt:5,shooter:2,escudero:1},{grunt:5,brute:2,shooter:2,escudero:1},{grunt:4,shooter:2,centinela:1}]},
-  {name:'La fábrica',theme:'fabrica',lvl:1.7,waves:[{grunt:6,brute:1,shooter:2,escudero:2},{grunt:5,brute:3,shooter:3,escudero:1},{grunt:3,gemelo:2}]},
-  {name:'El volcán',theme:'volcan',lvl:2.1,waves:[{grunt:6,brute:2,shooter:3,escudero:2},{grunt:6,brute:4,shooter:3,escudero:2},{boss:1,grunt:3,shooter:2}]},
+  {name:'Plaza central',theme:'ciudad',lvl:1,waves:[{grunt:5},{grunt:5,shooter:1,escudero:1,chispa:2},{grunt:4,capataz:1}]},
+  {name:'El puerto',theme:'puerto',lvl:1.35,waves:[{grunt:4,shooter:2,escudero:1,saltador:1},{grunt:4,brute:2,shooter:1,escudero:1,saltador:2,chispa:2},{grunt:4,shooter:2,centinela:1}]},
+  {name:'La fábrica',theme:'fabrica',lvl:1.7,waves:[{grunt:5,brute:1,shooter:2,escudero:1,invocador:1},{grunt:4,brute:2,shooter:2,escudero:1,invocador:1,chispa:3,saltador:1},{grunt:3,gemelo:2,chispa:2}]},
+  {name:'El volcán',theme:'volcan',lvl:2.1,waves:[{grunt:5,brute:2,shooter:2,escudero:2,saltador:2,invocador:1},{grunt:4,brute:3,shooter:2,escudero:2,chispa:3,saltador:1,invocador:1},{boss:1,grunt:3,shooter:2,chispa:2}]},
 ]};
 const COMBO_TIERS=[{n:10,w:'¡Bien!',c:'#7fe0ff',en:8,al:2},{n:20,w:'¡Genial!',c:'#5dff8a',en:12,al:4},{n:35,w:'¡Increíble!',c:'#ffd23f',en:16,al:6},{n:50,w:'¡Imparable!',c:'#ff8a3d',en:20,al:8},{n:75,w:'¡LEGENDARIO!',c:'#ff4fd8',en:25,al:12}];
 const DIFF={facil:{wind:1.3,enemyDmg:0.55,revive:4,enemyHp:0.85,tokens:2,maxE:8,elite:0.04},normal:{wind:1.1,enemyDmg:1,revive:7,enemyHp:1,tokens:3,maxE:10,elite:0.08},dificil:{wind:0.95,enemyDmg:1.6,revive:10,enemyHp:1.35,tokens:5,maxE:13,elite:0.15,armorLight:true}};
@@ -792,6 +795,7 @@ class Sim{
     if(e.armor>0&&hk!=='dot'){const ta=amt*((hk==='heavy'||hk==='finisher')?2:1);e.armor-=ta;amt=Math.max(1,Math.round(amt*0.3));
       if(e.armor<=0){e.armor=0;e.stunT=Math.max(e.stunT,e.def.boss?1.5:1.2);e.windup=0;this.zones=this.zones.filter(z=>z.eid!==e.id);
         this.ev({k:'txt',x:e.x,z:e.z,s:'¡ARMADURA ROTA!',c:'#9fd8ff',big:true});this.ev({k:'armor',x:e.x,z:e.z,r:e.def.r});this.ev({k:'shake',a:0.5});}}
+    if(e.bub>0&&hk!=='dot'){const ab=Math.min(e.bub,amt);e.bub-=ab;amt-=ab;if(e.bub<=0){e.bub=0;this.ev({k:'txt',x:e.x,z:e.z,s:'¡Burbuja rota!',c:'#d08cff',big:true});this.ev({k:'bubpop',x:e.x,z:e.z,r:e.def.r});}else this.ev({k:'clank',x:e.x,z:e.z});}
     e.hp-=amt;e.flash=0.1;e.lastSrc=src||e.lastSrc;
     if(e.maxStag>0&&!stunned){e.stag+=stag;
       if(e.stag>=e.maxStag){e.stag=e.maxStag;e.stunT=e.def.boss?5:4;e.windup=0;e.chargeT=0;this.zones=this.zones.filter(z=>z.eid!==e.id);
@@ -810,6 +814,8 @@ class Sim{
     this.ev({k:'hit',id:e.id,x:e.x,z:e.z,n:amt,crit:stunned,big:amt>=15,hk:hk==='finisher'?2:hk==='heavy'?1:0});
     if(amt>=15)this.hitstop=Math.max(this.hitstop,hk==='finisher'?0.09:0.05);else if(hk==='light'||hk==='heavy')this.hitstop=Math.max(this.hitstop,0.025);
     if(e.hp<=0){e.dead=true;this.zones=this.zones.filter(z=>z.eid!==e.id);this.ev({k:'die',x:e.x,z:e.z,kind:e.kind,boss:!!e.def.boss,prop:!!e.def.prop});
+      if(e.def.boom&&!e.boomed)this.boom(e,false);
+      if(e.def.ai==='summon'){let n=0;for(const o of this.enemies)if(o.bubBy===e.id&&o.bub>0){o.bub=0;n++;this.ev({k:'bubpop',x:o.x,z:o.z,r:o.def.r});}if(n)this.ev({k:'txt',x:e.x,z:e.z,s:'¡Escudos fuera!',c:'#d08cff',big:true});}
       if(e.elite==='explosivo'){this.zones.push({id:this.nid++,kind:'ebomb',x:e.x,z:e.z,r:3.2,t:0.9,max:0.9});this.ev({k:'txt',x:e.x,z:e.z,s:'¡Va a explotar!',c:'#ff6b6b'});}
       const no=e.def.prop?2:e.def.boss?8:e.elite?3:(rng()<0.4?1:0);for(let i=0;i<no;i++)this.dropOrb(e.x,e.z,(e.def.boss?i%2===0:rng()<0.4)?'hp':'en');
       this.ev({k:'xp',n:Math.round(e.def.xp*this.lvl()*(e.elite?2:1)*(this.diff==='dificil'?1.3:1)),x:e.x,z:e.z});
@@ -966,6 +972,11 @@ class Sim{
     e.x+=e.kx*dt;e.z+=e.kz*dt;const kd=Math.exp(-8*dt);e.kx*=kd;e.kz*=kd;
     const ks=Math.hypot(e.kx,e.kz);if(ks>7&&e.bumpT<=0&&Math.hypot(e.x,e.z)>ARENA_R-d.r-0.3){e.bumpT=0.6;const l=Math.hypot(e.x,e.z)||1;e.kx-=2*(e.kx*e.x+e.kz*e.z)/l/l*e.x*0.7;e.kz-=2*(e.kx*e.x+e.kz*e.z)/l/l*e.z*0.7;
       const hk=this.hitKind;this.hitKind='ability';this.damage(e,12,15,e.x*1.1,e.z*1.1,0,e.lastSrc&&!e.lastSrc.down?e.lastSrc:null);this.hitKind=hk;this.ev({k:'wall',x:e.x,z:e.z});if(e.dead)return;}
+    if(e.leapT>0){e.leapT-=dt;const u=1-Math.max(0,e.leapT)/0.45;e.x=e.lx0+(e.lx-e.lx0)*u;e.z=e.lz0+(e.lz-e.lz0)*u;e.ey=Math.sin(u*Math.PI)*3.2;
+      if(e.leapT<=0){e.ey=0;for(const h of this.heroes)if(!h.down&&dist2(h,e)<2.3*2.3)this.hurtHero(h,d.dmg,e.x,e.z,11,e);
+        this.ev({k:'ring',x:e.x,z:e.z,r:2.3,c:0x8cffb0});this.ev({k:'eland',x:e.x,z:e.z});this.ev({k:'shake',a:0.45});this.ev({k:'sfx',s:'boom'});
+        e.stunT=1.4;e.atkCd=d.cd+rng();this.ev({k:'txt',x:e.x,z:e.z,s:'¡Ahora, atácalo!',c:'#8cffb0'});}
+      this.confine(e,d.r);return;}
     if(e.stunT>0){e.stunT-=dt;if(e.stunT<=0)e.stag=0;this.confine(e,d.r);return;}
     if(e.kdT>0){e.kdT-=dt;this.confine(e,d.r);return;}
     if(e.hitT>0){e.hitT-=dt;this.confine(e,d.r);return;}
@@ -977,6 +988,7 @@ class Sim{
       for(const h of this.heroes)if(dist2(h,e)<(d.r+0.8)**2)this.hurtHero(h,18,e.x,e.z,12,e);this.confine(e,d.r);return;}
     if(e.windup>0){e.windup-=dt;if(e.windup<=0)this.enemyStrike(e);return;}
     const t=e.target;if(!t)return;
+    if(d.ai){this.customAI(e,t,dt);this.confine(e,d.r);return;}
     const dx=t.x-e.x,dz=t.z-e.z,D=Math.hypot(dx,dz)||1;
     e.atkCd-=dt;e.chargeCd-=dt;
     const blind=e.blindT>0;
@@ -1002,8 +1014,40 @@ class Sim{
       else if(waiting){const sd=(e.id%2?1:-1)*0.5;e.x+=dz/D*sp*sd*dt;e.z-=dx/D*sp*sd*dt;if(D<keep-0.6){e.x-=dx/D*sp*0.5*dt;e.z-=dz/D*sp*0.5*dt;}}e.face=Math.atan2(dx,dz);}
     this.confine(e,d.r);
   }
+  customAI(e,t,dt){
+    const d=e.def,dx=t.x-e.x,dz=t.z-e.z,D=Math.hypot(dx,dz)||1,wm=this.D.wind||1;e.atkCd-=dt;
+    const blind=e.blindT>0,sp=d.speed*(blind?0.4:1)*(e.slowT>0?0.45:1)*(e.elite==='rapido'?1.5:1);
+    const warn=z=>{z.id=this.nid++;z.eid=e.id;this.zones.push(z);};
+    const move=(sx,sz,k)=>{e.x+=sx*sp*k*dt;e.z+=sz*sp*k*dt;};
+    if(blind){e.face+=dt*3;move(Math.sin(e.face),Math.cos(e.face),1);return;}
+    e.face=Math.atan2(dx,dz);
+    if(d.ai==='kamikaze'){
+      if(D<d.range){e.windup=d.windup*wm;e.pending='fuse';warn({kind:'warn',x:e.x,z:e.z,r:2.8,t:e.windup,max:e.windup});this.ev({k:'txt',x:e.x,z:e.z,s:'¡Va a estallar!',c:'#ffb040'});this.ev({k:'sfx',s:'warn'});return;}
+      const wob=Math.sin(this.t*7+e.id)*0.35;move(dx/D+dz/D*wob,dz/D-dx/D*wob,1);return;}
+    if(d.ai==='leap'){
+      if(D>3.2&&D<12&&e.atkCd<=0){e.windup=d.windup*wm;e.pending='leap';e.lx=t.x;e.lz=t.z;warn({kind:'warn',x:t.x,z:t.z,r:2.3,t:e.windup,max:e.windup});this.ev({k:'sfx',s:'warn'});return;}
+      if(D>8)move(dx/D,dz/D,1);else if(D<4.5)move(-dx/D,-dz/D,0.9);else{const sd=e.id%2?1:-1;move(dz/D*sd,-dx/D*sd,0.6);}return;}
+    if(d.ai==='summon'){
+      if(e.atkCd<=0){e.windup=d.windup*wm;e.atkCd=d.cd+rng();e.sumN=(e.sumN||0)+1;e.pending=(e.sumN%2===0)?'call':'ward';this.ev({k:'ring',x:e.x,z:e.z,r:2.2,c:0xd08cff});return;}
+      if(D<7)move(-dx/D,-dz/D,1);else if(D>11)move(dx/D,dz/D,0.8);else{const sd=e.id%2?1:-1;move(dz/D*sd,-dx/D*sd,0.5);}return;}
+  }
+  boom(e,hurtHeroes){e.boomed=true;const r=2.8,src=e.lastSrc&&!e.lastSrc.down?e.lastSrc:null;
+    this.ev({k:'ring',x:e.x,z:e.z,r,c:0xffb040});this.ev({k:'burst',x:e.x,z:e.z,c:0xffb040,n:30});this.ev({k:'shake',a:0.6});this.ev({k:'sfx',s:'boom'});
+    if(hurtHeroes)for(const h of this.heroes)if(!h.down&&dist2(h,e)<r*r)this.hurtHero(h,e.def.dmg,e.x,e.z,12,e);
+    const hk=this.hitKind;this.hitKind='ability';let n=0;
+    for(const o of this.enemies)if(o!==e&&!o.dead&&!o.def.prop&&dist2(o,e)<(r+o.def.r)**2){this.damage(o,hurtHeroes?20:40,30,e.x,e.z,9,src);n++;}
+    this.hitKind=hk;if(!hurtHeroes&&n)this.ev({k:'txt',x:e.x,z:e.z,s:'¡BUM! x'+n,c:'#ffb040',big:true});
+    if(!e.dead){e.hp=0;e.dead=true;this.zones=this.zones.filter(z=>z.eid!==e.id);this.ev({k:'die',x:e.x,z:e.z,kind:e.kind,boss:false,prop:false});}}
   enemyStrike(e){
     const d=e.def;
+    if(e.pending==='fuse'){this.boom(e,true);return;}
+    if(e.pending==='leap'){e.leapT=0.45;e.lx0=e.x;e.lz0=e.z;this.ev({k:'sfx',s:'whoosh'});return;}
+    if(e.pending==='ward'){const al=this.enemies.filter(o=>!o.dead&&!o.def.prop&&o!==e&&!o.def.boss&&dist2(o,e)<100).sort((a,b)=>dist2(a,e)-dist2(b,e)).slice(0,3);
+      for(const o of al){o.bub=Math.round(40*this.lvl());o.bubBy=e.id;this.ev({k:'bolt',x1:e.x,z1:e.z,x2:o.x,z2:o.z,c:0xd08cff});}
+      if(al.length)this.ev({k:'txt',x:e.x,z:e.z,s:'¡Burbujas! Derrota al Invocador',c:'#d08cff'});this.ev({k:'sfx',s:'zap'});return;}
+    if(e.pending==='call'){const mine=this.enemies.filter(o=>!o.dead&&o.sumBy===e.id).length;
+      for(let i=mine;i<3&&i<mine+2;i++){const a=rng()*TAU;this.spawnAt('grunt',e.x+Math.sin(a)*2,e.z+Math.cos(a)*2);this.enemies[this.enemies.length-1].sumBy=e.id;}
+      this.ev({k:'ring',x:e.x,z:e.z,r:3,c:0x9b4dff});this.ev({k:'sfx',s:'zap'});return;}
     if(e.pending==='charge'){e.chargeT=0.75;this.ev({k:'sfx',s:'boom'});return;}
     if(e.pending==='slam'){for(const h of this.heroes)if(dist2(h,e)<d.slam*d.slam)this.hurtHero(h,d.dmg,e.x,e.z,14,e);
       this.ev({k:'ring',x:e.x,z:e.z,r:d.slam,c:0xff3355});this.ev({k:'burst',x:e.x,z:e.z,c:0x5b3a7a,n:30});this.ev({k:'shake',a:0.8});this.ev({k:'sfx',s:'boom'});return;}
@@ -1096,7 +1140,7 @@ class Sim{
         down:h.down,downT:r2(h.downT),moving:h.moving,shield:h.shieldT>0,cds:SLOTS.map(s=>r2(Math.max(0,h.cd[s]))),blink:h.iframes>0.5&&h.synT<=0&&h.leapT<=0,
         blk:h.blocking,cc:h.cc,cct:r2(Math.max(0,h.ccT)),syn:h.synT>0,jump:h.air,dive:h.diving,air:h.leapT>0?r2(Math.sin((1-h.leapT/0.5)*Math.PI)*3):r2(h.y),flurry:h.flurryT>0})),
       enemies:this.enemies.map(e=>({id:e.id,kind:e.kind,x:r2(e.x),z:r2(e.z),face:r2(e.face),hp:Math.max(0,e.hp),maxHp:e.maxHp,stag:Math.round(e.stag),maxStag:e.maxStag,
-        stun:e.stunT>0,windup:e.windup>0||e.chargeT>0,flash:e.flash>0,blind:e.blindT>0,frz:e.freezeT>0,slow:e.slowT>0,kd:e.kdT>0,guard:!!e.def.shield&&e.guardT<=0,ey:r2(e.ey||0),air:e.air,burn:e.burnT>0,wet:e.wetT>0,elite:e.elite,armor:Math.round(e.armor),maxArmor:e.maxArmor})),
+        stun:e.stunT>0,windup:e.windup>0||e.chargeT>0,flash:e.flash>0,blind:e.blindT>0,frz:e.freezeT>0,slow:e.slowT>0,kd:e.kdT>0,guard:!!e.def.shield&&e.guardT<=0,bub:e.bub>0?1:0,ey:r2(e.ey||0),air:e.air,burn:e.burnT>0,wet:e.wetT>0,elite:e.elite,armor:Math.round(e.armor),maxArmor:e.maxArmor})),
       ult:this.ultPend?{t:r2(this.ultPend.t),n:this.ultPend.m.length,m:this.ultPend.m.slice()}:null,slowmo:this.slowmo>0,
       orbs:this.orbs.map(o=>({id:o.id,kind:o.kind,x:r2(o.x),z:r2(o.z)})),
       projs:this.projs.map(p=>({id:p.id,kind:p.kind,x:r2(p.x),z:r2(p.z),face:r2(p.face),c:p.c||0})).concat(this.eprojs.map(p=>({id:p.id,kind:'lava',x:r2(p.x),z:r2(p.z),face:0,c:0}))),
@@ -1391,7 +1435,7 @@ class World{
     if(ASSETS.ready&&ENEMY_MODEL[v.kind]){const [mn,tint]=ENEMY_MODEL[v.kind];A=this.makeAnimated(mn,tint,1.9);inner.add(A.obj);mat=A.mats[0];al=ar=new THREE.Object3D();}
     else{
     mat=this.toon(d.color,{emissive:0x000000});
-    const glow={grunt:0xff7a1a,shooter:0xffd23f,brute:0xff7a1a,capataz:0xff9a1a,centinela:0x4dd2ff,gemelo:0xff3b1a,boss:0xff4dff}[v.kind]||0xff7a1a;
+    const glow={chispa:0xffb040,saltador:0x8cffb0,invocador:0xd08cff,grunt:0xff7a1a,shooter:0xffd23f,brute:0xff7a1a,capataz:0xff9a1a,centinela:0x4dd2ff,gemelo:0xff3b1a,boss:0xff4dff}[v.kind]||0xff7a1a;
     const crack=new THREE.MeshBasicMaterial({color:glow});
     inner.add(this.mesh(new THREE.DodecahedronGeometry(0.55),mat,0,0.78,0));
     inner.add(this.mesh(new THREE.DodecahedronGeometry(0.3),mat,0,1.38,0.05));
@@ -1523,6 +1567,10 @@ class World{
         if(v.windup&&!m.wind){const bd=ENEMIES[v.kind];this.oneShot(m,bd.ranged?'Spellcast_Shoot':bd.boss?'2H_Melee_Attack_Chop':'1H_Melee_Attack_Chop',bd.windup+0.3);}
         m.wind=v.windup;m.mixer.timeScale=v.frz?0:1;
         const wasKd=m.base==='down';this.animTick(m,v.air?'air':v.kd?'down':v.stun?'stun':m.spd>0.6?'run':'idle',dt);if(wasKd&&!v.kd)this.oneShot(m,'Lie_StandUp',0.5);}
+      if(v.bub&&!m.bubM){const bm=new THREE.MeshBasicMaterial({color:0xd08cff,transparent:true,opacity:0.28,depthWrite:false,blending:THREE.AdditiveBlending});bm.userData.outlineParameters=NO_OUTLINE;
+        const sc=ENEMIES[v.kind].scale;m.bubM=new THREE.Mesh(this.geo.bub||(this.geo.bub=new THREE.SphereGeometry(1,20,14)),bm);m.bubM.scale.setScalar(sc*1.15);m.bubM.position.y=sc*0.95;m.g.add(m.bubM);}
+      if(m.bubM){m.bubM.visible=!!v.bub;if(v.bub){m.bubM.material.opacity=0.2+Math.sin(t*6+v.id)*0.08;m.bubM.rotation.y=t;}}
+      if(v.kind==='chispa'&&Math.random()<dt*14)this.fx.p({x:v.x+(Math.random()-0.5)*0.5,y:1.1+Math.random()*0.4,z:v.z+(Math.random()-0.5)*0.5,c:Math.random()<0.5?0xffd23f:0xff7a1a,tex:'star',vy:1.5,s:0.5,s1:0.05,life:0.3});
       if(m.shieldM)m.shieldM.visible=!!v.guard;
       else{m.inner.rotation.z=v.stun?Math.sin(t*10)*0.15:0;m.inner.rotation.x=v.kd?-1.3:0;}
       const em=v.flash?(ENEMIES[v.kind].boss?0x6a5a5a:0x9a9090):v.frz?0x4aa8ff:v.windup?((Math.floor(t*10)%2)?0xff2020:0x550000):(v.stun?0x554400:v.burn?0x552000:v.elite?((Math.floor(t*4)%2)?0x5a4000:0x2a1c00):(v.slow||v.wet?0x16385a:0));for(const mt of m.mats)mt.emissive.setHex(em);
@@ -1587,7 +1635,7 @@ class World{
     const F=this.fx,T=this.texts;
     switch(ev.k){
       case 'hit':{const em=this.enemyM.get(ev.id);if(em)em.sq=Math.max(em.sq||0,ev.hk===2?0.28:ev.big?0.2:0.12);}F.burst(ev.x,1,ev.z,ev.crit?0xffd23f:ev.hk?0xffb060:0xffffff,ev.big?9:3,ev.big?7:5);
-        T.add(ev.x,1.9,ev.z,String(ev.n),ev.crit?'#ffd23f':ev.hk===2?'#ff6a3d':ev.hk===1?'#ffa53d':'#ffffff',ev.big||ev.hk===2);if(ev.hk===2)this.shake=Math.max(this.shake,0.18);Snd.play(ev.big?'hitBig':'hit');if(ev.big)this.shake=Math.max(this.shake,0.25);break;
+        if(ev.n>0)T.add(ev.x,1.9,ev.z,String(ev.n),ev.crit?'#ffd23f':ev.hk===2?'#ff6a3d':ev.hk===1?'#ffa53d':'#ffffff',ev.big||ev.hk===2);if(ev.hk===2)this.shake=Math.max(this.shake,0.18);Snd.play(ev.big?'hitBig':'hit');if(ev.big)this.shake=Math.max(this.shake,0.25);break;
       case 'hurt':{const m=this.heroM.get(ev.id);if(m){m.hurtT=0.18;if(m.anim&&!m.one)this.oneShot(m,'Hit_A',0.3);}T.add(ev.x,2,ev.z,'-'+ev.n,'#ff6b6b');Snd.play('hurt');if(ev.id===focus)this.shake=Math.max(this.shake,0.35);break;}
       case 'swing':{if(ev.id!=null){const m=this.heroM.get(ev.id);if(m){m.atkT=0.22;if(m.anim){if(ev.heavy)this.oneShot(m,HEAVY_ANIM[m.key]||'2H_Melee_Attack_Chop',0.5);else{const a=m.ha.atk||['1H_Melee_Attack_Chop'];this.oneShot(m,a[m.combo++%a.length],ev.big?0.42:0.3);}}}Snd.play(ev.ranged?'shoot':'whoosh');if(ev.face!=null){const h=view.heroes[ev.id];F.arc(h.x,h.z,ev.face,ev.c,ev.big);}}
         F.ring(ev.x,ev.z,ev.big?1.7:1.1,ev.c);break;}
@@ -1641,6 +1689,7 @@ class World{
       case 'land':F.dust(ev.x,ev.z,5);break;
       case 'launch':F.burst(ev.x,0.8,ev.z,0xffd23f,10,6);for(let i=0;i<8;i++)F.p({x:ev.x,y:0.5,z:ev.z,c:0xffffff,vy:12,vx:(Math.random()-0.5)*2,vz:(Math.random()-0.5)*2,s:0.5,s1:0.1,life:0.4});Snd.play('hitBig');this.shake=Math.max(this.shake,0.3);break;
       case 'eland':F.dust(ev.x,ev.z,8);Snd.play('crate');break;
+      case 'bubpop':F.burst(ev.x,1.2,ev.z,0xd08cff,16,6);F.ring(ev.x,ev.z,(ev.r||0.6)*2.5,0xd08cff);Snd.play('crate');break;
       case 'elem':F.flash(ev.x,1.2,ev.z,ev.c,4,0.3);F.shell(ev.x,1,ev.z,3,ev.c);F.ring(ev.x,ev.z,3.5,ev.c);F.burst(ev.x,1.2,ev.z,ev.c,20,8);T.add(ev.x,3.2,ev.z,ev.name,'#'+ev.c.toString(16).padStart(6,'0'),true);Snd.play('stagger');this.shake=Math.max(this.shake,0.4);break;
       case 'pdodge':F.flash(ev.x,1,ev.z,0x7fd8ff,3,0.4);F.ring(ev.x,ev.z,3,0x7fd8ff);Snd.play('blink');break;
       case 'wall':F.flash(ev.x,1,ev.z,0xffffff,3);F.burst(ev.x,1,ev.z,0xffd23f,12,7);Snd.play('hitBig');this.shake=Math.max(this.shake,0.3);T.add(ev.x,2.5,ev.z,'¡Rebote!','#ffd23f');break;
