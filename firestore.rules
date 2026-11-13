@@ -1,7 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Cambia TU_CORREO@ejemplo.com por el correo con el que entras al panel de papá.
+    // Cambia TU_CORREO@ejemplo.com por el correo de la cuenta de Papá.
     function isAdmin() {
       return request.auth != null && request.auth.token.email == 'TU_CORREO@ejemplo.com';
     }
@@ -9,19 +9,24 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
     match /players/{uid} {
-      // Cada jugador solo ve su propia cuenta; papá ve todas.
       allow read: if isAdmin() || isMe(uid);
-      // Al crear la cuenta siempre queda "esperando autorización".
-      allow create: if isMe(uid)
+      allow create: if isAdmin() || (isMe(uid)
         && request.resource.data.status == 'pending'
         && request.resource.data.name is string
         && request.resource.data.name.size() <= 14
-        && request.resource.data.keys().hasOnly(['name','nameKey','avatar','status','createdAt','lastSeen','save','updatedAt']);
-      // Un jugador autorizado solo puede guardar su avance; no puede autorizarse solo.
+        && request.resource.data.keys().hasOnly(['name','nameKey','avatar','status','createdAt','lastSeen','save','updatedAt']));
       allow update: if isAdmin() || (isMe(uid)
         && resource.data.status == 'approved'
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['save','updatedAt','lastSeen','avatar']));
       allow delete: if isAdmin();
+    }
+    // Qué versión de cuenta usa cada nombre (cambia cuando Papá pone un PIN nuevo). No guarda PINs.
+    match /logins/{key} {
+      allow read: if true;
+      allow create: if isAdmin() || (request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.v == 1);
+      allow update, delete: if isAdmin();
     }
   }
 }

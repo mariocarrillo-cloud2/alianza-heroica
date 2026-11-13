@@ -30,7 +30,7 @@
 </style>
 </head>
 <body>
-<header><h1>ALIANZA HEROICA · PANEL DE PAPÁ</h1><span id="who"></span><button class="gh" id="out" style="display:none">Salir</button></header>
+<header><a href="./" style="text-decoration:none"><button class="alt">← Volver al juego</button></a><h1>ALIANZA HEROICA · PANEL DE PAPÁ</h1><span id="who"></span><button class="gh" id="out" style="display:none">Salir</button></header>
 <main id="app"><p>Cargando…</p></main>
 <script type="module">
 import {firebaseConfig} from './cuenta-config.js';
@@ -61,21 +61,28 @@ function render(){
   const card=p=>{const S=summary(p.save);return `<div class="p ${p.status}"><div class="top"><div class="av">${AV[p.avatar]||'🙂'}</div><div><div class="nm">${esc(p.name)}<span class="chip ${p.status}">${{pending:'ESPERANDO',approved:'AUTORIZADO',blocked:'EN PAUSA'}[p.status]||p.status}</span></div>
       <div class="meta">Creado: ${fmt(p.createdAt)} · Última vez: ${fmt(p.lastSeen)}</div></div></div>
       <div class="stats">${S.empty?'<span>Sin avance todavía</span>':`<span>🗺️ Etapa ${Math.min(S.unl+1,4)}: ${STAGES[Math.min(S.unl,3)]}</span><span>⭐ ${S.st} estrellas</span><span>💎 ${S.cr} cristales</span>${S.lv.map(x=>`<span>${x}</span>`).join('')}`}</div>
-      <div class="acts">${p.status!=='approved'?`<button class="ok" data-a="approve" data-id="${p.id}">✔ Autorizar</button>`:''}${p.status==='approved'?`<button class="no" data-a="block" data-id="${p.id}">⏸ Pausar</button>`:''}
+      <div class="acts">${p.nameKey!=='papa'?`<button class="alt" data-a="pin" data-id="${p.id}">🔑 Nuevo PIN</button>`:''}${p.status!=='approved'?`<button class="ok" data-a="approve" data-id="${p.id}">✔ Autorizar</button>`:''}${p.status==='approved'?`<button class="no" data-a="block" data-id="${p.id}">⏸ Pausar</button>`:''}
       ${p.status==='pending'?`<button class="no" data-a="del" data-id="${p.id}">✖ Rechazar</button>`:''}
       ${!S.empty?`<select data-copy="${p.id}"><option value="">Copiar avance a…</option>${players.filter(o=>o.id!==p.id).map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select><button class="gh" data-a="reset" data-id="${p.id}">Borrar avance</button>`:''}
       ${p.status==='blocked'?`<button class="gh" data-a="del" data-id="${p.id}">Eliminar</button>`:''}</div></div>`;};
   M.innerHTML=`${pend.length?`<h2>Esperando autorización (${pend.length})</h2><div class="cards">${pend.map(card).join('')}</div>`:''}
     <h2>Jugadores</h2><div class="cards">${players.filter(p=>p.status!=='pending').map(card).join('')||'<p class="empty">Todavía no hay jugadores autorizados.</p>'}</div>
-    <h2>Ayuda</h2><div class="help"><b>¿Un niño olvidó su PIN?</b> En la consola de Firebase ve a <i>Seguridad → Authentication → Usuarios</i>, busca <code>nombre@jugadores.alianza-heroica.app</code> y elimínalo. El niño crea su cuenta otra vez con el mismo nombre y un PIN nuevo; aquí aparecerá dos veces: autoriza la nueva y usa <b>Copiar avance a…</b> desde la vieja. Después puedes eliminar la vieja.<br>
-    <b>Rechazar o eliminar</b> borra sus datos del juego; el nombre queda ocupado hasta que lo borres también en Authentication.</div>`;
+    <h2>Ayuda</h2><div class="help"><b>¿Un niño olvidó su PIN?</b> Pulsa <b>🔑 Nuevo PIN</b> en su tarjeta y escribe uno nuevo de 6 números. Conserva su nombre, su avance y su autorización; el PIN viejo deja de funcionar.<br>
+    <b>Rechazar o eliminar</b> borra sus datos del juego.</div>`;
   M.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>act(b.dataset.a,b.dataset.id));
   M.querySelectorAll('[data-copy]').forEach(s=>s.onchange=()=>{if(s.value)copy(s.dataset.copy,s.value);});
 }
+async function newPin(p){const pin=prompt(`Nuevo PIN para ${p.name} (6 números):`);if(pin==null)return;if(!/^\d{6}$/.test(pin))return alert('El PIN debe tener exactamente 6 números.');
+  const key=p.nameKey||p.name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  try{const lg=await D.getDoc(D.doc(db,'logins',key));const v=(lg.exists()?lg.data().v||1:1)+1;
+    const app2=A.initializeApp(firebaseConfig,'pin'+Date.now());const a2=U.getAuth(app2);const cred=await U.createUserWithEmailAndPassword(a2,`${key}.${v}@jugadores.alianza-heroica.app`,pin);const nu=cred.user.uid;await U.signOut(a2);
+    const {id,...data}=p;await D.setDoc(D.doc(db,'players',nu),{...data,updatedAt:D.serverTimestamp()});await D.setDoc(D.doc(db,'logins',key),{v,uid:nu});await D.deleteDoc(D.doc(db,'players',p.id));
+    alert(`Listo. ${p.name} ya puede entrar con su nombre y el PIN ${pin}.`);}catch(e){alert('No se pudo cambiar el PIN: '+(e.code||e.message)+'\n¿Ya pegaste las reglas nuevas?');}}
 async function act(a,id){const ref=D.doc(db,'players',id),p=players.find(x=>x.id===id);
+  if(a==='pin')return newPin(p);
   try{if(a==='approve')await D.updateDoc(ref,{status:'approved'});else if(a==='block')await D.updateDoc(ref,{status:'blocked'});
     else if(a==='reset'){if(confirm(`¿Borrar todo el avance de ${p.name}? No se puede deshacer.`))await D.updateDoc(ref,{save:{},updatedAt:D.serverTimestamp()});}
-    else if(a==='del'){if(confirm(`¿Eliminar a ${p.name}? Se borra su avance.`))await D.deleteDoc(ref);}}catch(e){alert('No se pudo: '+e.code+'\n¿Ya pegaste las reglas de seguridad con tu correo?');}}
+    else if(a==='del'){if(confirm(`¿Eliminar a ${p.name}? Se borra su avance.`)){await D.deleteDoc(ref);if(p.nameKey)await D.deleteDoc(D.doc(db,'logins',p.nameKey)).catch(()=>{});}}}catch(e){alert('No se pudo: '+e.code+'\n¿Ya pegaste las reglas de seguridad con tu correo?');}}
 async function copy(from,to){const a=players.find(x=>x.id===from),b=players.find(x=>x.id===to);if(!confirm(`¿Copiar el avance de ${a.name} a ${b.name}? Se reemplaza lo que tenga ${b.name}.`))return render();
   try{await D.updateDoc(D.doc(db,'players',to),{save:a.save||{},updatedAt:D.serverTimestamp()});alert('Listo. '+b.name+' verá el avance la próxima vez que entre.');}catch(e){alert('No se pudo: '+e.code);}}
 U.onAuthStateChanged(auth,u=>{if(unsub){unsub();unsub=null;}

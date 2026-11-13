@@ -81,6 +81,7 @@ function screenDad() {
   box.querySelector('#acc-ok').onclick = async () => { const [e, p] = v(); if (!e || !p) return msg('Escribe tu correo y contraseña'); msg('Entrando…'); try { await F.signInWithEmailAndPassword(F.auth, e, p); } catch (er) { msg(/too-many/.test(er.code || '') ? 'Demasiados intentos. Espera un momento.' : 'Correo o contraseña incorrectos'); } };
   box.querySelector('#acc-mk').onclick = async () => { const [e, p] = v(); if (p.length < 8) return msg('Usa una contraseña de al menos 8 caracteres'); msg('Creando…'); try { await F.createUserWithEmailAndPassword(F.auth, e, p); } catch (er) { msg(/already/.test(er.code || '') ? 'Ese correo ya tiene cuenta: usa Entrar' : /invalid-email/.test(er.code || '') ? 'Ese correo no es válido' : 'No se pudo crear: ' + er.code); } };
 }
+async function mailFor(name) { const key = nameKey(name); let v = 1; try { const d = await F.getDoc(F.doc(F.db, 'logins', key)); if (d.exists()) v = d.data().v || 1; } catch (e) { } return key + (v > 1 ? '.' + v : '') + '@' + MAIL_DOMAIN; }
 const isDad = u => u && u.email && !u.email.endsWith('@' + MAIL_DOMAIN);
 function screenLogin(name) {
   if (!name) {
@@ -91,7 +92,7 @@ function screenLogin(name) {
   }
   const P = pinPad(async pin => {
     msg('Entrando…');
-    try { await F.signInWithEmailAndPassword(F.auth, nameKey(name) + '@' + MAIL_DOMAIN, pin); addRecent(name); }
+    try { await F.signInWithEmailAndPassword(F.auth, await mailFor(name), pin); addRecent(name); }
     catch (e) { P.reset(); msg(/invalid|wrong|not-found|credential/.test(e.code || '') ? 'Nombre o PIN incorrecto' : /too-many/.test(e.code || '') ? 'Demasiados intentos. Espera un momento.' : 'No se pudo entrar. Revisa el internet.'); }
   }, `Hola <b>${esc(name)}</b>, escribe tu PIN`);
   show(`<h2>${esc(name)}</h2>${P.html}<button class="gh" id="acc-back">← No soy yo</button>`); P.bind();
@@ -113,8 +114,10 @@ function screenNew() {
       if (pin !== first) { first = null; ask('No coincidió. Inventa tu PIN de nuevo'); return; }
       msg('Creando tu cuenta…');
       try {
+        try { const ex = await F.getDoc(F.doc(F.db, 'logins', nameKey(name))); if (ex.exists()) throw { code: 'email-already-in-use' }; } catch (e) { if (e.code === 'email-already-in-use') throw e; }
         const cred = await F.createUserWithEmailAndPassword(F.auth, nameKey(name) + '@' + MAIL_DOMAIN, pin);
         await F.setDoc(F.doc(F.db, 'players', cred.user.uid), { name, nameKey: nameKey(name), avatar: hero, status: 'pending', createdAt: F.serverTimestamp(), lastSeen: F.serverTimestamp(), save: {}, updatedAt: F.serverTimestamp() });
+        try { await F.setDoc(F.doc(F.db, 'logins', nameKey(name)), { v: 1, uid: cred.user.uid }); } catch (e) { }
         addRecent(name);
       } catch (e) { first = null; P.reset(); msg(/email-already/.test(e.code || '') ? 'Ese nombre ya existe. Elige otro o entra con tu PIN.' : /weak/.test(e.code || '') ? 'El PIN debe tener 6 números' : 'No se pudo crear. Revisa el internet.'); }
     }, title); show(`<h2>${esc(name)}</h2><p>Inventa un PIN secreto de 6 números. ¡No se lo digas a nadie!</p>${P.html}<button class="gh" id="acc-back">← Volver</button>`); P.bind(); box.querySelector('#acc-back').onclick = screenNew; };
