@@ -36,7 +36,7 @@
 import {firebaseConfig} from './cuenta-config.js';
 const V='10.14.1',base=`https://www.gstatic.com/firebasejs/${V}/`;
 const [A,U,D]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
-const app=A.initializeApp(firebaseConfig,'admin');const auth=U.getAuth(app),db=D.getFirestore(app);
+const app=A.initializeApp(firebaseConfig);const auth=U.getAuth(app),db=D.getFirestore(app);
 const $=s=>document.querySelector(s),M=document.getElementById('app');
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const AV={volta:'⚡',roca:'🪨',brisa:'🌪️',sombra:'🌑',escarcha:'❄️',fenix:'🔥'},HN={volta:'Volta',roca:'Roca',brisa:'Brisa',sombra:'Sombra',escarcha:'Escarcha',fenix:'Fénix'};
@@ -80,7 +80,7 @@ async function copy(from,to){const a=players.find(x=>x.id===from),b=players.find
   try{await D.updateDoc(D.doc(db,'players',to),{save:a.save||{},updatedAt:D.serverTimestamp()});alert('Listo. '+b.name+' verá el avance la próxima vez que entre.');}catch(e){alert('No se pudo: '+e.code);}}
 U.onAuthStateChanged(auth,u=>{if(unsub){unsub();unsub=null;}
   if(!u){$('#who').textContent='';$('#out').style.display='none';return loginView();}
-  if(u.email&&u.email.endsWith('@jugadores.alianza-heroica.app')){U.signOut(auth);return loginView();}
+  if(u.email&&u.email.endsWith('@jugadores.alianza-heroica.app')){M.innerHTML='<div class="login"><h2>Solo para Papá</h2><p>Esta página es para el administrador.</p><a href="./" style="color:#ffd23f;font-weight:900">← Volver al juego</a></div>';return;}
   $('#who').textContent=u.email;$('#out').style.display='';$('#out').onclick=()=>U.signOut(auth);
   M.innerHTML='<p>Cargando jugadores…</p>';
   unsub=D.onSnapshot(D.collection(db,'players'),s=>{players=s.docs.map(d=>({id:d.id,...d.data()}));render();},

@@ -43,7 +43,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 function show(html) { box.style.display = 'flex'; box.innerHTML = `<div class="card">${html}</div>`; }
 function hide() { box.style.display = 'none'; }
 function setNet(ok) { const d = bar.querySelector('.dot'); if (d) d.classList.toggle('off', !ok); }
-function showBar(name) { bar.style.display = 'flex'; bar.innerHTML = `<span class="dot"></span>🎮 ${esc(name)}<button id="acc-out">Cambiar jugador</button>`; bar.querySelector('#acc-out').onclick = logout; }
+function showBar(name) { bar.style.display = 'flex'; bar.innerHTML = `<span class="dot"></span>🎮 ${esc(name)}${isDad(user) ? '<a href="admin.html" target="_blank" rel="noopener" style="background:#7fd8ff;color:#111;border-radius:10px;padding:4px 10px;text-decoration:none">⚙️ Panel de administrador</a>' : ''}<button id="acc-out">Cambiar jugador</button>`; bar.querySelector('#acc-out').onclick = logout; }
 const recent = () => { try { return JSON.parse(ls.get('ah_recent') || '[]'); } catch (e) { return []; } };
 const addRecent = n => { const r = recent().filter(x => nameKey(x) !== nameKey(n)); r.unshift(n); ls.set('ah_recent', JSON.stringify(r.slice(0, 6))); };
 
@@ -66,11 +66,22 @@ function screenWho() {
   const r = recent();
   show(`<h1>ALIANZA HEROICA</h1><h2>¿Quién va a jugar?</h2>
     <div class="who">${r.map(n => `<button data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>
-    <button class="alt" id="acc-other">${r.length ? 'Otro jugador' : 'Ya tengo cuenta'}</button><button id="acc-new">Soy nuevo</button>`);
+    <button class="alt" id="acc-other">${r.length ? 'Otro jugador' : 'Ya tengo cuenta'}</button><button id="acc-new">Soy nuevo</button><br><button class="gh" id="acc-dad">👨 Soy Papá</button>`);
+  box.querySelector('#acc-dad').onclick = screenDad;
   box.querySelectorAll('.who button').forEach(b => b.onclick = () => screenLogin(b.dataset.n));
   box.querySelector('#acc-other').onclick = () => screenLogin('');
   box.querySelector('#acc-new').onclick = screenNew;
 }
+function screenDad() {
+  show(`<h2>Hola, Papá</h2><form id="acc-f" autocomplete="on" onsubmit="return false"><input id="acc-em" type="email" autocomplete="username" placeholder="Tu correo"><input id="acc-pw" type="password" autocomplete="current-password" placeholder="Tu contraseña">
+    <div class="err" id="acc-err"></div><button id="acc-ok" type="submit">Entrar</button></form><p style="font-size:14px;opacity:.75;margin-top:14px">¿Primera vez? Escribe tu correo y una contraseña nueva (mínimo 8 caracteres):</p>
+    <button class="alt" id="acc-mk">Crear cuenta de Papá</button><br><button class="gh" id="acc-back">← Volver</button>`);
+  const v = () => [box.querySelector('#acc-em').value.trim(), box.querySelector('#acc-pw').value];
+  box.querySelector('#acc-back').onclick = screenWho;
+  box.querySelector('#acc-ok').onclick = async () => { const [e, p] = v(); if (!e || !p) return msg('Escribe tu correo y contraseña'); msg('Entrando…'); try { await F.signInWithEmailAndPassword(F.auth, e, p); } catch (er) { msg(/too-many/.test(er.code || '') ? 'Demasiados intentos. Espera un momento.' : 'Correo o contraseña incorrectos'); } };
+  box.querySelector('#acc-mk').onclick = async () => { const [e, p] = v(); if (p.length < 8) return msg('Usa una contraseña de al menos 8 caracteres'); msg('Creando…'); try { await F.createUserWithEmailAndPassword(F.auth, e, p); } catch (er) { msg(/already/.test(er.code || '') ? 'Ese correo ya tiene cuenta: usa Entrar' : /invalid-email/.test(er.code || '') ? 'Ese correo no es válido' : 'No se pudo crear: ' + er.code); } };
+}
+const isDad = u => u && u.email && !u.email.endsWith('@' + MAIL_DOMAIN);
 function screenLogin(name) {
   if (!name) {
     show(`<h2>¿Cómo te llamas?</h2><input id="acc-name" maxlength="14" autocomplete="off" placeholder="Tu nombre"><div class="err" id="acc-err"></div><button id="acc-ok">Siguiente</button><br><button class="gh" id="acc-back">← Volver</button>`);
@@ -133,6 +144,10 @@ async function enter(u) {
   const ref = F.doc(F.db, 'players', u.uid);
   let snap;
   try { snap = await F.getDoc(ref); } catch (e) { if (ls.get('ah_owner') === u.uid) { hide(); showBar('…'); return; } return screenOffline(); }
+  if (!snap.exists() && isDad(u)) {
+    try { await F.setDoc(ref, { name: 'Papá', nameKey: 'papa', avatar: 'fenix', status: 'pending', createdAt: F.serverTimestamp(), lastSeen: F.serverTimestamp(), save: {}, updatedAt: F.serverTimestamp() }); await F.updateDoc(ref, { status: 'approved' }); return enter(u); }
+    catch (e) { show(`<h2>Falta un paso</h2><p>Tu cuenta de Papá ya existe, pero Firebase todavía no sabe que eres el administrador.</p><p style="font-size:15px">Pega las reglas de seguridad con tu correo en Firestore → Reglas, publícalas y vuelve a intentar.</p><button id="acc-retry">Reintentar</button><button class="alt" id="acc-out2">Salir</button>`); box.querySelector('#acc-retry').onclick = () => enter(u); box.querySelector('#acc-out2').onclick = logout; return; }
+  }
   if (!snap.exists()) { show(`<h2>Cuenta incompleta</h2><p>Esta cuenta no tiene datos. Pídele a papá que la revise.</p><button class="alt" id="acc-out2">Cambiar jugador</button>`); box.querySelector('#acc-out2').onclick = logout; return; }
   doc0 = snap.data();
   if (doc0.status === 'blocked') return screenBlocked(doc0);
