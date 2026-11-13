@@ -1996,8 +1996,8 @@ class World{
       case 'ring':F.ring(ev.x,ev.z,ev.r,ev.c);break;
       case 'burst':F.burst(ev.x,0.5,ev.z,ev.c,ev.n,8);break;
       case 'txt':T.add(ev.x,2.5,ev.z,ev.s,ev.c,ev.big);break;
-      case 'rest':F.burst(ev.x,1.5,ev.z,0x7dff9a,30,6);for(let k=0;k<20;k++)F.p({x:ev.x+(Math.random()-0.5)*8,y:0.3,z:ev.z+(Math.random()-0.5)*8,c:0x7dff9a,tex:'star',vy:2+Math.random()*2,s:0.5,s1:0.05,life:1.2});hud.banner('Punto de descanso · Progreso guardado','#7dff9a');break;
-      case 'gate':if(ev.on){hud.banner('¡Zona cerrada! Derrota a todos','#ff5a7a');this.shake=Math.max(this.shake,0.15);}break;
+      case 'rest':F.burst(ev.x,1.5,ev.z,0x7dff9a,30,6);for(let k=0;k<20;k++)F.p({x:ev.x+(Math.random()-0.5)*8,y:0.3,z:ev.z+(Math.random()-0.5)*8,c:0x7dff9a,tex:'star',vy:2+Math.random()*2,s:0.5,s1:0.05,life:1.2});hud.rbanner('Punto de descanso · Progreso guardado','#7dff9a');break;
+      case 'gate':if(ev.on){hud.rbanner('¡Zona cerrada! Derrota a todos','#ff5a7a');this.shake=Math.max(this.shake,0.15);}break;
       case 'gateopen':{const g=this.gates&&this.gates[ev.i-1];if(g){const p=g.position;for(let k=0;k<16;k++)F.p({x:p.x+(Math.random()-0.5)*6,y:Math.random()*3,z:p.z+(Math.random()-0.5)*2,c:0x4dd2ff,tex:'star',vy:3,s:0.5,s1:0.05,life:0.8});}break;}
       case 'crystal':F.burst(ev.x,1.2,ev.z,0x9fe8ff,22,7);F.ring(ev.x,ev.z,2,0x9fe8ff);Snd.play('pickup');break;
       case 'ctier':{const q=COMBO_TIERS[ev.ti];F.ring(ev.x,ev.z,3,parseInt(q.c.slice(1),16));Snd.play('stagger');
@@ -2125,7 +2125,7 @@ class HUD{
   flash(name,n){this.fl.style.transition='none';this.fl.style.opacity='0.9';requestAnimationFrame(()=>{this.fl.style.transition='opacity .6s';this.fl.style.opacity='0';});
     this.syn.style.setProperty('--c','#ffd23f');this.syn.querySelector('.t').textContent='¡ALIANZA EXTREMA!';this.syn.querySelector('.n').textContent=n>=4?'¡TODOS JUNTOS!':n+' HÉROES';this.syn.querySelector('.w').textContent='Poder x'+(1+0.5*((n||1)-1)).toFixed(1);
     this.syn.classList.add('on');clearTimeout(this.st);this.st=setTimeout(()=>this.syn.classList.remove('on'),1700);}
-  banner(s,c){const e=this.bnEl||(this.bnEl=document.getElementById('rbanner'));e.textContent=s;e.style.color=c||'#fff';e.style.opacity='1';e.style.transform='translateX(-50%) scale(1)';clearTimeout(this.bt);this.bt=setTimeout(()=>{e.style.opacity='0';e.style.transform='translateX(-50%) scale(.9)';},2200);}
+  rbanner(s,c){const e=this.bnEl||(this.bnEl=document.getElementById('rbanner'));e.textContent=s;e.style.color=c||'#fff';e.style.opacity='1';e.style.transform='translateX(-50%) scale(1)';clearTimeout(this.bt);this.bt=setTimeout(()=>{e.style.opacity='0';e.style.transform='translateX(-50%) scale(.9)';},2200);}
   intro(view){const e=this.inEl||(this.inEl=document.getElementById('rintro'));const on=view.phase==='intro'&&!!view.route;if(on!==this.inOn){this.inOn=on;e.style.opacity=on?'1':'0';e.style.pointerEvents='none';
     if(on){const st=STORY.stages[view.stage];e.querySelector('h2').textContent=view.stageName;e.querySelector('p').textContent=st&&st.route?st.route.intro:'';}}
     if(on){const k=Math.max(0,Math.min(1,view.phaseT/12));e.querySelector('.bar i').style.width=(k*100)+'%';}}
