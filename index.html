@@ -1009,7 +1009,6 @@ class Sim{
       if(h.synT<=0){
         if(h.carry){if((inp.atk||inp.hvy)&&h.atkCd<=0)this.throwCarry(h);}
         else if(inp.hvy&&h.atkCd<=0&&this.tryLift(h)){}
-        else if(inp.atk&&h.atkCd<=0&&this.controllers[h.id]!=='ai'&&!this.nearestEnemy(h,2.6)&&this.tryLift(h,true)){}
         else if((inp.atk||inp.hvy)&&this.t-h.dodgeEndT<0.4&&!h.air)this.dashStrike(h);
         else if(inp.hvy&&h.atkCd<=0)this.heroHeavy(h);
         else if(inp.atk&&h.atkCd<=0&&!h.blocking)this.heroAttack(h);
@@ -2631,7 +2630,7 @@ class HUD{
     if(txt!==this.tmT){this.tmT=txt;e.textContent=txt;e.style.display=txt?'block':'none';e.classList.toggle('hot',tm!=null&&tm<15);}}
   hint(view,focus){const e=this.hEl||(this.hEl=document.getElementById('lhint'));const me=view.heroes[focus];let txt='';
     if(me&&!me.down&&view.phase==='fight'){if(me.carry)txt='<b>Golpe</b> (X) para lanzar';else{let best=null,bd=9;for(const o of view.enemies){const d=ENEMIES[o.kind];if(!d||!d.lift)continue;const q=Math.hypot(o.x-me.x,o.z-me.z)-d.r;if(q<1.6&&q<bd){bd=q;best=d;}}
-      if(best)txt=best.heavy&&me.key!=='roca'?'Muy pesado: solo <b>Roca</b> puede levantarlo':best.boom?'<b>Fuerte</b> (Y) para levantar el barril · <b>Golpe</b> lo explota':'<b>Golpe</b> (X) o <b>Fuerte</b> (Y) para levantar '+best.name.toLowerCase();}}
+      if(best)txt=best.heavy&&me.key!=='roca'?'Muy pesado: solo <b>Roca</b> puede levantarlo':'<b>Fuerte</b> (Y) para levantar '+best.name.toLowerCase();}}
     if(txt!==this.hTxt){this.hTxt=txt;e.innerHTML=txt;e.style.opacity=txt?'1':'0';}}
   update(view,focus){try{Mus.update(view,mode);}catch(e){}this.intro(view);this.prog(view);this.hint(view,focus);this.timer(view);
     view.heroes.forEach((h,i)=>{const C=this.cards[i];const d=HEROES[h.key];
