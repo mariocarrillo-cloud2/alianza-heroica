@@ -2193,6 +2193,7 @@ class HUD{
       el.style.setProperty('--rs',Math.min(1,innerHeight/560,innerWidth/800).toFixed(3));el.style.display='block';el.classList.remove('show');void el.offsetWidth;el.classList.add('show');renderStages&&renderStages();}
     const u=el.querySelector('.tb u');if(u)u.style.width=Math.max(0,Math.min(100,(view.phaseT||0)/14*100))+'%';}
   prog(view){const e=this.prEl||(this.prEl=document.getElementById('rprog'));const V=view.route;if(!V||view.phase==='win'){if(this.prK!=='off'){this.prK='off';e.style.display='none';}return;}
+    if(!(this.prF=(this.prF||0)+1)||this.prF%30===1){const al=document.getElementById('ally'),pr=e.offsetParent;if(al&&pr){e.style.top=(al.getBoundingClientRect().bottom-pr.getBoundingClientRect().top+4)+'px';}}
     const st=STORY.stages[view.stage],N=st.route.nodes,cur=Math.max(V.node,V.lock),got=V.crys.reduce((a,b)=>a+b,0);const key=cur+'|'+V.open+'|'+got;if(key===this.prK)return;this.prK=key;e.style.display='block';
     e.innerHTML=`<div class="pd">${N.map((n,i)=>`<i class="${i<cur?'ok':i===cur?'on':''}${n.boss?' bs':n.rest||n.cp?' rs':''}"></i>`).join('')}</div><div class="pt">Zona ${cur+1} de ${N.length} · ${N[cur].n} <b>💎 ${got}/${V.crys.length}</b></div>`;}
   update(view,focus){this.intro(view);this.prog(view);
