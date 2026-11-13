@@ -47,6 +47,23 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 #boss .hp i{background:linear-gradient(90deg,#ff2d55,#ff8a3d)}
 #boss .st{height:8px}
 #boss .st i{background:#ffd23f}
+#results{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(var(--rs,1));width:760px;max-width:96vw;background:linear-gradient(170deg,#1d2347f2,#0f1230f2);border:3px solid #ffd23f;border-radius:20px;padding:16px 18px 12px;display:none;color:#fff;box-shadow:0 10px 40px #000a;pointer-events:none;z-index:30}
+#results h2{margin:0;text-align:center;font-family:Bangers,Impact,sans-serif;font-size:44px;letter-spacing:1px;color:#ffd23f;text-shadow:0 3px 0 #000;line-height:1}
+#results .sn{text-align:center;font-size:15px;opacity:.85;margin-bottom:6px}
+#results .stars{display:flex;justify-content:center;gap:22px;margin:4px 0 6px}
+#results .star{text-align:center;width:150px}#results .star i{display:block;font-style:normal;font-size:54px;line-height:1;filter:grayscale(1) brightness(.45);transform:scale(.4);opacity:0}
+#results .star.on i{filter:none}#results .star span{font-size:13px;opacity:.9}
+#results.show .star i{animation:rstar .45s cubic-bezier(.3,1.6,.5,1) forwards}#results.show .star:nth-child(2) i{animation-delay:.35s}#results.show .star:nth-child(3) i{animation-delay:.7s}
+@keyframes rstar{to{transform:scale(1);opacity:1}}
+#results .sum{text-align:center;font-size:15px;margin-bottom:8px}#results .sum b{color:#ffd23f}
+#results .rec{display:inline-block;background:#ff4fd8;color:#fff;font-family:Bangers,Impact,sans-serif;font-size:18px;padding:0 10px;border-radius:8px;margin-left:8px}
+#results .hs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+#results .rh{background:#0006;border-radius:12px;padding:8px;border:2px solid transparent;text-align:center}#results .rh.me{border-color:#fff}
+#results .rh .fc{width:58px;height:58px;margin:0 auto 2px;border-radius:50%;overflow:hidden;border:3px solid var(--c)}#results .rh .fc img,#results .rh .fc .ph{width:100%;height:100%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-family:Bangers;font-size:28px}
+#results .rh .nm{font-family:Bangers,Impact,sans-serif;font-size:22px;line-height:1.05}#results .rh .who{font-size:11px;opacity:.75;margin-bottom:4px}
+#results .rh table{width:100%;font-size:13px;border-collapse:collapse}#results .rh td{padding:1px 2px;text-align:left}#results .rh td+td{text-align:right;font-weight:700}
+#results .tt{display:block;margin-top:5px;background:#ffd23f;color:#1a1a2a;border-radius:8px;font-family:Bangers,Impact,sans-serif;font-size:15px;padding:1px 4px}
+#results .ft{text-align:center;font-size:13px;opacity:.85;margin-top:8px}#results .tb{height:5px;background:#0008;border-radius:4px;overflow:hidden;margin-top:4px}#results .tb u{display:block;height:100%;background:#ffd23f;text-decoration:none}
 #banner{position:absolute;left:0;right:0;top:36%;text-align:center;font-size:64px;text-shadow:0 4px 0 #000,0 0 20px rgba(0,0,0,.6);opacity:0;transition:opacity .3s;padding:0 20px}
 #banner small{display:block;font-size:28px;color:#ffd23f}
 #syn{position:absolute;left:0;right:0;top:20%;text-align:center;opacity:0;transform:scale(.5) rotate(-4deg);transition:opacity .2s,transform .25s cubic-bezier(.2,1.6,.4,1)}
@@ -301,7 +318,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
   <div id="ally"><div class="lbl bang">★ ALIANZA</div><div class="bar"><i></i></div></div>
   <div id="boss"><div class="lbl bang"></div><div class="bar ar" style="height:7px"><i style="background:#9fc4ff"></i></div><div class="bar hp"><i></i></div><div class="bar st"><i></i></div></div>
   <div id="ultb" class="bang"></div>
-  <div id="banner" class="bang"></div>
+  <div id="banner" class="bang"></div><div id="results"></div>
   <div id="syn" class="bang"><div class="t">¡SINERGIA!</div><div class="n"></div><div class="w"></div></div>
   <div id="toast"></div>
   <div id="tray"></div>
@@ -572,6 +589,7 @@ const STORY={name:'La invasión de obsidiana',stages:[
   {name:'La fábrica',theme:'fabrica',lvl:1.7,waves:[{grunt:5,brute:1,shooter:2,escudero:1,invocador:1},{grunt:4,brute:2,shooter:2,escudero:1,invocador:1,chispa:3,saltador:1},{grunt:3,gemelo:2,chispa:2}]},
   {name:'El volcán',theme:'volcan',lvl:2.1,waves:[{grunt:5,brute:2,shooter:2,escudero:2,saltador:2,invocador:1},{grunt:4,brute:3,shooter:2,escudero:2,chispa:3,saltador:1,invocador:1},{boss:1,grunt:3,shooter:2,chispa:2}]},
 ]};
+const STAGE_PAR=[90,120,140,170];
 const COMBO_TIERS=[{n:10,w:'¡Bien!',c:'#7fe0ff',en:8,al:2},{n:20,w:'¡Genial!',c:'#5dff8a',en:12,al:4},{n:35,w:'¡Increíble!',c:'#ffd23f',en:16,al:6},{n:50,w:'¡Imparable!',c:'#ff8a3d',en:20,al:8},{n:75,w:'¡LEGENDARIO!',c:'#ff4fd8',en:25,al:12}];
 const DIFF={facil:{wind:1.3,enemyDmg:0.55,revive:4,enemyHp:0.85,tokens:2,maxE:8,elite:0.04},normal:{wind:1.1,enemyDmg:1,revive:7,enemyHp:1,tokens:3,maxE:10,elite:0.08},dificil:{wind:0.95,enemyDmg:1.6,revive:10,enemyHp:1.35,tokens:5,maxE:13,elite:0.15,armorLight:true}};
 
@@ -591,13 +609,13 @@ class Sim{
     this.heroes=this.team.map((k,i)=>this.makeHero(k,i));
     this.enemies=[];this.projs=[];this.eprojs=[];this.zones=[];this.orbs=[];this.hitKind='ability';
     for(let i=0;i<6;i++){const a=rng()*TAU,r=7+rng()*10;this.spawnAt('crate',Math.sin(a)*r,Math.cos(a)*r);}
-    this.wave=0;this.phase='intro';this.phaseT=3;this.setBanner(this.S.name,'Etapa '+(this.stage+1));
+    this.wave=0;this.phase='intro';this.phaseT=3;this.stT=0;this.result=null;this.setBanner(this.S.name,'Etapa '+(this.stage+1));
     this.ally=0;this.events=[];this.hitstop=0;this.queue=[];this.spawnT=0;this.lastAbility=null;
     this.inputs=this.heroes.map(()=>emptyInput());this.bossAddT=15;this.synReadyT=0;this.curMul=1;this.slowmo=0;this.ultPend=null;this.eScale=1;
   }
   makeHero(key,i){const d=HEROES[key];const a=i/4*TAU+Math.PI/4;
     const h={id:i,key,def:d,x:Math.sin(a)*3,z:Math.cos(a)*3,face:0,hp:d.hp,maxHp:0,energy:60,down:false,downT:0,atkCd:0,combo:0,comboW:0,
-      cd:{a1:0,a2:0,a3:0,a4:0},dodgeT:0,dodgeCd:0,dashX:0,dashZ:0,iframes:0,lockT:0,shieldT:0,flash:0,moving:false,kx:0,kz:0,
+      st:{dmg:0,maxcc:0,downs:0,rev:0,ko:0},tgId:-1,cd:{a1:0,a2:0,a3:0,a4:0},dodgeT:0,dodgeCd:0,dashX:0,dashZ:0,iframes:0,lockT:0,shieldT:0,flash:0,moving:false,kx:0,kz:0,
       synT:0,blocking:false,blockStart:0,cc:0,ccT:0,y:0,vy:0,air:false,diving:false,dodgeStartT:-9,dodgeEndT:-9,dodgeChain:0,phoenix:false,leapT:0,lx0:0,lz0:0,lx1:0,lz1:0,leapMul:1,flurryT:0,flurryTick:0,flurryId:0,flurryMul:1,lvl:1,dmgMul:1,ranks:{},load:d.load.slice()};
     this.applyProfile(h);return h;}
   setBanner(s,sub){this.banner=s;this.bannerSub=sub||'';this.bannerT=0;}
@@ -606,10 +624,11 @@ class Sim{
   setInput(i,inp){const t=this.inputs[i];t.mx=inp.mx||0;t.mz=inp.mz||0;t.blk=!!inp.blk;for(const k of BTN)if(inp[k])t[k]=true;}
   leaderIdx(){const i=this.controllers.findIndex(c=>c!=='ai');return i<0?0:i;}
   nearestEnemy(p,maxD){let best=null,bd=maxD*maxD;for(const e of this.enemies){if(e.dead||e.def.prop)continue;const d=dist2(p,e);if(d<bd){bd=d;best=e;}}return best;}
-  autoFace(h,range){let e=null;
+  autoFace(h,range){const e=this.aimPick(h,range);if(e)h.face=Math.atan2(e.x-h.x,e.z-h.z);return e;}
+  aimPick(h,range){let e=null;
     if(h.inT>this.t-0.25){let bs=1e9;const ia=Math.atan2(h.inX,h.inZ);for(const o of this.enemies){if(o.dead||o.def.prop)continue;const d=Math.sqrt(dist2(h,o));if(d>range*1.15)continue;
       const ad=angDiff(Math.atan2(o.x-h.x,o.z-h.z),ia);if(ad>1.25&&d>1.6)continue;const sc=d*(1+ad*1.6);if(sc<bs){bs=sc;e=o;}}}
-    if(!e)e=this.nearestEnemy(h,range);if(e)h.face=Math.atan2(e.x-h.x,e.z-h.z);return e;}
+    if(!e)e=this.nearestEnemy(h,range);return e;}
   magnet(h,e,reach,max){if(!e||h.air)return;const d=Math.sqrt(dist2(h,e)),gap=d-(reach+e.def.r-0.35);if(gap<=0)return;const g=Math.min(gap,max),fx=Math.sin(h.face),fz=Math.cos(h.face);h.kx+=fx*g*10;h.kz+=fz*g*10;}
   confine(p,r){const l=Math.hypot(p.x,p.z),m=ARENA_R-r;if(l>m){p.x*=m/l;p.z*=m/l;}}
   lvl(){return this.S.lvl;}
@@ -625,20 +644,24 @@ class Sim{
     for(let i=0;i<4;i++){
       if(this.controllers[i]==='ai')this.inputs[i]=this.aiInput(this.heroes[i]);
       this.updateHero(this.heroes[i],this.inputs[i],dt);
+      {const h=this.heroes[i];if(this.controllers[i]!=='ai'&&!h.down){const t=this.aimPick(h,h.def.attack.type==='ranged'?15:5.5);h.tgId=t?t.id:-1;}else h.tgId=-1;}
       const inp=this.inputs[i];for(const k of BTN)inp[k]=false;
     }
     for(const e of this.enemies)if(!e.dead)this.updateEnemy(e,edt);
     this.eScale=edt/dt;this.updateProjs(dt);this.updateZones(dt);this.updateOrbs(dt);this.separate();
     this.enemies=this.enemies.filter(e=>!e.dead);
   }
+  makeResult(){const par=STAGE_PAR[this.stage]||120;const hs=this.heroes.map(h=>({key:h.key,dmg:Math.round(h.st.dmg),maxcc:h.st.maxcc,downs:h.st.downs,rev:h.st.rev,ko:h.st.ko,ctrl:this.controllers[h.id]}));
+    const maxcc=Math.max(...hs.map(h=>h.maxcc)),downs=hs.reduce((a,h)=>a+h.downs,0);
+    this.result={t:Math.round(this.stT),par,maxcc,downs,stars:[true,maxcc>=20,this.stT<=par],heroes:hs,stage:this.stage};}
   updatePhase(dt){
     const W=this.S.waves;
     if(this.phase==='intro'){this.phaseT-=dt;if(this.phaseT<=0)this.startWave(0);}
-    else if(this.phase==='fight'){
+    else if(this.phase==='fight'){this.stT+=dt;
       if(this.queue.length){this.spawnT-=dt;if(this.spawnT<=0&&this.enemies.filter(e=>!e.def.prop).length<this.D.maxE){this.spawn(this.queue.shift());this.spawnT=0.7;}}
       this.bossLogic(dt);
       if(!this.queue.length&&this.enemies.every(e=>e.dead||e.def.prop)){
-        if(this.wave>=W.length){this.phase='win';this.phaseT=7;
+        if(this.wave>=W.length){this.phase='win';this.phaseT=14;this.makeResult();
           const last=this.stage>=STORY.stages.length-1;const bonus=100*(this.stage+1);
           this.setBanner(last?'¡HISTORIA COMPLETADA!':'¡Etapa completada!',(last?'La ciudad está a salvo':'Siguiente: '+STORY.stages[this.stage+1].name)+' · +'+bonus+' XP');
           this.ev({k:'stageWin',stage:this.stage});this.ev({k:'xp',n:bonus});this.ev({k:'sfx',s:'win'});}
@@ -648,7 +671,7 @@ class Sim{
       }else if(this.heroes.every(h=>h.down)){this.phase='lose';this.phaseT=6;this.setBanner('Los héroes cayeron…','¡Intentemos otra vez!');this.ev({k:'sfx',s:'lose'});}
     }
     else if(this.phase==='clear'){this.phaseT-=dt;if(this.phaseT<=0)this.startWave(this.wave);}
-    else if(this.phase==='win'){this.phaseT-=dt;if(this.phaseT<=0)this.reset(this.diff,this.stage>=STORY.stages.length-1?0:this.stage+1);}
+    else if(this.phase==='win'){this.phaseT-=dt;if(this.phaseT<11&&this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&(p.atk||p.jmp)))this.phaseT=0;if(this.phaseT<=0)this.reset(this.diff,this.stage>=STORY.stages.length-1?0:this.stage+1);}
     else if(this.phase==='lose'){this.phaseT-=dt;if(this.phaseT<=0)this.reset(this.diff,this.stage);}
   }
   startWave(n){
@@ -673,7 +696,11 @@ class Sim{
   }
   bossLogic(dt){
     const bosses=this.enemies.filter(e=>e.def.boss&&!e.dead);if(!bosses.length)return;
-    for(const b of bosses)if(!b.half&&b.hp<b.maxHp*0.5){b.half=true;this.queue.push('grunt','grunt','shooter');this.setBanner('¡'+b.def.name+' llama refuerzos!');}
+    for(const b of bosses)if(!b.half&&b.hp<b.maxHp*0.5){b.half=true;b.enraged=true;b.hzT=2;this.queue.push('grunt','grunt');
+      this.setBanner('¡'+b.def.name+' se enfurece!','Esquiva la lava que cae del cielo');this.ev({k:'enrage',id:b.id,x:b.x,z:b.z,r:b.def.r});this.ev({k:'shake',a:1});this.hitstop=Math.max(this.hitstop,0.25);}
+    for(const b of bosses)if(b.enraged&&b.stunT<=0){b.hzT-=dt;if(b.hzT<=0){b.hzT=5.5;const wm=this.D.wind||1;const tg=this.heroes.filter(h=>!h.down);
+      for(const h of tg.slice(0,3)){const a=rng()*TAU,r=rng()*2;this.zones.push({id:this.nid++,eid:b.id,kind:'ebomb',x:h.x+Math.sin(a)*r,z:h.z+Math.cos(a)*r,r:2.2,t:1.5*wm,max:1.5*wm,rain:true});}
+      this.ev({k:'sfx',s:'warn'});}}
     this.bossAddT-=dt;if(this.bossAddT<=0){this.bossAddT=16;this.queue.push('grunt','grunt');}
   }
   // ----- héroes -----
@@ -683,7 +710,7 @@ class Sim{
     h.x+=h.kx*dt;h.z+=h.kz*dt;const kd=Math.exp(-10*dt);h.kx*=kd;h.kz*=kd;
     if(h.down){
       const near=this.heroes.some(o=>o!==h&&!o.down&&dist2(o,h)<4);h.downT-=dt*(near?2.5:1);
-      if(h.downT<=0){h.down=false;h.hp=h.maxHp*0.5;h.iframes=2;
+      if(h.downT<=0){h.down=false;h.hp=h.maxHp*0.5;h.iframes=2;for(const o of this.heroes)if(o!==h&&!o.down&&dist2(o,h)<4)o.st.rev++;
         this.ev({k:'ring',x:h.x,z:h.z,r:2.5,c:0x7dff9a});this.ev({k:'txt',x:h.x,z:h.z,s:'¡De vuelta!',c:'#7dff9a'});this.ev({k:'sfx',s:'revive'});}
       this.confine(h,0.5);return;
     }
@@ -796,7 +823,7 @@ class Sim{
       if(e.armor<=0){e.armor=0;e.stunT=Math.max(e.stunT,e.def.boss?1.5:1.2);e.windup=0;this.zones=this.zones.filter(z=>z.eid!==e.id);
         this.ev({k:'txt',x:e.x,z:e.z,s:'¡ARMADURA ROTA!',c:'#9fd8ff',big:true});this.ev({k:'armor',x:e.x,z:e.z,r:e.def.r});this.ev({k:'shake',a:0.5});}}
     if(e.bub>0&&hk!=='dot'){const ab=Math.min(e.bub,amt);e.bub-=ab;amt-=ab;if(e.bub<=0){e.bub=0;this.ev({k:'txt',x:e.x,z:e.z,s:'¡Burbuja rota!',c:'#d08cff',big:true});this.ev({k:'bubpop',x:e.x,z:e.z,r:e.def.r});}else this.ev({k:'clank',x:e.x,z:e.z});}
-    e.hp-=amt;e.flash=0.1;e.lastSrc=src||e.lastSrc;
+    e.hp-=amt;e.flash=0.1;e.lastSrc=src||e.lastSrc;if(src&&src.st&&!e.def.prop)src.st.dmg+=amt;
     if(e.maxStag>0&&!stunned){e.stag+=stag;
       if(e.stag>=e.maxStag){e.stag=e.maxStag;e.stunT=e.def.boss?5:4;e.windup=0;e.chargeT=0;this.zones=this.zones.filter(z=>z.eid!==e.id);
         this.ev({k:'txt',x:e.x,z:e.z,s:'¡ATURDIDO!',c:'#ffd23f',big:true});this.ev({k:'ring',x:e.x,z:e.z,r:e.def.r*2.5,c:0xffd23f});
@@ -808,13 +835,14 @@ class Sim{
       else if(hk==='finisher'&&e.def.stag<=80){e.kdT=1.4;e.windup=0;e.chargeT=0;this.zones=this.zones.filter(z=>z.eid!==e.id);this.ev({k:'ehit',id:e.id,kd:true});}
       else if((hk==='heavy'||hk==='finisher')&&e.windup>0){e.windup=0;this.zones=this.zones.filter(z=>z.eid!==e.id);e.hitT=0.5;this.ev({k:'txt',x:e.x,z:e.z,s:'¡Interrumpido!',c:'#7fd8ff'});this.ev({k:'ehit',id:e.id});}
       else if((e.def.stag===0&&!(this.D.armorLight&&hk==='light'&&rng()<0.6))||hk==='heavy'||hk==='finisher'){if(e.windup<=0){e.hitT=Math.max(e.hitT,hk==='light'?0.22:0.4);this.ev({k:'ehit',id:e.id});}}}
-    if(src&&!e.def.prop&&hk!=='dot'){src.energy=Math.min(100,src.energy+1.5);src.cc++;src.ccT=2.6;const ti=COMBO_TIERS.findIndex(q=>q.n===src.cc);
+    if(src&&!e.def.prop&&hk!=='dot'){src.energy=Math.min(100,src.energy+1.5);src.cc++;src.ccT=2.6;if(src.cc>src.st.maxcc)src.st.maxcc=src.cc;const ti=COMBO_TIERS.findIndex(q=>q.n===src.cc);
       if(ti>=0){const q=COMBO_TIERS[ti];src.energy=Math.min(100,src.energy+q.en);this.ally=Math.min(100,this.ally+q.al);this.ev({k:'ctier',id:src.id,x:src.x,z:src.z,ti});}}
     this.ally=Math.min(100,this.ally+amt*(e.def.prop?0.005:0.03));
     this.ev({k:'hit',id:e.id,x:e.x,z:e.z,n:amt,crit:stunned,big:amt>=15,hk:hk==='finisher'?2:hk==='heavy'?1:0});
     if(amt>=15)this.hitstop=Math.max(this.hitstop,hk==='finisher'?0.09:0.05);else if(hk==='light'||hk==='heavy')this.hitstop=Math.max(this.hitstop,0.025);
     if(e.hp<=0){e.dead=true;this.zones=this.zones.filter(z=>z.eid!==e.id);this.ev({k:'die',x:e.x,z:e.z,kind:e.kind,boss:!!e.def.boss,prop:!!e.def.prop});
       if(e.def.boom&&!e.boomed)this.boom(e,false);
+      if(!e.def.prop){const k=src||e.lastSrc;if(k&&k.st)k.st.ko++;}
       if(e.def.ai==='summon'){let n=0;for(const o of this.enemies)if(o.bubBy===e.id&&o.bub>0){o.bub=0;n++;this.ev({k:'bubpop',x:o.x,z:o.z,r:o.def.r});}if(n)this.ev({k:'txt',x:e.x,z:e.z,s:'¡Escudos fuera!',c:'#d08cff',big:true});}
       if(e.elite==='explosivo'){this.zones.push({id:this.nid++,kind:'ebomb',x:e.x,z:e.z,r:3.2,t:0.9,max:0.9});this.ev({k:'txt',x:e.x,z:e.z,s:'¡Va a explotar!',c:'#ff6b6b'});}
       const no=e.def.prop?2:e.def.boss?8:e.elite?3:(rng()<0.4?1:0);for(let i=0;i<no;i++)this.dropOrb(e.x,e.z,(e.def.boss?i%2===0:rng()<0.4)?'hp':'en');
@@ -959,7 +987,7 @@ class Sim{
     const dx=h.x-ox,dz=h.z-oz,l=Math.hypot(dx,dz)||1;h.kx+=dx/l*knock;h.kz+=dz/l*knock;
     this.ev({k:'hurt',id:h.id,x:h.x,z:h.z,n:amt});
     if(h.hp<=0&&h.key==='fenix'&&!h.phoenix){h.phoenix=true;h.hp=h.maxHp*0.5;h.iframes=2;this.ev({k:'txt',x:h.x,z:h.z,s:'¡RENACE DE LAS CENIZAS!',c:'#ffb03a',big:true});this.ev({k:'ring',x:h.x,z:h.z,r:4,c:0xff8a3d});this.ev({k:'burst',x:h.x,z:h.z,c:0xffd23f,n:30});}
-    if(h.hp<=0){h.hp=0;h.down=true;h.air=false;h.y=0;h.diving=false;h.downT=this.D.revive;h.shieldT=0;h.flurryT=0;h.leapT=0;
+    if(h.hp<=0){h.st.downs++;h.hp=0;h.down=true;h.air=false;h.y=0;h.diving=false;h.downT=this.D.revive;h.shieldT=0;h.flurryT=0;h.leapT=0;
       this.ev({k:'txt',x:h.x,z:h.z,s:h.def.name+' cayó',c:'#ff6b6b'});this.ev({k:'sfx',s:'down'});}
   }
   // ----- enemigos -----
@@ -987,6 +1015,7 @@ class Sim{
     if(e.chargeT>0){e.chargeT-=dt;e.x+=e.cx*dt;e.z+=e.cz*dt;
       for(const h of this.heroes)if(dist2(h,e)<(d.r+0.8)**2)this.hurtHero(h,18,e.x,e.z,12,e);this.confine(e,d.r);return;}
     if(e.windup>0){e.windup-=dt;if(e.windup<=0)this.enemyStrike(e);return;}
+    if(e.enraged)e.atkCd-=dt*0.4;
     const t=e.target;if(!t)return;
     if(d.ai){this.customAI(e,t,dt);this.confine(e,d.r);return;}
     const dx=t.x-e.x,dz=t.z-e.z,D=Math.hypot(dx,dz)||1;
@@ -1008,7 +1037,7 @@ class Sim{
         warn({kind:'warn',x:cx,z:cz,r:d.range*0.7+0.5,t:d.windup,max:d.windup});return;}
     }
     const waiting=busy&&!d.ranged;const keep=waiting?d.range+1.8:d.ranged?6.5:(d.volley&&!d.slam?7:d.range*0.85);
-    const sp=d.speed*(blind?0.4:1)*(e.slowT>0?0.45:1)*(e.elite==='rapido'?1.6:1);
+    const sp=d.speed*(blind?0.4:1)*(e.slowT>0?0.45:1)*(e.elite==='rapido'?1.6:1)*(e.enraged?1.3:1);
     if(blind){e.face+=dt*3;e.x+=Math.sin(e.face)*sp*dt;e.z+=Math.cos(e.face)*sp*dt;}
     else{if(D>keep){e.x+=dx/D*sp*dt;e.z+=dz/D*sp*dt;}else if(d.ranged&&D<4){e.x-=dx/D*sp*dt;e.z-=dz/D*sp*dt;}
       else if(waiting){const sd=(e.id%2?1:-1)*0.5;e.x+=dz/D*sp*sd*dt;e.z-=dx/D*sp*sd*dt;if(D<keep-0.6){e.x-=dx/D*sp*0.5*dt;e.z-=dz/D*sp*0.5*dt;}}e.face=Math.atan2(dx,dz);}
@@ -1049,7 +1078,10 @@ class Sim{
       for(let i=mine;i<3&&i<mine+2;i++){const a=rng()*TAU;this.spawnAt('grunt',e.x+Math.sin(a)*2,e.z+Math.cos(a)*2);this.enemies[this.enemies.length-1].sumBy=e.id;}
       this.ev({k:'ring',x:e.x,z:e.z,r:3,c:0x9b4dff});this.ev({k:'sfx',s:'zap'});return;}
     if(e.pending==='charge'){e.chargeT=0.75;this.ev({k:'sfx',s:'boom'});return;}
+    if(e.pending==='slam2'){const r=d.slam*1.5;for(const h of this.heroes)if(dist2(h,e)<r*r)this.hurtHero(h,d.dmg*0.8,e.x,e.z,16,e);
+      this.ev({k:'ring',x:e.x,z:e.z,r,c:0xff3355});this.ev({k:'burst',x:e.x,z:e.z,c:0xff5a1a,n:36});this.ev({k:'shake',a:1});this.ev({k:'sfx',s:'boom'});return;}
     if(e.pending==='slam'){for(const h of this.heroes)if(dist2(h,e)<d.slam*d.slam)this.hurtHero(h,d.dmg,e.x,e.z,14,e);
+      if(e.enraged){const wm=this.D.wind||1;e.windup=0.75*wm;e.pending='slam2';this.zones.push({id:this.nid++,eid:e.id,boss:true,kind:'warn',x:e.x,z:e.z,r:d.slam*1.5,t:e.windup,max:e.windup});}
       this.ev({k:'ring',x:e.x,z:e.z,r:d.slam,c:0xff3355});this.ev({k:'burst',x:e.x,z:e.z,c:0x5b3a7a,n:30});this.ev({k:'shake',a:0.8});this.ev({k:'sfx',s:'boom'});return;}
     if(e.pending==='volley'){for(const off of [-0.3,0,0.3]){const a=e.face+off;this.eprojs.push({id:this.nid++,kind:'lava',x:e.x,z:e.z,vx:Math.sin(a)*14,vz:Math.cos(a)*14,dmg:d.dmg,r:0.7,life:1.1});}this.ev({k:'sfx',s:'shoot'});return;}
     if(e.pending==='shot'){const a=e.face;this.eprojs.push({id:this.nid++,kind:'lava',x:e.x+Math.sin(a)*0.8,z:e.z+Math.cos(a)*0.8,vx:Math.sin(a)*14,vz:Math.cos(a)*14,dmg:d.dmg,r:0.55,life:1});this.ev({k:'sfx',s:'shoot'});return;}
@@ -1138,14 +1170,14 @@ class Sim{
       heroes:this.heroes.map(h=>({id:h.id,key:h.key,x:r2(h.x),z:r2(h.z),face:r2(h.face),hp:Math.ceil(h.hp),maxHp:h.maxHp,energy:Math.floor(h.energy),lvl:h.lvl,load:h.load,
         cdMax:SLOTS.map((s,i)=>r2(h.def.abil[h.load[i]].cd*rankCd(h.ranks[h.load[i]]))),
         down:h.down,downT:r2(h.downT),moving:h.moving,shield:h.shieldT>0,cds:SLOTS.map(s=>r2(Math.max(0,h.cd[s]))),blink:h.iframes>0.5&&h.synT<=0&&h.leapT<=0,
-        blk:h.blocking,cc:h.cc,cct:r2(Math.max(0,h.ccT)),syn:h.synT>0,jump:h.air,dive:h.diving,air:h.leapT>0?r2(Math.sin((1-h.leapT/0.5)*Math.PI)*3):r2(h.y),flurry:h.flurryT>0})),
+        blk:h.blocking,tg:h.tgId,cc:h.cc,cct:r2(Math.max(0,h.ccT)),syn:h.synT>0,jump:h.air,dive:h.diving,air:h.leapT>0?r2(Math.sin((1-h.leapT/0.5)*Math.PI)*3):r2(h.y),flurry:h.flurryT>0})),
       enemies:this.enemies.map(e=>({id:e.id,kind:e.kind,x:r2(e.x),z:r2(e.z),face:r2(e.face),hp:Math.max(0,e.hp),maxHp:e.maxHp,stag:Math.round(e.stag),maxStag:e.maxStag,
-        stun:e.stunT>0,windup:e.windup>0||e.chargeT>0,flash:e.flash>0,blind:e.blindT>0,frz:e.freezeT>0,slow:e.slowT>0,kd:e.kdT>0,guard:!!e.def.shield&&e.guardT<=0,bub:e.bub>0?1:0,ey:r2(e.ey||0),air:e.air,burn:e.burnT>0,wet:e.wetT>0,elite:e.elite,armor:Math.round(e.armor),maxArmor:e.maxArmor})),
+        stun:e.stunT>0,windup:e.windup>0||e.chargeT>0,flash:e.flash>0,blind:e.blindT>0,frz:e.freezeT>0,slow:e.slowT>0,kd:e.kdT>0,guard:!!e.def.shield&&e.guardT<=0,bub:e.bub>0?1:0,rage:!!e.enraged,ey:r2(e.ey||0),air:e.air,burn:e.burnT>0,wet:e.wetT>0,elite:e.elite,armor:Math.round(e.armor),maxArmor:e.maxArmor})),
       ult:this.ultPend?{t:r2(this.ultPend.t),n:this.ultPend.m.length,m:this.ultPend.m.slice()}:null,slowmo:this.slowmo>0,
       orbs:this.orbs.map(o=>({id:o.id,kind:o.kind,x:r2(o.x),z:r2(o.z)})),
       projs:this.projs.map(p=>({id:p.id,kind:p.kind,x:r2(p.x),z:r2(p.z),face:r2(p.face),c:p.c||0})).concat(this.eprojs.map(p=>({id:p.id,kind:'lava',x:r2(p.x),z:r2(p.z),face:0,c:0}))),
-      zones:this.zones.map(z=>({id:z.id,kind:z.kind,en:z.eid!=null?1:0,boss:z.boss?1:0,x:r2(z.x),z:r2(z.z),r:z.r,t:r2(z.t),max:z.max,len:z.len||0,face:z.face||0,c:z.c||0,x2:z.x2,z2:z.z2})),
-      wave:this.wave,nW:this.S.waves.length,stage:this.stage,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
+      zones:this.zones.map(z=>({id:z.id,kind:z.kind,rain:z.rain?1:0,en:z.eid!=null?1:0,boss:z.boss?1:0,x:r2(z.x),z:r2(z.z),r:z.r,t:r2(z.t),max:z.max,len:z.len||0,face:z.face||0,c:z.c||0,x2:z.x2,z2:z.z2})),
+      wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,phaseT:r2(this.phaseT),stage:this.stage,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
       banner:this.banner,bannerSub:this.bannerSub,bannerT:r2(this.bannerT),ally:Math.floor(this.ally),ctrl:this.controllers.slice()
     };
   }
@@ -1570,10 +1602,11 @@ class World{
       if(v.bub&&!m.bubM){const bm=new THREE.MeshBasicMaterial({color:0xd08cff,transparent:true,opacity:0.28,depthWrite:false,blending:THREE.AdditiveBlending});bm.userData.outlineParameters=NO_OUTLINE;
         const sc=ENEMIES[v.kind].scale;m.bubM=new THREE.Mesh(this.geo.bub||(this.geo.bub=new THREE.SphereGeometry(1,20,14)),bm);m.bubM.scale.setScalar(sc*1.15);m.bubM.position.y=sc*0.95;m.g.add(m.bubM);}
       if(m.bubM){m.bubM.visible=!!v.bub;if(v.bub){m.bubM.material.opacity=0.2+Math.sin(t*6+v.id)*0.08;m.bubM.rotation.y=t;}}
+      if(v.rage&&Math.random()<dt*18){const a=Math.random()*6.28,sc=ENEMIES[v.kind].scale;this.fx.p({x:v.x+Math.cos(a)*sc*0.5,y:Math.random()*sc*1.8,z:v.z+Math.sin(a)*sc*0.5,c:Math.random()<0.5?0xff3b1a:0xffa020,tex:'star',vy:3,s:0.7,s1:0.05,life:0.45});}
       if(v.kind==='chispa'&&Math.random()<dt*14)this.fx.p({x:v.x+(Math.random()-0.5)*0.5,y:1.1+Math.random()*0.4,z:v.z+(Math.random()-0.5)*0.5,c:Math.random()<0.5?0xffd23f:0xff7a1a,tex:'star',vy:1.5,s:0.5,s1:0.05,life:0.3});
       if(m.shieldM)m.shieldM.visible=!!v.guard;
       else{m.inner.rotation.z=v.stun?Math.sin(t*10)*0.15:0;m.inner.rotation.x=v.kd?-1.3:0;}
-      const em=v.flash?(ENEMIES[v.kind].boss?0x6a5a5a:0x9a9090):v.frz?0x4aa8ff:v.windup?((Math.floor(t*10)%2)?0xff2020:0x550000):(v.stun?0x554400:v.burn?0x552000:v.elite?((Math.floor(t*4)%2)?0x5a4000:0x2a1c00):(v.slow||v.wet?0x16385a:0));for(const mt of m.mats)mt.emissive.setHex(em);
+      const em=v.flash?(ENEMIES[v.kind].boss?0x6a5a5a:0x9a9090):v.rage&&!v.windup&&!v.stun?(0x300000+((Math.floor((Math.sin(t*6)+1)*40))<<16)):v.frz?0x4aa8ff:v.windup?((Math.floor(t*10)%2)?0xff2020:0x550000):(v.stun?0x554400:v.burn?0x552000:v.elite?((Math.floor(t*4)%2)?0x5a4000:0x2a1c00):(v.slow||v.wet?0x16385a:0));for(const mt of m.mats)mt.emissive.setHex(em);
       m.al.position.y=m.ar.position.y=0.75+(v.windup?0.55:0);
       if(!m.anim)m.inner.position.y=v.windup?0.1:Math.abs(Math.sin(t*6+v.id))*0.05;
       m.bars.quaternion.copy(q);if(m.bw){m.hpF.scale.x=Math.max(0.001,m.bw*v.hp/v.maxHp);if(m.stF)m.stF.scale.x=Math.max(0.001,m.bw*v.stag/v.maxStag);}
@@ -1597,6 +1630,7 @@ class World{
       else if(v.kind==='smoke'){if(R()<dt*14){const a=R()*6.28,rr=v.r*Math.sqrt(R());F.smoke(v.x+Math.cos(a)*rr,0.3,v.z+Math.sin(a)*rr,0x2a1a3a,1,1.8);}}
       else if(v.kind==='delayed'){const y=14*(1-pr);F.p({x:v.x,y,z:v.z,c:v.c||0xffffff,s:1.8,s1:1.6,life:0.06});F.p({x:v.x,y:y+0.6,z:v.z,c:v.c||0xffffff,s:0.9,s1:0.1,life:0.35});
         if(R()<dt*15){const a=R()*6.28;F.p({x:v.x+Math.cos(a)*v.r,y:0.2,z:v.z+Math.sin(a)*v.r,c:v.c||0xffffff,vy:3,s:0.5,s1:0.1,life:0.5});}}
+      else if(v.kind==='ebomb'&&v.rain){const y=16*(1-pr);F.p({x:v.x+(1-pr)*3,y,z:v.z,c:0xff5a1a,s:1.6,s1:1.4,life:0.06});F.p({x:v.x+(1-pr)*3,y:y+0.5,z:v.z,c:0xffd23f,tex:'star',s:0.8,s1:0.1,life:0.3});}
       else if(v.kind==='ebomb'){if(R()<dt*20)F.p({x:v.x+(R()-0.5),y:0.8,z:v.z+(R()-0.5),c:0xff5a1a,tex:'star',s:0.8,s1:0.1,life:0.2});}
       if(g.userData.spin){g.userData.spin.rotation.y=t*12;if(v.kind==='static')g.userData.spin.material.opacity=0.12+Math.random()*0.15;}
       if(g.userData.edge){const late=pr>0.72;g.userData.edge.material.opacity=late?((Math.floor(t*16)%2)?1:0.25):0.75+Math.sin(t*8)*0.2;g.userData.edge.material.color.setHex(late?0xffffff:0xff5a7a);}
@@ -1612,6 +1646,15 @@ class World{
     if(this.embers)for(const e of this.embers){e.position.y+=dt*2;if(e.position.y>14)e.position.y=0;}
     this.fx.update(dt);
     // cámara
+    {const fh=view.heroes[focus];if(!this.tgA){const g=new THREE.Group();const mt=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.95,depthTest:false});
+        const cone=new THREE.Mesh(new THREE.ConeGeometry(0.28,0.5,4),mt);cone.rotation.x=Math.PI;cone.renderOrder=20;g.add(cone);
+        const rg=new THREE.RingGeometry(0.85,1,40);rg.rotateX(-Math.PI/2);const ring=new THREE.Mesh(rg,new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.7,depthWrite:false,side:THREE.DoubleSide}));
+        this.scene.add(g,ring);noOutline(g);noOutline(ring);this.tgA={g,cone,ring,mt};}
+      const T=this.tgA,em=fh&&fh.tg>=0&&view.phase==='fight'?this.enemyM.get(fh.tg):null,ev=em&&view.enemies.find(e=>e.id===fh.tg);
+      T.g.visible=T.ring.visible=!!(em&&ev);
+      if(em&&ev){const sc=ENEMIES[ev.kind].scale,col=SLOT_COL[focus]||'#ffffff';T.mt.color.set(col);T.ring.material.color.set(col);
+        T.g.position.set(em.g.position.x,sc*2.05+1.15+Math.sin(t*6)*0.12+(ev.ey||0),em.g.position.z);T.cone.rotation.y=t*2.5;
+        T.ring.position.set(em.g.position.x,0.07,em.g.position.z);T.ring.scale.setScalar(ENEMIES[ev.kind].r*1.35+Math.sin(t*6)*0.05);}}
     const me=view.heroes[focus];let cx=0,cz=0,n=0;for(const h of view.heroes){if(!h.down){cx+=h.x;cz+=h.z;n++;}}
     if(n){cx/=n;cz/=n;}else{cx=me.x;cz=me.z;}
     let tx=me.x*0.55+cx*0.45,tz=me.z*0.55+cz*0.45;
@@ -1689,6 +1732,7 @@ class World{
       case 'land':F.dust(ev.x,ev.z,5);break;
       case 'launch':F.burst(ev.x,0.8,ev.z,0xffd23f,10,6);for(let i=0;i<8;i++)F.p({x:ev.x,y:0.5,z:ev.z,c:0xffffff,vy:12,vx:(Math.random()-0.5)*2,vz:(Math.random()-0.5)*2,s:0.5,s1:0.1,life:0.4});Snd.play('hitBig');this.shake=Math.max(this.shake,0.3);break;
       case 'eland':F.dust(ev.x,ev.z,8);Snd.play('crate');break;
+      case 'enrage':F.ring(ev.x,ev.z,(ev.r||2)*3,0xff3b1a);F.burst(ev.x,1.5,ev.z,0xff3b1a,40,10);Snd.play('bossIn');Snd.play('boom');break;
       case 'bubpop':F.burst(ev.x,1.2,ev.z,0xd08cff,16,6);F.ring(ev.x,ev.z,(ev.r||0.6)*2.5,0xd08cff);Snd.play('crate');break;
       case 'elem':F.flash(ev.x,1.2,ev.z,ev.c,4,0.3);F.shell(ev.x,1,ev.z,3,ev.c);F.ring(ev.x,ev.z,3.5,ev.c);F.burst(ev.x,1.2,ev.z,ev.c,20,8);T.add(ev.x,3.2,ev.z,ev.name,'#'+ev.c.toString(16).padStart(6,'0'),true);Snd.play('stagger');this.shake=Math.max(this.shake,0.4);break;
       case 'pdodge':F.flash(ev.x,1,ev.z,0x7fd8ff,3,0.4);F.ring(ev.x,ev.z,3,0x7fd8ff);Snd.play('blink');break;
@@ -1729,6 +1773,22 @@ class HUD{
   }
   set(key,el,prop,val){if(this.c[key]===val)return;this.c[key]=val;if(prop==='text')el.textContent=val;else if(prop==='html')el.innerHTML=val;else if(prop==='w')el.style.width=val+'%';else el.style[prop]=val;}
   setPad(pad){this.pad=pad;for(const s of [...SLOTS,'ult']){const k=this.ab[s][1].querySelector('.k');if(k)k.textContent=(pad?PADLBL:KEYLBL)[s];}}
+  results(view,focus){const el=this.resEl||(this.resEl=document.getElementById('results'));const r=view.res;
+    if(!r){if(this.resKey){this.resKey=null;el.style.display='none';el.classList.remove('show');}return;}
+    const key=r.stage+':'+r.t;if(this.resKey!==key){this.resKey=key;
+      const nst=r.stars.filter(Boolean).length,prev=loadStars()[r.stage]||0;if(nst>prev)saveStars(r.stage,nst);
+      const fmt=x=>Math.floor(x/60)+':'+String(x%60).padStart(2,'0');
+      const best=(f)=>{let bi=-1,bv=0;r.heroes.forEach((h,i)=>{if(h[f]>bv){bv=h[f];bi=i;}});return bi;};
+      const tt={};const add=(i,s)=>{if(i>=0)(tt[i]=tt[i]||[]).push(s);};add(best('dmg'),'💥 Más daño');add(best('maxcc'),'🔥 Mejor combo');add(best('ko'),'🏆 Más derribos');add(best('rev'),'💚 Rescatista');
+      const last=r.stage>=STORY.stages.length-1;
+      el.innerHTML=`<h2>${last?'¡Historia completada!':'¡Etapa completada!'}</h2><div class="sn">Etapa ${r.stage+1} · ${STORY.stages[r.stage].name}</div>
+        <div class="stars">${[['Etapa completada'],['Combo de x20 o más'],['En menos de '+fmt(r.par)]].map((l,i)=>`<div class="star${r.stars[i]?' on':''}"><i>⭐</i><span>${l[0]}</span></div>`).join('')}</div>
+        <div class="sum">Tiempo <b>${fmt(r.t)}</b> · Combo más alto <b>x${r.maxcc}</b> · Caídas del equipo <b>${r.downs}</b>${nst>prev&&prev>0?'<span class="rec">¡Nuevo récord!</span>':''}</div>
+        <div class="hs">${r.heroes.map((h,i)=>{const d=HEROES[h.key];return `<div class="rh${i===focus?' me':''}" style="--c:${SLOT_COL[i]}"><div class="fc">${heroFace(h.key)}</div><div class="nm" style="color:${SLOT_COL[i]}">${d.name}</div><div class="who">${i===focus?'TÚ':h.ctrl==='ai'?'IA':'P'+(i+1)}</div>
+          <table><tr><td>Daño</td><td>${h.dmg}</td></tr><tr><td>Combo</td><td>x${h.maxcc}</td></tr><tr><td>Derribos</td><td>${h.ko}</td></tr><tr><td>Rescates</td><td>${h.rev}</td></tr><tr><td>Caídas</td><td>${h.downs}</td></tr></table>${(tt[i]||[]).map(x=>`<span class="tt">${x}</span>`).join('')}</div>`;}).join('')}</div>
+        <div class="ft">Presiona ataque o salto para continuar<div class="tb"><u></u></div></div>`;
+      el.style.setProperty('--rs',Math.min(1,innerHeight/560,innerWidth/800).toFixed(3));el.style.display='block';el.classList.remove('show');void el.offsetWidth;el.classList.add('show');renderStages&&renderStages();}
+    const u=el.querySelector('.tb u');if(u)u.style.width=Math.max(0,Math.min(100,(view.phaseT||0)/14*100))+'%';}
   update(view,focus){
     view.heroes.forEach((h,i)=>{const C=this.cards[i];const d=HEROES[h.key];
       this.set('nm'+i,C.nm,'text',d.name);C.nm.style.color=SLOT_COL[i];
@@ -1740,14 +1800,15 @@ class HUD{
     this.set('stw',this.stage.querySelector('span'),'text',view.wave?`Oleada ${view.wave} de ${view.nW}`:'');
     this.set('ally',this.allyF,'w',view.ally);const full=view.ally>=100;this.ally.classList.toggle('full',full);
     const b=view.enemies.find(e=>ENEMIES[e.kind].boss);this.set('bv',this.boss,'display',b?'block':'none');
-    if(b){this.set('bl',this.bossL,'text',ENEMIES[b.kind].name);this.set('bhp',this.bossHp,'w',Math.round(b.hp/b.maxHp*100));this.set('bst',this.bossSt,'w',Math.round(b.stag/b.maxStag*100));this.set('bar',this.bossAr,'w',b.maxArmor?Math.round(b.armor/b.maxArmor*100):0);this.set('barv',this.bossArW,'display',b.maxArmor&&b.armor>0?'block':'none');}
+    if(b){this.set('bl',this.bossL,'text',(b.rage?'😡 ':'')+ENEMIES[b.kind].name+(b.rage?' · FURIA':''));this.set('bhp',this.bossHp,'w',Math.round(b.hp/b.maxHp*100));this.set('bst',this.bossSt,'w',Math.round(b.stag/b.maxStag*100));this.set('bar',this.bossAr,'w',b.maxArmor?Math.round(b.armor/b.maxArmor*100):0);this.set('barv',this.bossArW,'display',b.maxArmor&&b.armor>0?'block':'none');}
     if(view.ult){const joined=view.ult.m.includes(focus);const how=document.getElementById('touch').style.display==='block'?'TOCA ★':this.pad?'PRESIONA RT':'PRESIONA E';
       this.set('ub',this.ultb,'display','block');
       this.set('ubt',this.ultb,'html',joined?`¡ALIANZA EXTREMA!<small>¡Estás dentro! Esperando a los demás · ${view.ult.n} de 4 · ${Math.ceil(view.ult.t*10)/10}s</small>`:`¡${how} PARA UNIRTE!<small>Alianza Extrema · ${view.ult.n} de 4 héroes · quedan ${Math.ceil(view.ult.t*10)/10}s</small>`);
       for(const b of this.ab.ult)b.classList.toggle('join',!joined);}
     else{this.set('ub',this.ultb,'display','none');for(const b of this.ab.ult)b.classList.remove('join');}
     document.body.classList.toggle('slowfx',!!view.slowmo);
-    const show=view.bannerT<2.8||view.phase==='win'||view.phase==='lose';
+    this.results(view,focus);
+    const show=view.bannerT<2.8||(view.phase==='win'&&!view.res)||view.phase==='lose';
     this.set('bn',this.banner,'html',view.banner+(view.bannerSub?`<small>${view.bannerSub}</small>`:''));this.set('bo',this.banner,'opacity',show?'1':'0');
     // poderes con anillo de carga
     const me=view.heroes[focus],d=HEROES[me.key];
@@ -1833,9 +1894,11 @@ const STORIES=[
    syn:'Una grieta se abre en el cielo y por ella entran criaturas que se alimentan de la luz. Sombra las reconoce: vienen del lugar donde él nació. Esta vez, el fantasma del callejón tendrá que contar su secreto.',
    teaser:['Ruinas antiguas','El laberinto','La nave flotante','El núcleo'],bosses:['Devoraluz','Reina araña','Capitán del vacío','El Devorador']}
 ];
-const ENEMY_INFO={grunt:'Soldado básico de roca. Golpea de cerca.',shooter:'Dispara bolas de lava desde lejos. Avisa con una línea roja.',escudero:'Su escudo para los golpes ligeros de frente: usa golpe fuerte.',brute:'Grande y con armadura. No se detiene con golpes ligeros.'};
+const ENEMY_INFO={grunt:'Soldado básico de roca. Golpea de cerca.',shooter:'Dispara bolas de lava desde lejos. Avisa con una línea roja.',escudero:'Su escudo para los golpes ligeros de frente: usa golpe fuerte.',brute:'Grande y con armadura. No se detiene con golpes ligeros.',chispa:'Corre hacia ti y estalla. Derríbalo antes: su explosión daña a los enemigos.',saltador:'Te salta encima marcando un círculo rojo. Esquiva y atácalo al aterrizar.',invocador:'Pone burbujas a sus aliados y llama refuerzos. ¡Derrótalo primero!'};
 
 // ---------------- Progreso guardado ----------------
+function loadStars(){try{return JSON.parse(localStorage.getItem('ah_stars')||'{}');}catch(e){return {};}}
+function saveStars(i,n){try{const s=loadStars();s[i]=Math.max(s[i]||0,n);localStorage.setItem('ah_stars',JSON.stringify(s));}catch(e){}}
 function loadProgress(){try{return +(localStorage.getItem('ah_unlocked')||0);}catch(e){return 0;}}
 function saveProgress(n){try{if(n>loadProgress())localStorage.setItem('ah_unlocked',String(n));}catch(e){}renderStages();}
 
@@ -1959,7 +2022,7 @@ function renderStory(){const un=loadProgress();
   if(S.locked){h+=`<div class="etapas">${S.teaser.map((n,i)=>`<div class="et lock"><div class="top" style="background:${S.bg}"><span class="num">${i+1}</span><span class="st">🔒</span></div><div class="nm">${n}</div><div class="bs">Jefe: ${S.bosses[i]}</div></div>`).join('')}</div>
     <p class="syn" style="margin-top:12px;opacity:.75">Esta historia llega pronto. Termina la Historia 1 para estar listo: aquí los enemigos serán de nivel 10 a 20.</p>`;}
   else{
-    h+=`<div class="etapas">${STORY.stages.map((st,i)=>{const bk=stageBoss(st),lock=i>un,done=i<un;return `<div class="et${i===stageView?' on':''}${lock?' lock':''}" data-e="${i}"><div class="top" style="background:${STAGE_BG[st.theme]}">${Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:''}<span class="num">${i+1}</span><span class="st">${lock?'🔒':done?'⭐':''}</span></div><div class="nm">${st.name}</div><div class="bs">Jefe: ${ENEMIES[bk].name}</div></div>`;}).join('')}</div>`;
+    h+=`<div class="etapas">${STORY.stages.map((st,i)=>{const bk=stageBoss(st),lock=i>un,done=i<un;return `<div class="et${i===stageView?' on':''}${lock?' lock':''}" data-e="${i}"><div class="top" style="background:${STAGE_BG[st.theme]}">${Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:''}<span class="num">${i+1}</span><span class="st">${lock?'🔒':(loadStars()[i]?'⭐'.repeat(loadStars()[i]):done?'⭐':'')}</span></div><div class="nm">${st.name}</div><div class="bs">Jefe: ${ENEMIES[bk].name}</div></div>`;}).join('')}</div>`;
     const st=STORY.stages[stageView],T=S.stages[stageView],bk=stageBoss(st),lock=stageView>un;
     const kinds={};for(const W of st.waves)for(const k in W)if(!ENEMIES[k].boss)kinds[k]=(kinds[k]||0)+W[k];
     const enl=Object.entries(kinds).map(([k,n])=>`<div class="en">${Preview.ethumbs[k]?`<img src="${Preview.ethumbs[k]}">`:'<div class="ph"></div>'}<div><b>${ENEMIES[k].name} ×${n}</b><span>${ENEMY_INFO[k]||''}</span></div></div>`).join('');
