@@ -85,6 +85,23 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 #bcard .bq{margin-top:8px;max-width:420px;margin-left:auto;font-size:19px;font-weight:700;font-style:italic;text-shadow:0 2px 0 #000}
 #rtimer{position:absolute;left:50%;top:110px;transform:translateX(-50%);font-family:Bangers,Impact,sans-serif;font-size:40px;color:#ffd23f;text-shadow:0 3px 0 #000;display:none;pointer-events:none;z-index:6;letter-spacing:2px}
 #rtimer.hot{color:#ff4a4a;animation:tmp .5s infinite alternate}@keyframes tmp{to{transform:translateX(-50%) scale(1.12)}}
+#rscene{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;z-index:8;background:linear-gradient(transparent 35%,rgba(0,0,0,.75) 75%)}
+#rscene.on{opacity:1}#rscene .scb{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);width:min(860px,92%)}
+#rscene .scb.pop{animation:scpop .35s ease}@keyframes scpop{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translateX(-50%)}}
+#rscene .sct{font-family:Bangers,Impact,sans-serif;font-size:22px;letter-spacing:2px;color:#ffd23f;text-shadow:0 2px 0 #000;margin-bottom:8px;text-align:center}
+#rscene .cap{background:#ffe9a8;color:#2a1a08;border:4px solid #000;border-radius:6px;padding:14px 20px;font-size:21px;font-weight:800;line-height:1.35;box-shadow:6px 6px 0 #000;text-align:center}
+#rscene .spk{display:flex;align-items:center;gap:16px}#rscene .spk.boss{flex-direction:row-reverse}
+#rscene .pt{width:104px;height:104px;flex:none;border-radius:50%;border:5px solid #fff;background:#223;overflow:hidden;box-shadow:4px 4px 0 #000}#rscene .pt img{width:100%;height:100%;object-fit:cover}#rscene .pt .ph{width:100%;height:100%}
+#rscene .boss .pt{border-color:#ff5a7a;background:#3a0a14}
+#rscene .bb{position:relative;flex:1;background:#fff;color:#111;border:4px solid #000;border-radius:18px;padding:12px 18px;font-size:21px;font-weight:800;line-height:1.3;box-shadow:5px 5px 0 #000}
+#rscene .bb b{display:block;font-family:Bangers,Impact,sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:2px}#rscene .boss .bb b{color:#d02040}
+#rscene .ft{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);text-align:center;font-weight:800;font-size:14px;opacity:.85}
+#rscene .dots{display:flex;gap:6px;justify-content:center;margin-bottom:6px}#rscene .dots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.3)}#rscene .dots i.ok{background:#7dff9a}#rscene .dots i.on{background:#ffd23f}
+#rscene .bar{width:160px;height:4px;margin:0 auto 6px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden}#rscene .bar i{display:block;height:100%;background:#ffd23f}
+body.scn #rintro,body.scn #rprog,body.scn #lhint,body.scn #banner{opacity:0!important}
+#bubbles{position:absolute;inset:0;pointer-events:none;z-index:5;overflow:hidden}
+.bub{position:absolute;left:0;top:0;max-width:240px;background:#fff;color:#111;border:3px solid #000;border-radius:14px;padding:6px 10px 7px;font-size:14px;font-weight:800;line-height:1.25;box-shadow:3px 3px 0 #000;white-space:normal}
+.bub b{display:block;font-family:Bangers,Impact,sans-serif;font-size:14px;letter-spacing:1px}.bub:after{content:'';position:absolute;left:50%;bottom:-10px;margin-left:-8px;border:8px solid transparent;border-top-color:#000;border-bottom:0}
 #lhint{position:absolute;left:50%;bottom:118px;transform:translateX(-50%);background:rgba(0,0,0,.6);padding:6px 14px;border-radius:14px;font-weight:800;font-size:16px;opacity:0;transition:opacity .15s;pointer-events:none;z-index:6;white-space:nowrap}#lhint b{color:#ffd23f}
 #rbanner{position:absolute;left:50%;top:22%;transform:translateX(-50%) scale(.9);font-size:30px;font-weight:900;text-shadow:0 3px 0 #000,0 0 14px rgba(0,0,0,.6);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;z-index:6}
 #rintro{position:absolute;left:0;right:0;bottom:0;padding:22px 8% 34px;background:linear-gradient(transparent,rgba(0,0,0,.85) 35%);opacity:0;transition:opacity .4s;z-index:7;text-align:center}
@@ -329,13 +346,13 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 <div id="bars" class="top"></div><div id="bars2"></div>
 <div id="hud">
   <div id="cards"></div>
-  <div id="topr"><span id="room"></span><div id="stage" class="bang"><b></b><span></span></div><button class="ib" id="b-music">🎵</button><button class="ib" id="b-menu">☰</button></div>
+  <div id="topr"><span id="room"></span><div id="stage" class="bang"><b></b><span></span></div><button class="ib" id="b-voz">💬</button><button class="ib" id="b-music">🎵</button><button class="ib" id="b-menu">☰</button></div>
   <div id="ally"><div class="lbl bang">★ ALIANZA</div><div class="bar"><i></i></div></div>
   <div id="boss"><div class="lbl bang"></div><div class="bar ar" style="height:7px"><i style="background:#9fc4ff"></i></div><div class="bar hp"><i></i></div><div class="bar st"><i></i></div></div>
   <div id="ultb" class="bang"></div>
   <div id="banner" class="bang"></div><div id="results"></div>
   <div id="syn" class="bang"><div class="t">¡SINERGIA!</div><div class="n"></div><div class="w"></div></div>
-  <div id="toast"></div><div id="rbanner"></div><div id="bcard"><div class="bt"></div><div class="bn"></div><div class="bq"></div></div><div id="rtimer"></div><div id="lhint"></div><div id="rprog"></div><div id="rintro"><h2></h2><p></p><div class="bar"><i></i></div><small>Pulsa ataque o salto para empezar</small></div>
+  <div id="toast"></div><div id="rbanner"></div><div id="bubbles"></div><div id="rscene"><div class="scb"></div><div class="ft"><div class="dots"></div><div class="bar"><i></i></div>Ataque o salto: siguiente</div></div><div id="bcard"><div class="bt"></div><div class="bn"></div><div class="bq"></div></div><div id="rtimer"></div><div id="lhint"></div><div id="rprog"></div><div id="rintro"><h2></h2><p></p><div class="bar"><i></i></div><small>Pulsa ataque o salto para empezar</small></div>
   <div id="tray"></div>
   <div id="help">Mover: WASD · Saltar: Espacio · Ligero: J · Fuerte: K · Esquivar: L · Bloquear: Shift · Poderes: 1 2 3 4 · Alianza: E · Cambiar héroe: Tab</div>
   <div id="combo" class="bang"><b></b><span>COMBO</span><em></em><i class="cbar"><u></u></i></div><div id="ctier" class="bang"></div>
@@ -629,7 +646,7 @@ function mkRoute(style,intro,specs){
   const W=(o,f,r,u,v)=>[+(o[0]+f[0]*u+r[0]*v).toFixed(2),+(o[1]+f[1]*u+r[1]*v).toFixed(2)];
   let prev=null;
   specs.forEach((sp,idx)=>{const n={n:sp.n,sub:sp.sub,deco:sp.deco||(sp.t==='s'?'path':'plaza'),floor:sp.floor};
-    for(const k of ['lock','boss','rest','cp','timer','timerTxt','hazard','nestTxt','cageTxt','waves','spawn'])if(sp[k]!==undefined)n[k]=sp[k];
+    for(const k of ['lock','boss','rest','cp','timer','timerTxt','hazard','nestTxt','cageTxt','padTxt','waves','spawn'])if(sp[k]!==undefined)n[k]=sp[k];
     let o,f,r;
     if(sp.t==='s'){// calle
       if(sp.turn){a+=sp.turn;}f=F(a);r=Rt(a);let sx,sz;
@@ -664,7 +681,10 @@ function mkRoute(style,intro,specs){
 }
 // ----- Historia 1 -----
 const STORY={name:'La invasión de obsidiana',stages:[
-  {name:'Plaza central',theme:'ruta_plaza',lvl:1,waves:[{grunt:10,shooter:3,chispa:2,saltador:1},{grunt:11,shooter:1,escudero:3,chispa:2,brute:2,invocador:1},{grunt:7,capataz:1}],
+  {name:'Plaza central',theme:'ruta_plaza',lvl:1,scene:[
+     {w:'narr',t:'Ciudad Aurora. Un día tranquilo… hasta que el suelo empezó a temblar.'},
+     {w:'h0',t:'¡Gólems de obsidiana saliendo de las alcantarillas! ¡Equipo, a la plaza!'},
+     {w:'h1',t:'Los vecinos necesitan ayuda. ¡Vamos juntos!'}],waves:[{grunt:10,shooter:3,chispa:2,saltador:1},{grunt:11,shooter:1,escudero:3,chispa:2,brute:2,invocador:1},{grunt:7,capataz:1}],
    route:{intro:'Los primeros gólems salieron por las alcantarillas y tomaron la plaza. Los dirige El Capataz, un gólem enorme que da órdenes a gritos. ¡Salgan del metro, crucen el mercado y deténganlo frente al ayuntamiento!',
     nodes:[
      {n:'Salida del metro',deco:'metro',floor:'tiles',sh:[['r',0,2,10,7,0]],props:[['barril',6,-1],['piedra',-6,-1]],obs:[[-7,5,0.7,'bench'],[7,5,0.7,'bench']]},
@@ -685,7 +705,7 @@ const STORY={name:'La invasión de obsidiana',stages:[
       nests:[[66,-92.5],[81,-105],[78,-130]],obs:[[70,-104,1.3,'car'],[76,-92,1.3,'car'],[63,-106,1.3,'car'],[82,-116,1.3,'car'],[74.5,-121,1.3,'car']],
       waves:[{grunt:3,shooter:1},{brute:1,grunt:3,chispa:2},{escudero:2,shooter:2,grunt:2}],crates:[[64,-98]],crystals:[[83,-133.5]],heals:[[83,-91]],
       props:[['auto',74,-99],['barril',69,-109],['barril',74,-113],['barril',82,-124],['piedra',66,-101]]},
-     {n:'Callejón oscuro',sub:'¡Emboscada! Miren arriba',deco:'alley',sh:[['s',78,-133,78,-170,5]],gate:[78,-136,5,0],hazard:{fall:true},timer:55,bomb:[81.6,-152],pads:[[75,-167],[81,-167]],
+     {n:'Callejón oscuro',sub:'¡Emboscada! Miren arriba',deco:'alley',sh:[['s',78,-133,78,-170,5]],gate:[78,-136,5,0],hazard:{fall:true},timer:55,bomb:[81.6,-152],pads:[[75,-167],[81,-167]],padTxt:'¡El puente está cerrado!',
       fights:[{x:78,z:-145,at:7,sp:{saltador:2,grunt:2}},{x:78,z:-158,at:7,sp:{chispa:2,shooter:2,grunt:2}}],obs:[[75,-152,0.6,'barrel'],[81,-140,0.6,'barrel'],[81.6,-152,0.75,'bomb']],crates:[[81,-147],[75,-161]],props:[['barril',75.5,-146],['barril',80.5,-163]],
       secret:{sh:[['r',86,-155,5,4,0]],wall:[83.4,-155,4,1.5708],props:[['cofre',88.5,-155]]}},
      {n:'El puente',sub:'Un guardia de élite cuida el paso',deco:'bridge',floor:'wood',sh:[['r',78,-190,7,21.5,0]],gate:[78,-171.5,5,0],lock:true,
@@ -699,7 +719,10 @@ const STORY={name:'La invasión de obsidiana',stages:[
       obs:[[65,-294,1.2,'statue'],[91,-294,1.2,'statue']],heals:[[60,-289],[96,-289]],
       props:[['barril',66,-306],['barril',90,-306],['barril',70,-292],['barril',86,-292],['piedra',78,-310],['poste',62,-300],['poste',94,-300],['auto',95,-309]],
       waves:[{grunt:4,shooter:1},{grunt:3,escudero:1,saltador:1},{brute:1,grunt:3,invocador:1},{capataz:1,grunt:2}]}]}},
-  {name:'El puerto',theme:'puerto',lvl:1.35,waves:[],route:mkRoute('port','Los gólems llegaron al puerto en barcos de obsidiana y el Centinela, un gólem vigilante, tomó el faro. ¡Crucen el malecón, rescaten a los marineros del barco y apaguen su luz antes de que lleguen más!',[
+  {name:'El puerto',theme:'puerto',lvl:1.35,scene:[
+     {w:'narr',t:'El Capataz cayó… pero antes de desmoronarse soltó una carcajada.'},
+     {w:'boss:capataz',t:'¡Ja! ¡Llegaron tarde! El Centinela ya tomó el puerto. ¡Vienen más barcos!'},
+     {w:'h2',t:'Entonces hay que llegar al puerto antes que el siguiente barco.'}],waves:[],route:mkRoute('port','Los gólems llegaron al puerto en barcos de obsidiana y el Centinela, un gólem vigilante, tomó el faro. ¡Crucen el malecón, rescaten a los marineros del barco y apaguen su luz antes de que lleguen más!',[
     {t:'r',n:'Muelle de llegada',deco:'pier',floor:'wood',hw:10,hd:7,props:[['barril',-4,-6],['piedra',-4,6]],decor:[['boatbig',-14,0,HP]]},
     {t:'s',n:'El malecón',sub:'Rompan cajas y busquen pasajes secretos',deco:'dock',w:6.5,L:70,fights:[{u:14,sp:{grunt:4}},{u:30,sp:{grunt:3,shooter:2}},{u:46,sp:{saltador:1,grunt:4}},{u:62,sp:{chispa:2,grunt:3,shooter:1}}],
       crates:[[10,-4],[22,4],[38,-4.5],[55,4.3]],props:[['barril',18,4.4],['barril',42,-4.4],['piedra',28,-4.4],['poste',50,4.6]],obs:[[25,4.8,0.6,'bollard'],[45,-4.8,0.6,'bollard']],
@@ -711,13 +734,16 @@ const STORY={name:'La invasión de obsidiana',stages:[
       fights:[{u:12,sp:{saltador:1,grunt:4}},{u:28,sp:{grunt:3,shooter:2}},{u:46,sp:{chispa:3,grunt:3}}],props:[['barril',22,4.4],['barril',38,-4.4]],decor:[['crane',20,11,HP],['crane',42,-11,HP]]},
     {t:'r',n:'El barco',sub:'¡Los gólems atraparon a los marineros!',cageTxt:['¡Rescaten a los marineros!','Rompan las jaulas mientras pelean'],deco:'ship',floor:'wood',hw:8,hd:15,lock:true,cages:[[-6,-4],[4,4.5],[9,-3.5]],obs:[[-1,0,0.6,'mast'],[8,0,0.6,'mast']],
       props:[['barril',-11,5],['barril',12,-5]],heals:[[0,5.5]],crystals:[[13,6]],waves:[{grunt:4,shooter:1},{escudero:2,grunt:3},{saltador:2,chispa:2,grunt:2},{'brute*':1,grunt:3,shooter:1}]},
-    {t:'s',n:'La pasarela',sub:'Dos héroes deben bajar el puente levadizo',deco:'gangway',floor:'wood',w:4.5,L:30,turn:-HP,fights:[{u:12,at:7,sp:{grunt:3,chispa:2}}],pads:[[26,-2.4],[26,2.4]]},
+    {t:'s',n:'La pasarela',sub:'Dos héroes deben bajar el puente levadizo',padTxt:'¡El puente levadizo está arriba!',deco:'gangway',floor:'wood',w:4.5,L:30,turn:-HP,fights:[{u:12,at:7,sp:{grunt:3,chispa:2}}],pads:[[26,-2.4],[26,2.4]]},
     {t:'c',n:'La bodega',deco:'warehouse',floor:'concrete',rad:9,rest:true,obs:[[2,0,1.3,'crates2']],crystals:[[4.2,0]]},
     {t:'s',n:'El rompeolas',sub:'¡Una bomba gólem en el rompeolas!',deco:'breakwater',floor:'concrete',w:6,L:64,timer:60,bomb:[32,4.2],obs:[[32,4.3,0.75,'bomb']],
       fights:[{u:12,sp:{grunt:4,shooter:1}},{u:30,sp:{saltador:2,grunt:3}},{u:50,sp:{escudero:1,shooter:2,grunt:3}}],props:[['barril',20,-4.4],['piedra',42,4.4]],crystals:[[60,-4.6]],secret:{side:'l',u:46,props:[['cofre',0,0]]}},
     {t:'c',n:'El faro',sub:'¡El Centinela vigila la costa!',deco:'lighthouse',floor:'concrete',rad:15,lock:true,boss:true,heals:[[-4,-11],[-4,11]],props:[['barril',6,-8],['barril',6,8],['piedra',-8,0]],
       waves:[{grunt:4,shooter:2},{escudero:2,saltador:2,grunt:2},{brute:1,shooter:2,invocador:1,grunt:2},{centinela:1,grunt:3}]}])},
-  {name:'La fábrica',theme:'fabrica',lvl:1.7,waves:[],route:mkRoute('factory','En la vieja fábrica, los gólems encendieron los moldes para fabricar más soldados. Los Gemelos de Magma cuidan el horno principal. ¡Destruyan los moldes, desactiven la caldera y apaguen el horno!',[
+  {name:'La fábrica',theme:'fabrica',lvl:1.7,scene:[
+     {w:'narr',t:'La luz del faro se apagó. Entre las piezas del Centinela brillaba un sello extraño.'},
+     {w:'h1',t:'Este sello es de la vieja fábrica del norte. ¡Ahí los están fabricando!'},
+     {w:'h3',t:'Pues vamos a cerrar esa fábrica. ¡Para siempre!'}],waves:[],route:mkRoute('factory','En la vieja fábrica, los gólems encendieron los moldes para fabricar más soldados. Los Gemelos de Magma cuidan el horno principal. ¡Destruyan los moldes, desactiven la caldera y apaguen el horno!',[
     {t:'r',n:'Andén de carga',deco:'loading',floor:'concrete',hw:10,hd:7,props:[['barril',-4,-6],['piedra',-4,6]],decor:[['truck',-11,-4,HP]]},
     {t:'s',n:'Banda transportadora',sub:'¡Cuidado con el metal fundido!',deco:'conveyor',w:6,L:62,hazard:{fire:[[14,-3],[28,3],[42,-3],[54,3]]},
       fights:[{u:10,sp:{grunt:4}},{u:24,sp:{grunt:3,shooter:2}},{u:38,sp:{chispa:2,grunt:4}},{u:52,sp:{saltador:1,grunt:3,shooter:1}}],props:[['barril',8,4.4],['barril',34,-4.4],['piedra',46,4.4]],crates:[[18,-4.4],[30,4.4]]},
@@ -728,11 +754,14 @@ const STORY={name:'La invasión de obsidiana',stages:[
     {t:'r',n:'La fundición',sub:'Un guardia de élite custodia el metal fundido',deco:'smelter',floor:'metal',hw:13,hd:13,lock:true,hazard:{fire:[[-6,-8],[6,8],[8,-8]]},
       obs:[[0,-6,1.5,'crucible'],[0,6,1.5,'crucible']],heals:[[9,9]],props:[['barril',-9,0]],crystals:[[-11,-11]],waves:[{grunt:4,shooter:1},{escudero:2,grunt:3},{saltador:2,chispa:2,grunt:2},{'brute*':1,grunt:3,invocador:1}]},
     {t:'c',n:'Cuarto de control',deco:'control',floor:'tiles',rad:8.5,rest:true,obs:[[3,-4,1.1,'console'],[3,4,1.1,'console']],crystals:[[5.4,-4]]},
-    {t:'s',n:'El almacén',sub:'Rompan el muro y abran el horno juntos',deco:'storage',floor:'concrete',w:6,L:56,turn:-HP,fights:[{u:12,sp:{grunt:4,shooter:1}},{u:28,sp:{saltador:2,grunt:3}},{u:42,sp:{escudero:1,chispa:2,grunt:3}}],
+    {t:'s',n:'El almacén',sub:'Rompan el muro y abran el horno juntos',padTxt:'¡La puerta del horno está cerrada!',deco:'storage',floor:'concrete',w:6,L:56,turn:-HP,fights:[{u:12,sp:{grunt:4,shooter:1}},{u:28,sp:{saltador:2,grunt:3}},{u:42,sp:{escudero:1,chispa:2,grunt:3}}],
       obs:[[8,-4.6,0.9,'shelf',0],[20,4.6,0.9,'shelf',0],[38,-4.6,0.9,'shelf',0]],secret:{side:'r',u:32,props:[['cofre',0,0]],crystal:true},props:[['barril',16,-4.4],['piedra',44,4.4]],pads:[[51,-2.6],[51,2.6]]},
     {t:'c',n:'El horno',sub:'¡Los Gemelos de Magma!',deco:'furnace',floor:'metal',rad:15,lock:true,boss:true,hazard:{fire:[[-8,-8],[-8,8],[6,0]]},heals:[[-6,-12],[-6,12]],props:[['barril',4,-9],['barril',4,9]],
       waves:[{grunt:4,chispa:2},{brute:1,shooter:2,grunt:3},{escudero:2,invocador:1,grunt:3},{gemelo:2,chispa:2}]}])},
-  {name:'El volcán',theme:'volcan',lvl:2.1,waves:[],route:mkRoute('volcano','Todo empezó aquí: el Coloso, señor de la obsidiana, despierta dentro del volcán. Suban por el sendero, liberen a los mineros, crucen el río de lava y enfréntenlo en el cráter. ¡Es la batalla final!',[
+  {name:'El volcán',theme:'volcan',lvl:2.1,scene:[
+     {w:'narr',t:'Al apagar el horno, todo retumbó. A lo lejos, el volcán empezó a echar humo negro.'},
+     {w:'boss:gemelo',t:'¡Demasiado tarde, héroes! ¡El Coloso ya despertó!'},
+     {w:'h0',t:'Esta es la batalla final, equipo. ¡Juntos podemos!'}],waves:[],route:mkRoute('volcano','Todo empezó aquí: el Coloso, señor de la obsidiana, despierta dentro del volcán. Suban por el sendero, liberen a los mineros, crucen el río de lava y enfréntenlo en el cráter. ¡Es la batalla final!',[
     {t:'r',n:'Pie del volcán',deco:'base',floor:'rock',hw:10,hd:7,props:[['piedra',-4,-6],['piedra',-4,6]]},
     {t:'s',n:'Sendero de ceniza',sub:'¡Caen rocas del volcán!',deco:'path',w:6.5,L:66,hazard:{fall:true},fights:[{u:12,sp:{grunt:4}},{u:28,sp:{grunt:3,shooter:2}},{u:44,sp:{saltador:2,grunt:3}},{u:60,sp:{chispa:2,brute:1,grunt:2}}],
       props:[['piedra',8,4.4],['piedra',22,-4.4],['barril',36,4.4],['piedra',50,-4.4]],obs:[[16,-4.8,1.2,'rockobs'],[40,4.8,1.2,'rockobs']],secret:{side:'l',u:30,props:[['cofre',0,0]],crystal:true}},
@@ -745,13 +774,18 @@ const STORY={name:'La invasión de obsidiana',stages:[
     {t:'c',n:'Manantial termal',deco:'spring',floor:'rock',rad:8.5,rest:true,obs:[[0,0,2.4,'pool']],crystals:[[0,3.4]]},
     {t:'s',n:'Puente de obsidiana',sub:'¡El puente se derrumba!',deco:'lavabridge',w:4.5,L:44,turn:HP,timer:50,timerTxt:['¡El puente se derrumba!','Derroten a todos antes de que se caiga'],bomb:[22,3.2],obs:[[22,3.3,0.75,'bomb']],
       fights:[{u:12,at:7,sp:{saltador:2,grunt:2}},{u:30,at:7,sp:{chispa:2,shooter:2,grunt:2}}],crystals:[[40,-3.3]]},
-    {t:'s',n:'La ladera',sub:'Dos héroes deben abrir la puerta del cráter',deco:'path',w:6.5,L:40,fights:[{u:12,sp:{grunt:4,shooter:1}},{u:26,sp:{brute:1,chispa:2,grunt:2}}],props:[['piedra',8,4.4],['barril',20,-4.4]],pads:[[36,-3],[36,3]]},
+    {t:'s',n:'La ladera',sub:'Dos héroes deben abrir la puerta del cráter',padTxt:'¡La puerta del cráter está cerrada!',deco:'path',w:6.5,L:40,fights:[{u:12,sp:{grunt:4,shooter:1}},{u:26,sp:{brute:1,chispa:2,grunt:2}}],props:[['piedra',8,4.4],['barril',20,-4.4]],pads:[[36,-3],[36,3]]},
     {t:'c',n:'El cráter',sub:'¡El Coloso despierta!',deco:'crater',floor:'rock',rad:16,lock:true,boss:true,hazard:{fire:[[-9,-9],[-9,9],[7,-10],[7,10]]},heals:[[-12,0],[11,0]],props:[['barril',0,-10],['barril',0,10],['piedra',-6,0]],
       waves:[{grunt:5,shooter:2},{brute:2,chispa:3,grunt:2},{escudero:2,invocador:1,saltador:2,grunt:2},{boss:1,grunt:3,shooter:2}]}])},
 ]};
 for(const st of STORY.stages){if(!st.route||st.waves.length)continue;const ag={},bs={};for(const n of st.route.nodes){for(const f of n.fights||[])for(const k in f.sp)ag[k]=(ag[k]||0)+f.sp[k];
   for(const W of n.waves||[])for(const k0 in W){const k=k0.replace('*','');(ENEMIES[k].boss?bs:ag)[k]=((ENEMIES[k].boss?bs:ag)[k]||0)+W[k0];}}st.waves=[ag,bs];}
 const STAGE_PAR=[600,600,600,660];
+const SCENE_DUR=4.6;
+STORY.ending=[{w:'narr',t:'Con el Coloso derrotado, la obsidiana se volvió polvo y el volcán por fin se calmó.'},
+  {w:'h0',t:'¡Lo logramos! Ciudad Aurora está a salvo.'},{w:'h1',t:'Ninguno lo habría logrado solo. Somos una alianza.'},
+  {w:'h2',t:'Oigan… ¿alguien más siente frío de repente?'},
+  {w:'narr',t:'Muy lejos, en las montañas del norte, una reina de hielo abría los ojos… Continuará en «El reino helado».'}];
 const COMBO_TIERS=[{n:10,w:'¡Bien!',c:'#7fe0ff',en:8,al:2},{n:20,w:'¡Genial!',c:'#5dff8a',en:12,al:4},{n:35,w:'¡Increíble!',c:'#ffd23f',en:16,al:6},{n:50,w:'¡Imparable!',c:'#ff8a3d',en:20,al:8},{n:75,w:'¡LEGENDARIO!',c:'#ff4fd8',en:25,al:12}];
 const DIFF={facil:{wind:1.3,enemyDmg:0.55,revive:4,enemyHp:0.85,tokens:2,maxE:8,elite:0.04},normal:{wind:1.1,enemyDmg:1,revive:7,enemyHp:1,tokens:3,maxE:10,elite:0.08},dificil:{wind:0.95,enemyDmg:1.6,revive:10,enemyHp:1.35,tokens:5,maxE:13,elite:0.15,armorLight:true}};
 
@@ -771,7 +805,7 @@ class Sim{
     this.heroes=this.team.map((k,i)=>this.makeHero(k,i));
     this.enemies=[];this.projs=[];this.eprojs=[];this.zones=[];this.orbs=[];this.hitKind='ability';
     this.R=null;if(this.S.route)this.routeInit();else for(let i=0;i<6;i++){const a=rng()*TAU,r=7+rng()*10;this.spawnAt('crate',Math.sin(a)*r,Math.cos(a)*r);}
-    this.wave=0;this.phase='intro';this.phaseT=this.R?12:3;this.phaseMax=this.phaseT;this.stT=0;this.result=null;this.setBanner(this.S.name,'Etapa '+(this.stage+1));
+    this.wave=0;this.phase='intro';this.phaseT=this.R?((this.S.scene||[]).length+1)*SCENE_DUR:3;this.phaseMax=this.phaseT;this.sceneCD=0;this.stT=0;this.result=null;this.setBanner(this.S.name,'Etapa '+(this.stage+1));
     this.ally=0;this.events=[];this.hitstop=0;this.queue=[];this.spawnT=0;this.lastAbility=null;
     this.inputs=this.heroes.map(()=>emptyInput());this.bossAddT=15;this.synReadyT=0;this.curMul=1;this.slowmo=0;this.ultPend=null;this.eScale=1;
   }
@@ -878,13 +912,13 @@ class Sim{
     // abrir siguiente nodo cuando el actual (sin cierre) quedó limpio
     else{const i=R.open;if(i<N.length-1){const n=N[i];const fightsDone=(n.fights||[]).every((f,q)=>R.fights[i][q]);const clean=!this.enemies.some(e=>!e.dead&&e.rf&&e.rf[0]===i);
       const padsOk=!n.pads||R.pads[i];
-      if(n.pads&&!R.pads[i]&&fightsDone&&clean&&R.entered[i]&&!R.padMsg){R.padMsg=1;this.setBanner('¡El puente está cerrado!','Párense en las 2 placas al mismo tiempo');}
+      if(n.pads&&!R.pads[i]&&fightsDone&&clean&&R.entered[i]&&!R.padMsg){R.padMsg=1;this.setBanner(n.padTxt||'¡El paso está cerrado!','Párense en las 2 placas al mismo tiempo');this.ev({k:'say',w:'pads'});}
       if((!n.lock||R.done[i])&&fightsDone&&clean&&R.entered[i]&&padsOk){R.open=i+1;R.done[i]=true;if((n.fights||[]).length)this.ev({k:'txt',x:alive[0]?alive[0].x:0,z:alive[0]?alive[0].z:0,s:'¡Adelante! ➜',c:'#7dff9a',big:true});this.ev({k:'gateopen',i:i+1});}}}
     // placas de presión
     N.forEach((n,i)=>{if(!n.pads||R.pads[i]||!R.entered[i])return;const occ=n.pads.map(q=>alive.some(h=>Math.hypot(h.x-q[0],h.z-q[1])<1.4));R.padOcc=occ;
       if(occ.every(Boolean)){R.padT=(R.padT||0)+dt;if(R.padT>1){R.pads[i]=true;R.padOcc=null;this.setBanner('¡Lo lograron juntos!','El puente está bajando');this.ev({k:'sfx',s:'clear'});this.ev({k:'pads',i});this.ally=Math.min(100,this.ally+15);}}else R.padT=0;});
     // bomba con cuenta regresiva
-    N.forEach((n,i)=>{if(!n.timer||R.tmDone[i])return;if(R.tm==null&&R.entered[i]){R.tm=n.timer*(this.diff==='facil'?1.3:1);R.tmI=i;this.setBanner(...(n.timerTxt||['¡Una bomba gólem!','Derroten a todos antes de que explote']));this.ev({k:'sfx',s:'warn'});}
+    N.forEach((n,i)=>{if(!n.timer||R.tmDone[i])return;if(R.tm==null&&R.entered[i]){R.tm=n.timer*(this.diff==='facil'?1.3:1);R.tmI=i;this.setBanner(...(n.timerTxt||['¡Una bomba gólem!','Derroten a todos antes de que explote']));this.ev({k:'say',w:'bomb'});this.ev({k:'sfx',s:'warn'});}
       if(R.tm==null||R.tmI!==i)return;R.tm-=dt;const fd=(n.fights||[]).every((f,q)=>R.fights[i][q])&&!this.enemies.some(e=>!e.dead&&e.rf&&e.rf[0]===i);
       if(fd){R.tmDone[i]=true;R.tm=null;this.setBanner('¡Bomba desactivada!','¡Bien hecho, equipo!');this.ally=Math.min(100,this.ally+30);this.ev({k:'defuse',x:n.bomb[0],z:n.bomb[1]});this.ev({k:'sfx',s:'clear'});}
       else if(R.tm<=0){R.tmDone[i]=true;R.tm=null;for(const h of alive)h.hp=Math.max(1,h.hp-h.maxHp*0.3);this.ev({k:'bombboom',x:n.bomb[0],z:n.bomb[1]});this.ev({k:'shake',a:1.4});this.ev({k:'sfx',s:'boom'});this.setBanner('¡BUM! Casi...','La próxima vez más rápido');}});
@@ -913,8 +947,10 @@ class Sim{
   routeWin(){this.phase='win';this.phaseT=14;this.makeResult();const last=this.stage>=STORY.stages.length-1;const bonus=150*(this.stage+1);
     this.setBanner(last?'¡HISTORIA COMPLETADA!':'¡Etapa completada!',(last?'La ciudad está a salvo':'Siguiente: '+STORY.stages[this.stage+1].name)+' · +'+bonus+' XP');
     this.ev({k:'stageWin',stage:this.stage});this.ev({k:'xp',n:bonus});this.ev({k:'sfx',s:'win'});}
+  sceneSkip(dt){this.sceneCD-=dt;if(this.sceneCD>0||this.phaseT>this.phaseMax-1)return;if(this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&p&&(p.atk||p.jmp))){this.sceneCD=0.6;const el=this.phaseMax-this.phaseT;const nx=(Math.floor(el/SCENE_DUR)+1)*SCENE_DUR;this.phaseT=Math.max(0,this.phaseMax-nx);}}
   updatePhase(dt){
-    if(this.R){if(this.phase==='intro'){this.phaseT-=dt;if(this.phaseT<this.phaseMax-1.5&&this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&(p.atk||p.jmp)))this.phaseT=0;if(this.phaseT<=0){this.phase='fight';this.setBanner(this.S.route.nodes[0].n,this.S.name);}return;}
+    if(this.phase==='ending'){this.phaseT-=dt;this.sceneSkip(dt);if(this.phaseT<=0)this.reset(this.diff,0);return;}
+    if(this.R){if(this.phase==='intro'){this.phaseT-=dt;this.sceneSkip(dt);if(this.phaseT<=0){this.phase='fight';this.setBanner(this.S.route.nodes[0].n,this.S.name);}return;}
       if(this.phase==='fight'){this.stT+=dt;this.updateRoute(dt);return;}}
     const W=this.S.waves;
     if(this.phase==='intro'){this.phaseT-=dt;if(this.phaseT<=0)this.startWave(0);}
@@ -932,7 +968,7 @@ class Sim{
       }else if(this.heroes.every(h=>h.down)){this.phase='lose';this.phaseT=6;this.setBanner('Los héroes cayeron…','¡Intentemos otra vez!');this.ev({k:'sfx',s:'lose'});}
     }
     else if(this.phase==='clear'){this.phaseT-=dt;if(this.phaseT<=0)this.startWave(this.wave);}
-    else if(this.phase==='win'){this.phaseT-=dt;if(this.phaseT<11&&this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&(p.atk||p.jmp)))this.phaseT=0;if(this.phaseT<=0)this.reset(this.diff,this.stage>=STORY.stages.length-1?0:this.stage+1);}
+    else if(this.phase==='win'){this.phaseT-=dt;if(this.phaseT<11&&this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&(p.atk||p.jmp)))this.phaseT=0;if(this.phaseT<=0){if(this.stage>=STORY.stages.length-1&&STORY.ending){this.phase='ending';this.phaseT=this.phaseMax=STORY.ending.length*SCENE_DUR;this.sceneCD=0.8;this.result=null;}else this.reset(this.diff,this.stage>=STORY.stages.length-1?0:this.stage+1);}}
     else if(this.phase==='lose'){this.phaseT-=dt;if(this.phaseT<=0)this.reset(this.diff,this.stage);}
   }
   startWave(n){
@@ -1121,7 +1157,7 @@ class Sim{
       if(e.elite==='explosivo'){this.zones.push({id:this.nid++,kind:'ebomb',x:e.x,z:e.z,r:3.2,t:0.9,max:0.9});this.ev({k:'txt',x:e.x,z:e.z,s:'¡Va a explotar!',c:'#ff6b6b'});}
       if(e.def.chest){this.ev({k:'txt',x:e.x,z:e.z,s:'¡Tesoro!',c:'#ffd23f',big:true});this.ev({k:'chest',x:e.x,z:e.z});for(const o of this.heroes)if(!o.down)o.energy=100;}
       if(e.def.rescue){this.ev({k:'rescue',x:e.x,z:e.z,id:e.id});this.ev({k:'txt',x:e.x,z:e.z,s:'¡Gracias, héroes!',c:'#7dff9a',big:true});this.ally=Math.min(100,this.ally+10);if(this.R)this.R.saved=(this.R.saved||0)+1;}
-      if(e.secret!=null&&this.R){this.R.sec[e.secret]=true;this.R.obsKey=null;this.setBanner('¡Pasaje secreto!','Entren a ver qué hay');this.ev({k:'sfx',s:'clear'});}
+      if(e.secret!=null&&this.R){this.R.sec[e.secret]=true;this.R.obsKey=null;this.setBanner('¡Pasaje secreto!','Entren a ver qué hay');this.ev({k:'say',w:'secret'});this.ev({k:'sfx',s:'clear'});}
       const no=e.def.noDrop?0:e.def.chest?7:e.def.prop?2:e.def.boss?8:e.elite?3:(rng()<0.4?1:0);for(let i=0;i<no;i++)this.dropOrb(e.x,e.z,(e.def.boss?i%2===0:rng()<0.4)?'hp':'en');
       this.ev({k:'xp',n:Math.round(e.def.xp*this.lvl()*(e.elite?2:1)*(this.diff==='dificil'?1.3:1)),x:e.x,z:e.z});
       if(e.def.boss){this.ev({k:'shake',a:1.3});this.hitstop=0.3;
@@ -1465,7 +1501,7 @@ class Sim{
       orbs:this.orbs.map(o=>({id:o.id,kind:o.kind,x:r2(o.x),z:r2(o.z)})),
       projs:this.projs.map(p=>({id:p.id,kind:p.kind,obj:p.obj,x:r2(p.x),z:r2(p.z),face:r2(p.face),c:p.c||0})).concat(this.eprojs.map(p=>({id:p.id,kind:'lava',x:r2(p.x),z:r2(p.z),face:0,c:0}))),
       zones:this.zones.map(z=>({id:z.id,kind:z.kind,rain:z.rain?1:0,en:z.eid!=null?1:0,boss:z.boss?1:0,x:r2(z.x),z:r2(z.z),r:z.r,t:r2(z.t),max:z.max,len:z.len||0,face:z.face||0,c:z.c||0,x2:z.x2,z2:z.z2})),
-      wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,cine:this.cineT>0?r2(this.cineT):0,route:this.R?{open:this.R.open,lock:this.R.lock,crys:this.R.crys.slice(),node:this.R.node,tm:this.R.tm==null?null:r2(this.R.tm),padOcc:this.R.padOcc||null,pads:this.R.pads.slice(),saved:this.R.saved||0,sec:this.R.sec.slice(),hl:this.R.hl.map(q=>r2(q.c))}:null,phaseT:r2(this.phaseT),stage:this.stage,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
+      wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,phaseMax:r2(this.phaseMax||0),cine:this.cineT>0?r2(this.cineT):0,route:this.R?{open:this.R.open,lock:this.R.lock,crys:this.R.crys.slice(),node:this.R.node,tm:this.R.tm==null?null:r2(this.R.tm),padOcc:this.R.padOcc||null,pads:this.R.pads.slice(),saved:this.R.saved||0,sec:this.R.sec.slice(),hl:this.R.hl.map(q=>r2(q.c))}:null,phaseT:r2(this.phaseT),stage:this.stage,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
       banner:this.banner,bannerSub:this.bannerSub,bannerT:r2(this.bannerT),ally:Math.floor(this.ally),ctrl:this.controllers.slice()
     };
   }
@@ -1580,6 +1616,7 @@ const Mus={on:true,cur:null,want:null,step:0,next:0,amb:null,zone:null,calm:0,la
       else if(k==='gull'){const c=Snd.ctx,o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.setValueAtTime(1500,t);o.frequency.exponentialRampToValueAtTime(900,t+0.35);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.035,t+0.03);g.gain.exponentialRampToValueAtTime(0.0001,t+0.4);o.connect(g);g.connect(A);o.start(t);o.stop(t+0.45);}
       else if(k==='crack'){this.nz(t,0.03+Math.random()*0.04,0.12+Math.random()*0.15,'highpass',1800,A);}}},
   update(view,mode){if(!Snd.ctx)return;this.init();if(!this.out)return;
+    if(view&&view.phase==='ending'&&!Snd.muted){this.want='descanso';this.setZone(null);return;}
     if(mode==='menu'||Snd.muted||!view||view.phase==='win'||view.phase==='lose'){this.want=null;this.setZone(null);return;}
     const V=view.route,st=STORY.stages[view.stage];const foes=view.enemies.filter(e=>{const d=ENEMIES[e.kind];return d&&!d.prop&&e.hp>0;});const boss=foes.some(e=>ENEMIES[e.kind].boss);
     let w='calle';
@@ -1589,6 +1626,35 @@ const Mus={on:true,cur:null,want:null,step:0,next:0,amb:null,zone:null,calm:0,la
     else{w=foes.length?'arena':'calle';const th=(view.theme||'')+'';this.setZone(/puerto|port|muelle/.test(th)?'port':/fabric|fábric|fundi/.test(th)?'factory':/volc|lava/.test(th)?'volcano':'street');}
     this.want=w;}
 };
+
+// ---------------- Diálogos de los héroes ----------------
+const VOZ={
+ volta:{zone:['¡Por aquí, rápido!','¡Vamos, vamos, vamos!','Esta calle se ve sospechosa…'],arena:['¡Nos encerraron! ¡Pues a pelear!','¡Les voy a dar toques!'],boss:['¡Eres grande, pero yo soy más rápida!','¡A ver si me alcanzas!'],
+  rescue:['¡Listo, ya estás libre!','¡Corre a casa, nosotros nos encargamos!'],crystal:['¡Uy, qué brillante!','¡Un cristal más!'],secret:['¡Un pasaje secreto! ¡Me encantan!'],pads:['¡Necesito a alguien en la otra placa!'],
+  bomb:['¡Rápido, que el tiempo vuela!'],defuse:['¡Justo a tiempo!'],boom:['¡Ay! Eso dolió…'],rest:['¡Un respiro! Recargando baterías…'],lowhp:['¡Necesito ayuda!','Me quedé sin chispa…'],down:['¡Aguanta, voy por ti!'],
+  lift:['¡Upa!'],win:['¡Ganamos! ¡Choca esos cinco!'],combo:['¡Ni me vieron!']},
+ roca:{zone:['Yo voy adelante.','Mmm… huele a gólem.','Paso a paso.'],arena:['Bien. Que vengan todos.','¡Roca no se mueve!'],boss:['Tú eres grande. Yo soy más duro.','Hora de romper piedras.'],
+  rescue:['Ya estás a salvo, amigo.','Fuera de aquí, pequeño.'],crystal:['Brilla bonito.'],secret:['Muro roto. Fácil.'],pads:['Yo me paro aquí. Alguien a la otra.'],bomb:['¿Bomba? Rápido, equipo.'],defuse:['Bien hecho.'],
+  boom:['Ni me dolió… bueno, un poquito.'],rest:['Un descansito.'],lowhp:['Roca… cansado…'],down:['¡Yo te levanto!'],lift:['¡Esto es ligerito!'],win:['¡JA! ¡Roca gana!'],combo:['¡PUM!']},
+ brisa:{zone:['El viento me dice que hay peligro adelante.','Con calma, equipo.','Siento algo raro en el aire.'],arena:['¡Cuídense las espaldas!','¡Que sople el viento!'],boss:['No le tenemos miedo.','¡El viento está de nuestro lado!'],
+  rescue:['¡Tranquilo, ya pasó!','¿Estás bien? Corre por allá.'],crystal:['¡Un cristal! Qué bonito.'],secret:['¡Hay algo escondido aquí!'],pads:['Párense en las placas al mismo tiempo.'],bomb:['¡No hay tiempo que perder!'],
+  defuse:['¡Uf, qué alivio!'],boom:['¿Todos bien? Los curo.'],rest:['Respiren hondo, ya casi llegamos.'],lowhp:['¡Me lastimaron!'],down:['¡Ya voy, aguanta!'],lift:['¡Uf, pesa!'],win:['¡Lo hicimos juntos!'],combo:['¡Como un huracán!']},
+ sombra:{zone:['Yo vigilo las sombras.','Shh… algo se mueve.','Por aquí hay un atajo… o no.'],arena:['Una trampa. Qué original.','Desaparezcan, gólems.'],boss:['Ni lo vas a ver venir.','Las sombras te rodean.'],
+  rescue:['Libre. No le digas a nadie que fui yo.'],crystal:['Encontrado. Nadie lo había visto.'],secret:['Los secretos son mi especialidad.'],pads:['Yo tomo esta placa.'],bomb:['Odio las bombas.'],defuse:['Fácil. Siguiente.'],
+  boom:['Eso… no estaba en el plan.'],rest:['Cinco segundos. Ni uno más.'],lowhp:['Necesito… desaparecer un rato.'],down:['No te quedes ahí tirado. Voy.'],lift:['¿Y esto adónde lo aviento?'],win:['Misión cumplida.'],combo:['Ni sintieron el golpe.']},
+ escarcha:{zone:['Mantengan la cabeza fría.','Sigamos, con cuidado.','Este lugar me da escalofríos… y eso que soy de hielo.'],arena:['¡Los congelaré a todos!','Formación, equipo.'],boss:['Tu reinado termina hoy.','¡El hielo nunca se rinde!'],
+  rescue:['Ya estás a salvo. Ve con tu familia.'],crystal:['Brilla como el hielo de mi reino.'],secret:['Un cuarto escondido… interesante.'],pads:['Alguien a la otra placa, por favor.'],bomb:['¡Rápido! Antes de que estalle.'],
+  defuse:['Perfecto.'],boom:['¡Ay! Mi armadura de hielo se rajó.'],rest:['Recuperemos fuerzas.'],lowhp:['Me estoy derritiendo…'],down:['¡Resiste, ya llego!'],lift:['¡Hmpf! ¡Pesado!'],win:['¡Victoria para la alianza!'],combo:['¡Congelados!']},
+ fenix:{zone:['¡Adelante, compañeros!','¡Síganme!','Nadie se queda atrás.'],arena:['¡Por la ciudad!','¡Que arda la batalla!'],boss:['¡Pelea contra mí, si te atreves!','¡Ni el fuego de un volcán me detiene!'],
+  rescue:['¡Eres libre! ¡Ve!'],crystal:['¡Un tesoro brillante!'],secret:['¡Un camino oculto! Bien visto.'],pads:['¡Todos a sus puestos!'],bomb:['¡Rápido, equipo! ¡El tiempo corre!'],defuse:['¡Lo logramos!'],
+  boom:['¡Arriba! ¡Las llamas me levantan!'],rest:['Descansemos un momento.'],lowhp:['¡Aún puedo pelear!'],down:['¡Te levantaré de las cenizas!'],lift:['¡Esto va para ustedes, gólems!'],win:['¡Victoria! ¡Las llamas nunca se apagan!'],combo:['¡Fuego imparable!']}};
+const Voz={on:true,v:null,
+  init(){try{this.on=localStorage.getItem('ah_voz')!=='0';}catch(e){}},
+  toggle(){this.on=!this.on;try{localStorage.setItem('ah_voz',this.on?'1':'0');if(!this.on&&window.speechSynthesis)speechSynthesis.cancel();}catch(e){}return this.on;},
+  pick(){if(this.v)return this.v;try{const vs=speechSynthesis.getVoices();this.v=vs.find(v=>/es[-_]MX/i.test(v.lang))||vs.find(v=>/es[-_]US/i.test(v.lang))||vs.find(v=>/^es/i.test(v.lang))||null;}catch(e){}return this.v;},
+  say(txt,who){if(!this.on||!window.speechSynthesis||Snd.muted)return;const P={volta:[1.45,1.12],roca:[0.55,0.92],brisa:[1.3,1.02],sombra:[0.75,1.0],escarcha:[1.2,0.98],fenix:[0.9,1.06],narr:[1,0.97],boss:[0.35,0.88]}[who]||[1,1];
+    try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt.replace(/[«»…]/g,' '));u.lang='es-MX';const v=this.pick();if(v)u.voice=v;u.pitch=P[0];u.rate=P[1];u.volume=0.95;speechSynthesis.speak(u);}catch(e){}}};
+Voz.init();
 
 // ---------------- Render 3D ----------------
 function makeGradient(){const t=new THREE.DataTexture(new Uint8Array([80,170,255]),3,1,THREE.RedFormat);t.minFilter=t.magFilter=THREE.NearestFilter;t.needsUpdate=true;return t;}
@@ -2100,6 +2166,23 @@ class World{
     else if(b==='air')this.playA(m,'Hit_B',{speed:0.35});
     else this.playA(m,(m.ha&&m.ha.idle)||'Idle');}
   oneShot(m,name,dur){if(!m||!m.anim)return;if(['down','jump','spin','block'].includes(m.base))return;this.playA(m,name,{once:true,dur});m.one=true;m.oneT=dur*0.92;}
+  // ---- diálogos en burbujas ----
+  talk(view,kind,pref,force){const now=performance.now()/1000;this.tk=this.tk||{last:-9,per:{},rec:{}};const K=this.tk;
+    if(!force&&now-K.last<4.5)return;if(!view||view.phase==='intro'||view.phase==='ending')return;
+    let hs=view.heroes.filter(h=>h.hp>0);if(pref!=null){const p=view.heroes.find(h=>h.id===pref);if(p&&p.hp>0)hs=[p];}
+    hs=hs.filter(h=>force||now-(K.per[h.id]||-99)>8);if(!hs.length)return;const h=hs[Math.floor(Math.random()*hs.length)];const L=(VOZ[h.key]||{})[kind];if(!L)return;
+    let line=L[Math.floor(Math.random()*L.length)];if(L.length>1&&line===K.rec[h.key+kind])line=L[(L.indexOf(line)+1)%L.length];K.rec[h.key+kind]=line;
+    K.last=now;K.per[h.id]=now;this.bubble(h.id,h.key,line);Voz.say(line,h.key);}
+  bubble(id,key,txt){const box=this.bbBox||(this.bbBox=document.getElementById('bubbles'));this.bubs=(this.bubs||[]).filter(b=>{if(b.id===id){b.el.remove();return false;}return true;});
+    const el=document.createElement('div');el.className='bub';el.innerHTML=`<b style="color:#${HEROES[key].color.toString(16).padStart(6,'0')}">${HEROES[key].name}</b>${txt}`;box.appendChild(el);this.bubs.push({id,el,t:3.2});}
+  bubTick(view,dt){if(!this.bubs||!this.bubs.length)return;const W=this.r.domElement.clientWidth,H=this.r.domElement.clientHeight,v=new THREE.Vector3();
+    this.bubs=this.bubs.filter(b=>{b.t-=dt;const m=this.heroM.get(b.id);if(b.t<=0||!m){b.el.remove();return false;}const hv=view.heroes.find(h=>h.id===b.id);
+      v.copy(m.g.position);v.y+=2.7*((hv&&HEROES[hv.key].scale)||1);v.project(this.cam);const x=(v.x+1)/2*W,y=(1-v.y)/2*H;b.el.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;b.el.style.opacity=b.t<0.4?b.t/0.4:1;return true;});}
+  talkTick(view){const T=this.tkS||(this.tkS={hp:{},down:{},phase:null,node:-1});
+    for(const h of view.heroes){const r=h.hp/h.maxHp,pr=T.hp[h.id]==null?1:T.hp[h.id];if(h.hp>0&&r<0.25&&pr>=0.25)this.talk(view,'lowhp',h.id);
+      const d=h.hp<=0;if(d&&!T.down[h.id]){const o=view.heroes.filter(x=>x.id!==h.id&&x.hp>0);if(o.length)this.talk(view,'down',o[Math.floor(Math.random()*o.length)].id,true);}T.down[h.id]=d;T.hp[h.id]=r;}
+    if(view.phase==='win'&&T.phase!=='win')setTimeout(()=>this.talk(view,'win',null,true),1200);T.phase=view.phase;
+    const V=view.route;if(V&&view.phase==='fight'){const st=STORY.stages[view.stage],cur=V.node;if(cur!==T.node){const n=st.route.nodes[cur];if(T.node>=0&&n&&!n.lock&&!n.rest&&Math.random()<0.75)this.talk(view,'zone');T.node=cur;}}else if(!V)T.node=-1;}
   armPose(m,dt){const want=m.carryK?1:0;m.carryW=(m.carryW||0)+(want-(m.carryW||0))*Math.min(1,dt*12);if(m.carryW<0.01)return;
     if(!m.armB){m.armB={};m.inner.traverse(o=>{if(!o.isBone)return;for(const k of ['LeftArm','LeftForeArm','LeftHand','RightArm','RightForeArm','RightHand'])if(o.name.endsWith(k)&&!m.armB[k])m.armB[k]=o;});}
     const B=m.armB;if(!B.LeftArm||!B.RightArm||!B.LeftForeArm||!B.RightForeArm||!B.LeftHand||!B.RightHand)return;
@@ -2454,7 +2537,7 @@ class World{
         g.position.set(v.x,0.7,v.z);return noOutline(g);},(g,v)=>{g.position.x+=(v.x-g.position.x)*k;g.position.z+=(v.z-g.position.z)*k;g.position.y=0.7+Math.sin(t*5+v.id)*0.15;},dt);
     for(let i=this.dying.length-1;i>=0;i--){const m=this.dying[i];m.dying-=dt;m.mixer.update(dt);if(m.dying<0.7){const o=Math.max(0,m.dying/0.7);for(const mt of m.mats){if(!mt.transparent){mt.transparent=true;mt.depthWrite=false;mt.needsUpdate=true;}mt.opacity=o;}if(m.dying<0.2)m.g.position.y-=dt*0.6;}if(m.dying<=0){this.scene.remove(m.g);this.dying.splice(i,1);}}
     for(const c of this.crystals)c.rotation.y=t;
-    this.updateRoute(view,focus,t,dt);
+    this.updateRoute(view,focus,t,dt);try{this.talkTick(view);this.bubTick(view,dt);}catch(e){}
     if(this.embers)for(const e of this.embers){e.position.y+=dt*2;if(e.position.y>14)e.position.y=0;}
     this.fx.update(dt);
     // cámara
@@ -2520,25 +2603,26 @@ class World{
       case 'ring':F.ring(ev.x,ev.z,ev.r,ev.c);break;
       case 'burst':F.burst(ev.x,0.5,ev.z,ev.c,ev.n,8);break;
       case 'txt':T.add(ev.x,2.5,ev.z,ev.s,ev.c,ev.big);break;
-      case 'rest':F.burst(ev.x,1.5,ev.z,0x7dff9a,30,6);for(let k=0;k<20;k++)F.p({x:ev.x+(Math.random()-0.5)*8,y:0.3,z:ev.z+(Math.random()-0.5)*8,c:0x7dff9a,tex:'star',vy:2+Math.random()*2,s:0.5,s1:0.05,life:1.2});hud.rbanner(ev.cp?'Punto de control · Progreso guardado':'Punto de descanso · Progreso guardado','#7dff9a');break;
-      case 'gate':if(ev.on){hud.rbanner('¡Zona cerrada! Derrota a todos','#ff5a7a');this.shake=Math.max(this.shake,0.15);}break;
+      case 'rest':this.talk(view,'rest');F.burst(ev.x,1.5,ev.z,0x7dff9a,30,6);for(let k=0;k<20;k++)F.p({x:ev.x+(Math.random()-0.5)*8,y:0.3,z:ev.z+(Math.random()-0.5)*8,c:0x7dff9a,tex:'star',vy:2+Math.random()*2,s:0.5,s1:0.05,life:1.2});hud.rbanner(ev.cp?'Punto de control · Progreso guardado':'Punto de descanso · Progreso guardado','#7dff9a');break;
+      case 'gate':if(ev.on){this.talk(view,'arena',null,true);hud.rbanner('¡Zona cerrada! Derrota a todos','#ff5a7a');this.shake=Math.max(this.shake,0.15);}break;
       case 'gateopen':{const g=this.gates&&this.gates[ev.i-1];if(g){const p=g.position;for(let k=0;k<16;k++)F.p({x:p.x+(Math.random()-0.5)*6,y:Math.random()*3,z:p.z+(Math.random()-0.5)*2,c:0x4dd2ff,tex:'star',vy:3,s:0.5,s1:0.05,life:0.8});}break;}
+      case 'say':this.talk(view,ev.w);break;
       case 'bossintro':{this.cine={t:3.6,x:ev.x,z:ev.z};hud.bossCard(ev.kind);Snd.play('warn');setTimeout(()=>{const m=this.enemyM.get(ev.id);if(m&&m.anim)this.oneShot(m,'Taunt',2.2);},250);break;}
-      case 'cineend':if(this.cine)this.cine.t=Math.min(this.cine.t,0.2);hud.bossCard(null);break;
-      case 'rescue':{const c=this.citizen(ev.id);c.position.set(ev.x,0.1,ev.z);const a=Math.atan2(ev.x-(view.heroes[focus]?view.heroes[focus].x:ev.x),ev.z-(view.heroes[focus]?view.heroes[focus].z:ev.z)+0.01);c.rotation.y=a;F.burst(ev.x,1.2,ev.z,0x9b4dff,24,7);F.ring(ev.x,ev.z,2,0x7dff9a);Snd.play('heal');
+      case 'cineend':if(this.cine)this.cine.t=Math.min(this.cine.t,0.2);hud.bossCard(null);setTimeout(()=>this.talk(view,'boss',null,true),400);break;
+      case 'rescue':{this.talk(view,'rescue');const c=this.citizen(ev.id);c.position.set(ev.x,0.1,ev.z);const a=Math.atan2(ev.x-(view.heroes[focus]?view.heroes[focus].x:ev.x),ev.z-(view.heroes[focus]?view.heroes[focus].z:ev.z)+0.01);c.rotation.y=a;F.burst(ev.x,1.2,ev.z,0x9b4dff,24,7);F.ring(ev.x,ev.z,2,0x7dff9a);Snd.play('heal');
         this.tfxAdd(c,2.6,(q,k,dt)=>{const o=q.o,el=k*2.6;if(el<0.9){o.position.y=0.1+Math.abs(Math.sin(el*9))*0.35;o.userData.al.rotation.z=2.6+Math.sin(el*20)*0.4;o.userData.ar.rotation.z=-2.6-Math.sin(el*20)*0.4;}
           else{o.userData.al.rotation.z=Math.sin(el*14)*0.6;o.userData.ar.rotation.z=-Math.sin(el*14)*0.6;o.position.x+=Math.sin(a)*5*dt;o.position.z+=Math.cos(a)*5*dt;o.position.y=0.1+Math.abs(Math.sin(el*14))*0.12;}
           if(k>0.8)o.scale.setScalar(Math.max(0.01,(1-k)*5));});break;}
       case 'pads':for(const p of this.padsM||[])if(p.i===ev.i){F.burst(p.g.position.x,0.6,p.g.position.z,0x7dff9a,20,6);F.ring(p.g.position.x,p.g.position.z,2,0x7dff9a);}break;
-      case 'defuse':if(this.bomb){this.bomb.state='ok';F.burst(ev.x,1.6,ev.z,0x7dff9a,20,5);}break;
-      case 'bombboom':if(this.bomb){this.bomb.g.visible=false;}F.burst(ev.x,1,ev.z,0xff6a1a,60,12);F.ring(ev.x,ev.z,6,0xffb040);F.smoke(ev.x,1.5,ev.z,0x2a2422,10,3);this.shake=Math.max(this.shake,1.2);break;
-      case 'lift':F.dust(ev.x,ev.z,8,0xb8a080);Snd.play('dodge');break;
+      case 'defuse':this.talk(view,'defuse',null,true);if(this.bomb){this.bomb.state='ok';F.burst(ev.x,1.6,ev.z,0x7dff9a,20,5);}break;
+      case 'bombboom':setTimeout(()=>this.talk(view,'boom',null,true),900);if(this.bomb){this.bomb.g.visible=false;}F.burst(ev.x,1,ev.z,0xff6a1a,60,12);F.ring(ev.x,ev.z,6,0xffb040);F.smoke(ev.x,1.5,ev.z,0x2a2422,10,3);this.shake=Math.max(this.shake,1.2);break;
+      case 'lift':if(Math.random()<0.5)this.talk(view,'lift',ev.id);F.dust(ev.x,ev.z,8,0xb8a080);Snd.play('dodge');break;
       case 'chest':F.burst(ev.x,1,ev.z,0xffd23f,40,9);F.ring(ev.x,ev.z,3,0xffd23f);for(let k=0;k<16;k++)F.p({x:ev.x,y:1,z:ev.z,c:0xffd23f,tex:'star',vx:(Math.random()-0.5)*8,vy:5+Math.random()*4,vz:(Math.random()-0.5)*8,g:12,s:0.5,s1:0.1,life:1});break;
       case 'healtick':F.p({x:ev.x+(Math.random()-0.5)*0.8,y:1+Math.random(),z:ev.z+(Math.random()-0.5)*0.8,c:0x7dff9a,tex:'star',vy:2,s:0.45,s1:0.05,life:0.7});break;
       case 'nest':F.burst(ev.x,0.6,ev.z,0xb04dff,12,5);F.ring(ev.x,ev.z,2.2,0xb04dff);break;
-      case 'crystal':{F.burst(ev.x,1.2,ev.z,0x9fe8ff,22,7);F.ring(ev.x,ev.z,2,0x9fe8ff);Snd.play('pickup');const before=crysTotal();saveCrys(view.stage,ev.i);const after=crysTotal();
+      case 'crystal':{this.talk(view,'crystal');F.burst(ev.x,1.2,ev.z,0x9fe8ff,22,7);F.ring(ev.x,ev.z,2,0x9fe8ff);Snd.play('pickup');const before=crysTotal();saveCrys(view.stage,ev.i);const after=crysTotal();
         const nu=COSTUMES.find(c=>c.need>before&&c.need<=after);if(nu)setTimeout(()=>hud.rbanner('¡Nuevo traje desbloqueado: '+nu.n+'!','#ffd23f'),2400);break;}
-      case 'ctier':{const q=COMBO_TIERS[ev.ti];F.ring(ev.x,ev.z,3,parseInt(q.c.slice(1),16));Snd.play('stagger');
+      case 'ctier':{if(ev.ti>=1&&Math.random()<0.5)this.talk(view,'combo',ev.id);const q=COMBO_TIERS[ev.ti];F.ring(ev.x,ev.z,3,parseInt(q.c.slice(1),16));Snd.play('stagger');
         if(ev.id===focus){const el=document.getElementById('ctier');el.style.color=q.c;el.innerHTML=q.w+'<small>¡Combo x'+q.n+'! +energía</small>';el.classList.remove('on');void el.offsetWidth;el.classList.add('on');}break;}
       case 'shake':this.shake=Math.max(this.shake,ev.a);break;
       case 'ehit':{const m=this.enemyM.get(ev.id);if(m&&m.anim&&!ev.kd)this.oneShot(m,ev.heavy?'Hit_B':'Hit_A',0.3);if(ev.kd)Snd.play('boom');break;}
@@ -2632,7 +2716,7 @@ class HUD{
     if(me&&!me.down&&view.phase==='fight'){if(me.carry)txt='<b>Golpe</b> (X) para lanzar';else{let best=null,bd=9;for(const o of view.enemies){const d=ENEMIES[o.kind];if(!d||!d.lift)continue;const q=Math.hypot(o.x-me.x,o.z-me.z)-d.r;if(q<1.6&&q<bd){bd=q;best=d;}}
       if(best)txt=best.heavy&&me.key!=='roca'?'Muy pesado: solo <b>Roca</b> puede levantarlo':'<b>Fuerte</b> (Y) para levantar '+best.name.toLowerCase();}}
     if(txt!==this.hTxt){this.hTxt=txt;e.innerHTML=txt;e.style.opacity=txt?'1':'0';}}
-  update(view,focus){try{Mus.update(view,mode);}catch(e){}this.intro(view);this.prog(view);this.hint(view,focus);this.timer(view);
+  update(view,focus){try{Mus.update(view,mode);}catch(e){}this.scene(view);this.prog(view);this.hint(view,focus);this.timer(view);
     view.heroes.forEach((h,i)=>{const C=this.cards[i];const d=HEROES[h.key];
       this.set('nm'+i,C.nm,'text',d.name);C.nm.style.color=SLOT_COL[i];
       this.set('tg'+i,C.tag,'text',(i===focus?'TÚ':(view.ctrl[i]==='ai'?'IA':'JUGADOR'))+' · Nv '+h.lvl);
@@ -2677,6 +2761,21 @@ class HUD{
     this.syn.style.setProperty('--c','#ffd23f');this.syn.querySelector('.t').textContent='¡ALIANZA EXTREMA!';this.syn.querySelector('.n').textContent=n>=4?'¡TODOS JUNTOS!':n+' HÉROES';this.syn.querySelector('.w').textContent='Poder x'+(1+0.5*((n||1)-1)).toFixed(1);
     this.syn.classList.add('on');clearTimeout(this.st);this.st=setTimeout(()=>this.syn.classList.remove('on'),1700);}
   rbanner(s,c){const e=this.bnEl||(this.bnEl=document.getElementById('rbanner'));e.textContent=s;e.style.color=c||'#fff';e.style.opacity='1';e.style.transform='translateX(-50%) scale(1)';clearTimeout(this.bt);this.bt=setTimeout(()=>{e.style.opacity='0';e.style.transform='translateX(-50%) scale(.9)';},2200);}
+  scene(view){const e=this.scEl||(this.scEl=document.getElementById('rscene'));let P=null,st=STORY.stages[view.stage];
+    if(view.phase==='intro'&&view.route&&st&&st.route)P=[...(st.scene||[]),{w:'narr',t:st.route.intro,title:true}];else if(view.phase==='ending')P=STORY.ending;
+    if(!P){if(this.scOn){this.scOn=false;e.classList.remove('on');document.body.classList.remove('scn');this.scKey=null;}return;}
+    if(!this.scOn){this.scOn=true;e.classList.add('on');document.body.classList.add('scn');}
+    const el=Math.max(0,view.phaseMax-view.phaseT),idx=Math.min(P.length-1,Math.floor(el/SCENE_DUR)),pg=Math.min(1,(el-idx*SCENE_DUR)/SCENE_DUR);
+    const key=view.phase+':'+view.stage+':'+idx;
+    if(key!==this.scKey){this.scKey=key;const q=P[idx];let who='narr',html='';
+      const head=view.phase==='ending'?'<div class="sct">FIN DE LA HISTORIA 1</div>':`<div class="sct">ETAPA ${view.stage+1} · ${st.name.toUpperCase()}</div>`;
+      if(q.w==='narr')html=`<div class="cap">${q.t}</div>`;
+      else if(q.w.startsWith('boss:')){const k=q.w.slice(5),img=Preview.ethumbs[k];who='boss';html=`<div class="spk boss"><div class="pt">${img?`<img src="${img}">`:''}</div><div class="bb"><b>${ENEMIES[k].name}</b>${q.t}</div></div>`;}
+      else{const hi=+q.w.slice(1),h=view.heroes[hi]||view.heroes[0];who=h.key;const col='#'+HEROES[h.key].color.toString(16).padStart(6,'0');
+        html=`<div class="spk"><div class="pt" style="border-color:${col}">${heroFace(h.key)}</div><div class="bb"><b style="color:${col}">${HEROES[h.key].name}</b>${q.t}</div></div>`;}
+      e.querySelector('.scb').innerHTML=head+html;e.querySelector('.scb').classList.remove('pop');void e.offsetWidth;e.querySelector('.scb').classList.add('pop');
+      e.querySelector('.dots').innerHTML=P.map((_,i)=>`<i class="${i<idx?'ok':i===idx?'on':''}"></i>`).join('');Voz.say(q.t,who);}
+    e.querySelector('.bar i').style.width=(pg*100)+'%';}
   intro(view){const e=this.inEl||(this.inEl=document.getElementById('rintro'));const on=view.phase==='intro'&&!!view.route;if(on!==this.inOn){this.inOn=on;e.style.opacity=on?'1':'0';e.style.pointerEvents='none';
     if(on){const st=STORY.stages[view.stage];e.querySelector('h2').textContent=view.stageName;e.querySelector('p').textContent=st&&st.route?st.route.intro:'';}}
     if(on){const k=Math.max(0,Math.min(1,view.phaseT/12));e.querySelector('.bar i').style.width=(k*100)+'%';}}
@@ -2991,6 +3090,7 @@ const teamOK=()=>{if(team.length<4){status('Elige 4 héroes para tu equipo');ret
 $('b-menu').addEventListener('pointerup',e=>{e.preventDefault();toMenu();});
 $('b-music').addEventListener('pointerup',e=>{e.preventDefault();Snd.init();Mus.init();const on=Mus.out?Mus.toggle():(Mus.on=!Mus.on);$('b-music').style.opacity=on?'1':'0.4';hud.toast(on?'Música: sí':'Música: no');});
 try{if(localStorage.getItem('ah_music')==='0')$('b-music').style.opacity='0.4';}catch(e){}
+$('b-voz').addEventListener('pointerup',e=>{e.preventDefault();const on=Voz.toggle();$('b-voz').style.opacity=on?'1':'0.4';hud.toast(on?'Voces: sí':'Voces: no');});if(!Voz.on)$('b-voz').style.opacity='0.4';
 $('b-host').onclick=()=>{gesture();
   if(!teamOK())return;if(!window.Peer){status(NET_HINT);return;}
   const code=genCode();status('Creando sala…');
