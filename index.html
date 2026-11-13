@@ -1542,10 +1542,10 @@ class World{
     for(let k=0;k<n;k++){const m=new THREE.Mesh(g,mat);const a=Math.random()*6.28,v=spd*(0.4+Math.random()*0.7);m.position.set(x,0.3,z);m.scale.setScalar(0.6+Math.random()*1.2);
       const vel={x:Math.cos(a)*v*0.5,y:4+Math.random()*spd,z:Math.sin(a)*v*0.5};this.tfxAdd(m,1.1,(q,k2,dt)=>{vel.y-=20*dt;q.o.position.x+=vel.x*dt;q.o.position.z+=vel.z*dt;q.o.position.y=Math.max(0.15,q.o.position.y+vel.y*dt);q.o.rotation.x+=dt*8;q.o.rotation.z+=dt*6;});}}
   wings(x,z,face,c,big=false,id=null){const sz=big?3.2:1.9;const g=new THREE.CircleGeometry(sz,24,0.15,1.3);
-    for(const side of [-1,1]){const m=new THREE.Mesh(g,this.fxMat(c,0.75));const grp=new THREE.Group();grp.add(m);m.rotation.y=side>0?0:Math.PI;
+    for(const side of [-1,1]){const m=new THREE.Mesh(g,this.fxMat(c,0.5));const grp=new THREE.Group();grp.add(m);m.rotation.y=side>0?0:Math.PI;
       grp.position.set(x,big?2.4:1.5,z);grp.rotation.y=face;
       this.tfxAdd(grp,big?1.4:0.7,(q,k,dt,view)=>{if(id!=null){const h=this.heroPos(view,id);if(h){q.o.position.x=h.x;q.o.position.z=h.z;}}
-        const fl=Math.sin(k*Math.PI*(big?3:2))*0.5;m.rotation.x=-0.3+fl*0.4;m.material.opacity=0.75*(1-k);m.scale.setScalar(0.6+k*0.6);});}}
+        const fl=Math.sin(k*Math.PI*(big?3:2))*0.5;m.rotation.x=-0.3+fl*0.4;m.material.opacity=0.5*(1-k)*(k<0.1?k/0.1:1);m.scale.setScalar(0.6+k*0.6);});}}
   followShell(id,c,life,r=1.3,ice=false){const g=this.geo.fs||(this.geo.fs=new THREE.IcosahedronGeometry(1,2));const m=new THREE.Mesh(g,this.fxMat(c,0.22));
     if(ice)m.material=new THREE.MeshStandardMaterial({color:0xcff6ff,transparent:true,opacity:0.3,roughness:0.1,emissive:0x1a4a6a,flatShading:true});
     this.tfxAdd(m,life,(q,k,dt,view)=>{const h=this.heroPos(view,id);if(h){q.o.position.set(h.x,1.1,h.z);}const s=r*(k<0.1?k/0.1:1)*(1+Math.sin(k*40)*0.02);q.o.scale.set(s,s*1.15,s);q.o.rotation.y+=dt;q.o.material.opacity=(ice?0.32:0.22)*(k>0.85?(1-k)/0.15:1);});}
@@ -1603,7 +1603,7 @@ class World{
       case 'fireball':{F.flash(x+Math.sin(face)*1.2,1.2,z+Math.cos(face)*1.2,0xff7a1a,2.4);F.fire(x+Math.sin(face),1,z+Math.cos(face),8,0.8);break;}
       case 'wing':{this.wings(x,z,face,0xff8a3d,false,ev.id);break;}
       case 'ring':{for(let k=0;k<24;k++){const a=k/24*6.28;F.fire(x+Math.cos(a)*3.4,0.2,z+Math.sin(a)*3.4,1,0.9);}F.flash(x,1,z,0xff7a1a,2.5);this.wings(x,z,face,0xffb03a,false,ev.id);break;}
-      case 'rebirth':{this.wings(x,z,face,0xffb03a,true,ev.id);F.pillar(x,z,0xff8a3d,1.6,9,1.1);for(const a of allies(30)){F.pillar(a.x,a.z,0xffd23f,0.8,5,0.9);F.fire(a.x,0.3,a.z,10,0.9);}
+      case 'rebirth':{this.wings(x,z,face,0xff7a1a,true,ev.id);F.pillar(x,z,0xff8a3d,1.6,9,1.1);for(const a of allies(30)){F.pillar(a.x,a.z,0xffd23f,0.8,5,0.9);F.fire(a.x,0.3,a.z,10,0.9);}
         for(let k=0;k<30;k++){const a=R()*6.28,v=4+R()*6;F.p({x,y:2,z,c:k%2?0xffd23f:0xff7a1a,tex:'star',vx:Math.cos(a)*v,vz:Math.sin(a)*v,vy:3+R()*5,g:4,drag:0.96,s:0.6,s1:0.05,life:1.2});}this.shake=Math.max(this.shake,0.4);break;}
       case 'meteor':{F.flash(x,2.5,z,0xff7a1a,2);break;}
       case 'supernova':{F.shell(x,1,z,6.5,0xffa040);[0,0.1,0.2].forEach((t,i)=>this.later.push({t,fn:()=>F.ring(x,z,6.5*(0.5+i*0.25),i?0xff5a1a:0xffd23f)}));
