@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alianza Heroica · Panel de papá</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}body{margin:0;font-family:Nunito,system-ui,sans-serif;background:#120a2a;color:#fff;min-height:100vh}
+  header{display:flex;align-items:center;gap:14px;padding:14px 22px;background:linear-gradient(90deg,#2b3a8a,#5a2a8a);box-shadow:0 4px 18px rgba(0,0,0,.4)}
+  header h1{font-family:Bangers,Impact,sans-serif;letter-spacing:2px;font-size:30px;margin:0;color:#ffd23f;text-shadow:0 3px 0 #000;flex:1}
+  header span{font-weight:800;opacity:.85}
+  button{font-family:inherit;font-weight:900;font-size:15px;border:0;border-radius:12px;padding:8px 14px;cursor:pointer;background:#ffd23f;color:#111;box-shadow:0 3px 0 #a07a00}
+  button.ok{background:#7dff9a;box-shadow:0 3px 0 #2a8a4a}button.no{background:#ff8a9a;box-shadow:0 3px 0 #9a2a3a}button.alt{background:#7fd8ff;box-shadow:0 3px 0 #2a6a9a}button.gh{background:rgba(255,255,255,.12);color:#fff;box-shadow:none}
+  main{max-width:1100px;margin:0 auto;padding:20px}
+  .login{max-width:420px;margin:60px auto;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.2);border-radius:20px;padding:24px;text-align:center}
+  .login input{width:100%;font:inherit;font-size:18px;padding:10px 12px;border-radius:12px;border:2px solid #fff;margin:6px 0}
+  .err{color:#ff8a9a;font-weight:800;min-height:22px;margin:6px 0}
+  h2{font-family:Bangers,Impact,sans-serif;letter-spacing:2px;font-size:26px;margin:22px 0 10px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+  .p{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.15);border-radius:18px;padding:14px 16px}
+  .p.pending{border-color:#ffd23f;box-shadow:0 0 0 3px rgba(255,210,63,.25)}.p.blocked{opacity:.7;border-color:#ff8a9a}
+  .p .top{display:flex;align-items:center;gap:12px}.p .av{font-size:34px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
+  .p .nm{font-size:22px;font-weight:900}.chip{display:inline-block;font-size:12px;font-weight:900;padding:2px 8px;border-radius:8px;margin-left:6px;vertical-align:middle}
+  .chip.pending{background:#ffd23f;color:#111}.chip.approved{background:#7dff9a;color:#111}.chip.blocked{background:#ff8a9a;color:#111}
+  .meta{font-size:13px;opacity:.75;margin-top:2px}.stats{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.stats span{background:rgba(255,255,255,.1);border-radius:10px;padding:3px 9px;font-size:13px;font-weight:800}
+  .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}select{font:inherit;font-weight:800;border-radius:10px;padding:6px}
+  .help{background:rgba(255,255,255,.06);border-radius:16px;padding:12px 16px;font-size:14px;line-height:1.5;opacity:.9}
+  .empty{opacity:.6;font-weight:800}
+</style>
+</head>
+<body>
+<header><h1>ALIANZA HEROICA · PANEL DE PAPÁ</h1><span id="who"></span><button class="gh" id="out" style="display:none">Salir</button></header>
+<main id="app"><p>Cargando…</p></main>
+<script type="module">
+import {firebaseConfig} from './cuenta-config.js';
+const V='10.14.1',base=`https://www.gstatic.com/firebasejs/${V}/`;
+const [A,U,D]=await Promise.all([import(base+'firebase-app.js'),import(base+'firebase-auth.js'),import(base+'firebase-firestore.js')]);
+const app=A.initializeApp(firebaseConfig,'admin');const auth=U.getAuth(app),db=D.getFirestore(app);
+const $=s=>document.querySelector(s),M=document.getElementById('app');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const AV={volta:'⚡',roca:'🪨',brisa:'🌪️',sombra:'🌑',escarcha:'❄️',fenix:'🔥'},HN={volta:'Volta',roca:'Roca',brisa:'Brisa',sombra:'Sombra',escarcha:'Escarcha',fenix:'Fénix'};
+const STAGES=['Plaza central','El puerto','La fábrica','El volcán'];
+let unsub=null,players=[];
+
+function loginView(){
+  M.innerHTML=`<div class="login"><h2>Entrar como administrador</h2><input id="em" type="email" placeholder="Tu correo" autocomplete="username"><input id="pw" type="password" placeholder="Tu contraseña" autocomplete="current-password">
+  <div class="err" id="err"></div><button id="go">Entrar</button><p style="opacity:.75;font-size:14px;margin-top:18px">¿Primera vez? Crea tu cuenta de administrador con tu correo:</p><button class="alt" id="mk">Crear mi cuenta de administrador</button></div>`;
+  const cred=()=>[$('#em').value.trim(),$('#pw').value];
+  $('#go').onclick=async()=>{try{await U.signInWithEmailAndPassword(auth,...cred());}catch(e){$('#err').textContent='Correo o contraseña incorrectos';}};
+  $('#mk').onclick=async()=>{const [e,p]=cred();if(p.length<8)return $('#err').textContent='Usa una contraseña de al menos 8 caracteres';try{await U.createUserWithEmailAndPassword(auth,e,p);}catch(er){$('#err').textContent=/already/.test(er.code)?'Ese correo ya tiene cuenta: usa Entrar':'No se pudo crear: '+er.code;}};
+}
+const fmt=t=>t&&t.toDate?t.toDate().toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short'}):'—';
+function summary(save){const s=save||{};let prof={},stars={},crys={},unl=0;try{prof=JSON.parse(s.ah_profiles||'{}');}catch(e){}try{stars=JSON.parse(s.ah_stars||'{}');}catch(e){}try{crys=JSON.parse(s.ah_crys||'{}');}catch(e){}unl=+(s.ah_unlocked||0);
+  const lv=Object.entries(prof).filter(([k,p])=>p&&p.lvl>1).map(([k,p])=>`${AV[k]||''} ${HN[k]||k} nv ${p.lvl}`);
+  const st=Object.values(stars).reduce((a,b)=>a+(+b||0),0),cr=Object.values(crys).reduce((a,b)=>a+(b.length||0),0);
+  return {lv,st,cr,unl,empty:!Object.keys(s).length};}
+function render(){
+  const order={pending:0,approved:1,blocked:2};players.sort((a,b)=>(order[a.status]??3)-(order[b.status]??3)||String(a.name).localeCompare(b.name));
+  const pend=players.filter(p=>p.status==='pending');
+  const card=p=>{const S=summary(p.save);return `<div class="p ${p.status}"><div class="top"><div class="av">${AV[p.avatar]||'🙂'}</div><div><div class="nm">${esc(p.name)}<span class="chip ${p.status}">${{pending:'ESPERANDO',approved:'AUTORIZADO',blocked:'EN PAUSA'}[p.status]||p.status}</span></div>
+      <div class="meta">Creado: ${fmt(p.createdAt)} · Última vez: ${fmt(p.lastSeen)}</div></div></div>
+      <div class="stats">${S.empty?'<span>Sin avance todavía</span>':`<span>🗺️ Etapa ${Math.min(S.unl+1,4)}: ${STAGES[Math.min(S.unl,3)]}</span><span>⭐ ${S.st} estrellas</span><span>💎 ${S.cr} cristales</span>${S.lv.map(x=>`<span>${x}</span>`).join('')}`}</div>
+      <div class="acts">${p.status!=='approved'?`<button class="ok" data-a="approve" data-id="${p.id}">✔ Autorizar</button>`:''}${p.status==='approved'?`<button class="no" data-a="block" data-id="${p.id}">⏸ Pausar</button>`:''}
+      ${p.status==='pending'?`<button class="no" data-a="del" data-id="${p.id}">✖ Rechazar</button>`:''}
+      ${!S.empty?`<select data-copy="${p.id}"><option value="">Copiar avance a…</option>${players.filter(o=>o.id!==p.id).map(o=>`<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select><button class="gh" data-a="reset" data-id="${p.id}">Borrar avance</button>`:''}
+      ${p.status==='blocked'?`<button class="gh" data-a="del" data-id="${p.id}">Eliminar</button>`:''}</div></div>`;};
+  M.innerHTML=`${pend.length?`<h2>Esperando autorización (${pend.length})</h2><div class="cards">${pend.map(card).join('')}</div>`:''}
+    <h2>Jugadores</h2><div class="cards">${players.filter(p=>p.status!=='pending').map(card).join('')||'<p class="empty">Todavía no hay jugadores autorizados.</p>'}</div>
+    <h2>Ayuda</h2><div class="help"><b>¿Un niño olvidó su PIN?</b> En la consola de Firebase ve a <i>Seguridad → Authentication → Usuarios</i>, busca <code>nombre@jugadores.alianza-heroica.app</code> y elimínalo. El niño crea su cuenta otra vez con el mismo nombre y un PIN nuevo; aquí aparecerá dos veces: autoriza la nueva y usa <b>Copiar avance a…</b> desde la vieja. Después puedes eliminar la vieja.<br>
+    <b>Rechazar o eliminar</b> borra sus datos del juego; el nombre queda ocupado hasta que lo borres también en Authentication.</div>`;
+  M.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>act(b.dataset.a,b.dataset.id));
+  M.querySelectorAll('[data-copy]').forEach(s=>s.onchange=()=>{if(s.value)copy(s.dataset.copy,s.value);});
+}
+async function act(a,id){const ref=D.doc(db,'players',id),p=players.find(x=>x.id===id);
+  try{if(a==='approve')await D.updateDoc(ref,{status:'approved'});else if(a==='block')await D.updateDoc(ref,{status:'blocked'});
+    else if(a==='reset'){if(confirm(`¿Borrar todo el avance de ${p.name}? No se puede deshacer.`))await D.updateDoc(ref,{save:{},updatedAt:D.serverTimestamp()});}
+    else if(a==='del'){if(confirm(`¿Eliminar a ${p.name}? Se borra su avance.`))await D.deleteDoc(ref);}}catch(e){alert('No se pudo: '+e.code+'\n¿Ya pegaste las reglas de seguridad con tu correo?');}}
+async function copy(from,to){const a=players.find(x=>x.id===from),b=players.find(x=>x.id===to);if(!confirm(`¿Copiar el avance de ${a.name} a ${b.name}? Se reemplaza lo que tenga ${b.name}.`))return render();
+  try{await D.updateDoc(D.doc(db,'players',to),{save:a.save||{},updatedAt:D.serverTimestamp()});alert('Listo. '+b.name+' verá el avance la próxima vez que entre.');}catch(e){alert('No se pudo: '+e.code);}}
+U.onAuthStateChanged(auth,u=>{if(unsub){unsub();unsub=null;}
+  if(!u){$('#who').textContent='';$('#out').style.display='none';return loginView();}
+  if(u.email&&u.email.endsWith('@jugadores.alianza-heroica.app')){U.signOut(auth);return loginView();}
+  $('#who').textContent=u.email;$('#out').style.display='';$('#out').onclick=()=>U.signOut(auth);
+  M.innerHTML='<p>Cargando jugadores…</p>';
+  unsub=D.onSnapshot(D.collection(db,'players'),s=>{players=s.docs.map(d=>({id:d.id,...d.data()}));render();},
+    e=>{M.innerHTML=`<div class="login"><h2>Falta un paso</h2><p>Tu cuenta (${esc(u.email)}) todavía no tiene permiso de administrador.</p><p style="font-size:14px;opacity:.85">Pega las reglas de seguridad en Firebase (Firestore → Reglas) con este mismo correo y recarga esta página.</p><p class="err">${esc(e.code)}</p></div>`;});
+});
+</script>
+</body>
+</html>
