@@ -1009,6 +1009,7 @@ class Sim{
       if(h.synT<=0){
         if(h.carry){if((inp.atk||inp.hvy)&&h.atkCd<=0)this.throwCarry(h);}
         else if(inp.hvy&&h.atkCd<=0&&this.tryLift(h)){}
+        else if(inp.atk&&h.atkCd<=0&&this.controllers[h.id]!=='ai'&&!this.nearestEnemy(h,2.6)&&this.tryLift(h,true)){}
         else if((inp.atk||inp.hvy)&&this.t-h.dodgeEndT<0.4&&!h.air)this.dashStrike(h);
         else if(inp.hvy&&h.atkCd<=0)this.heroHeavy(h);
         else if(inp.atk&&h.atkCd<=0&&!h.blocking)this.heroAttack(h);
@@ -1018,7 +1019,7 @@ class Sim{
     }
     this.confine(h,0.5);
   }
-  tryLift(h){const p=this.enemies.filter(e=>!e.dead&&e.def.lift&&dist2(e,h)<(1.4+e.def.r)**2).sort((a,b)=>dist2(a,h)-dist2(b,h))[0];if(!p)return false;
+  tryLift(h,soft){const p=this.enemies.filter(e=>!e.dead&&e.def.lift&&(!soft||e.def.inv)&&dist2(e,h)<(1.4+e.def.r)**2).sort((a,b)=>dist2(a,h)-dist2(b,h))[0];if(!p)return false;
     if(p.def.heavy&&h.key!=='roca'){if(!(this.t-(h.hvT||-9)<1.5)){h.hvT=this.t;this.ev({k:'txt',x:p.x,z:p.z,s:'¡Muy pesado! Solo Roca puede',c:'#ffd23f'});}return false;}
     p.dead=true;h.carry=p.kind;h.atkCd=0.3;h.lockT=0.3;h.face=Math.atan2(p.x-h.x,p.z-h.z);this.ev({k:'lift',id:h.id,kind:p.kind,x:p.x,z:p.z});return true;}
   throwCarry(h){this.autoFace(h,16);const fx=Math.sin(h.face),fz=Math.cos(h.face),k=h.carry;h.carry=null;const strong=h.key==='roca'?1.5:1;
@@ -2100,6 +2101,17 @@ class World{
     else if(b==='air')this.playA(m,'Hit_B',{speed:0.35});
     else this.playA(m,(m.ha&&m.ha.idle)||'Idle');}
   oneShot(m,name,dur){if(!m||!m.anim)return;if(['down','jump','spin','block'].includes(m.base))return;this.playA(m,name,{once:true,dur});m.one=true;m.oneT=dur*0.92;}
+  armPose(m,dt){const want=m.carryK?1:0;m.carryW=(m.carryW||0)+(want-(m.carryW||0))*Math.min(1,dt*12);if(m.carryW<0.01)return;
+    if(!m.armB){m.armB={};m.inner.traverse(o=>{if(!o.isBone)return;for(const k of ['LeftArm','LeftForeArm','LeftHand','RightArm','RightForeArm','RightHand'])if(o.name.endsWith(k)&&!m.armB[k])m.armB[k]=o;});}
+    const B=m.armB;if(!B.LeftArm||!B.RightArm||!B.LeftForeArm||!B.RightForeArm||!B.LeftHand||!B.RightHand)return;
+    const V=THREE.Vector3,Q=THREE.Quaternion,w=m.carryW;m.g.updateMatrixWorld(true);
+    const iq=m.inner.getWorldQuaternion(new Q()),f=new V(0,0,1).applyQuaternion(iq),up=new V(0,1,0),left=new V().crossVectors(up,f).normalize();
+    const aim=(bone,child,t)=>{const bp=bone.getWorldPosition(new V()),cp=child.getWorldPosition(new V());const d=cp.sub(bp).normalize();const qa=new Q().setFromUnitVectors(d,t.clone().normalize());
+      const qi=new Q().slerp(qa,w);const bw=bone.getWorldQuaternion(new Q());const nw=qi.multiply(bw);const pw=bone.parent.getWorldQuaternion(new Q()).invert();bone.quaternion.copy(pw.multiply(nw));bone.updateMatrixWorld(true);};
+    for(const [sd,A,FA,H] of [[1,B.LeftArm,B.LeftForeArm,B.LeftHand],[-1,B.RightArm,B.RightForeArm,B.RightHand]]){
+      aim(A,FA,up.clone().addScaledVector(left,0.42*sd).addScaledVector(f,0.18));aim(FA,H,up.clone().addScaledVector(left,-0.32*sd).addScaledVector(f,0.12));}
+    if(m.carryO){const a=B.LeftHand.getWorldPosition(new V()),b=B.RightHand.getWorldPosition(new V());const mid=a.add(b).multiplyScalar(0.5);m.inner.worldToLocal(mid);
+      const yoff=m.carryK==='auto'?0.55:m.carryK==='poste'?0.05:0.4;m.carryO.position.set(m.carryK==='poste'?0:mid.x,mid.y+yoff,m.carryK==='poste'?mid.z:mid.z);if(m.carryK==='poste')m.carryO.position.x=1.3;}}
   animTick(m,base,dt){m.oneT-=dt;
     if(base!==m.base){m.base=base;if(['down','jump','spin','stun','cheer'].includes(base)||!m.one||m.oneT<=0){m.one=false;this.playBase(m);}}
     else if(m.one&&m.oneT<=0){m.one=false;this.playBase(m);}
@@ -2337,10 +2349,10 @@ class World{
       m.atkT-=dt;m.castT-=dt;m.hurtT-=dt;m.dodgeT-=dt;
       if(m.carryK!==(v.carry||null)){if(m.carryO)m.inner.remove(m.carryO);m.carryK=v.carry||null;m.carryO=null;if(v.carry){const o=this.propMesh(v.carry);const hs=HEROES[v.key].scale||1;
         if(v.carry==='poste'){o.rotation.z=Math.PI/2;o.position.set(1.3,2.25*hs,0);}else if(v.carry==='auto'){o.position.y=2.2*hs;o.scale.setScalar(0.85);}else o.position.y=2.1*hs;m.inner.add(o);m.carryO=o;}}
-      if(m.carryO)m.carryO.position.y+=(((v.carry==='auto'?2.2:2.1)*(HEROES[v.key].scale||1)+Math.sin(t*6)*0.05)-m.carryO.position.y)*0.3;
+      if(m.carryO&&!(m.armB&&m.armB.LeftHand))m.carryO.position.y+=(((v.carry==='auto'?2.2:2.1)*(HEROES[v.key].scale||1)+Math.sin(t*6)*0.05)-m.carryO.position.y)*0.3;
       const I=m.inner;
       if(m.anim){I.rotation.y=lerpAngle(I.rotation.y,v.face,1-Math.exp(-dt*20));m.ring.material.color.set(v.down?'#777':SLOT_COL[v.id]);
-        this.animTick(m,v.down?'down':v.air>0?'jump':v.flurry?'spin':view.phase==='win'?'cheer':v.blk?'block':v.moving?'run':'idle',dt);}
+        this.animTick(m,v.down?'down':v.air>0?'jump':v.flurry?'spin':view.phase==='win'?'cheer':v.blk?'block':v.moving?'run':'idle',dt);this.armPose(m,dt);}
       else{
       if(v.down){I.rotation.x+=(-1.45-I.rotation.x)*k;I.position.y+=(0.35-I.position.y)*k;m.ring.material.color.set('#777');}
       else{I.rotation.x+=(0-I.rotation.x)*k;m.ring.material.color.set(SLOT_COL[v.id]);
@@ -2619,7 +2631,7 @@ class HUD{
     if(txt!==this.tmT){this.tmT=txt;e.textContent=txt;e.style.display=txt?'block':'none';e.classList.toggle('hot',tm!=null&&tm<15);}}
   hint(view,focus){const e=this.hEl||(this.hEl=document.getElementById('lhint'));const me=view.heroes[focus];let txt='';
     if(me&&!me.down&&view.phase==='fight'){if(me.carry)txt='<b>Golpe</b> (X) para lanzar';else{let best=null,bd=9;for(const o of view.enemies){const d=ENEMIES[o.kind];if(!d||!d.lift)continue;const q=Math.hypot(o.x-me.x,o.z-me.z)-d.r;if(q<1.6&&q<bd){bd=q;best=d;}}
-      if(best)txt=best.heavy&&me.key!=='roca'?'Muy pesado: solo <b>Roca</b> puede levantarlo':'<b>Fuerte</b> (Y) para levantar '+best.name.toLowerCase();}}
+      if(best)txt=best.heavy&&me.key!=='roca'?'Muy pesado: solo <b>Roca</b> puede levantarlo':best.boom?'<b>Fuerte</b> (Y) para levantar el barril · <b>Golpe</b> lo explota':'<b>Golpe</b> (X) o <b>Fuerte</b> (Y) para levantar '+best.name.toLowerCase();}}
     if(txt!==this.hTxt){this.hTxt=txt;e.innerHTML=txt;e.style.opacity=txt?'1':'0';}}
   update(view,focus){try{Mus.update(view,mode);}catch(e){}this.intro(view);this.prog(view);this.hint(view,focus);this.timer(view);
     view.heroes.forEach((h,i)=>{const C=this.cards[i];const d=HEROES[h.key];
