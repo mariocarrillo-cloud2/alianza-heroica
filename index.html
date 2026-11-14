@@ -1661,12 +1661,30 @@ const VOZ={
  fenix:{zone:['¡Adelante, compañeros!','¡Síganme!','Nadie se queda atrás.'],arena:['¡Por la ciudad!','¡Que arda la batalla!'],boss:['¡Pelea contra mí, si te atreves!','¡Ni el fuego de un volcán me detiene!'],
   rescue:['¡Eres libre! ¡Ve!'],crystal:['¡Un tesoro brillante!'],secret:['¡Un camino oculto! Bien visto.'],pads:['¡Todos a sus puestos!'],bomb:['¡Rápido, equipo! ¡El tiempo corre!'],defuse:['¡Lo logramos!'],
   boom:['¡Arriba! ¡Las llamas me levantan!'],rest:['Descansemos un momento.'],lowhp:['¡Aún puedo pelear!'],down:['¡Te levantaré de las cenizas!'],lift:['¡Esto va para ustedes, gólems!'],win:['¡Victoria! ¡Las llamas nunca se apagan!'],combo:['¡Fuego imparable!']}};
-const Voz={on:true,v:null,
-  init(){try{this.on=localStorage.getItem('ah_voz')!=='0';}catch(e){}},
+const VOICE_PREF={ // género y voces preferidas (nombres de voces de iPad, Mac, Windows y Chrome)
+  volta:{g:'f',p:[1.08,1.1],n:['flo','sandy','paulina','angélica','angelica','marisol']},
+  brisa:{g:'f',p:[1.0,1.0],n:['paulina','mónica','monica','isabela','francisca','sabina','google español de estados unidos']},
+  escarcha:{g:'f',p:[1.05,0.95],n:['shelley','mónica','monica','helena','laura','google español']},
+  roca:{g:'m',p:[0.78,0.9],n:['grandpa','rocko','jorge','pablo','raul','raúl']},
+  sombra:{g:'m',p:[0.9,1.0],n:['reed','diego','jorge','raul','raúl','pablo']},
+  fenix:{g:'m',p:[1.0,1.05],n:['eddy','juan','jorge','raul','raúl','diego']},
+  narr:{g:'f',p:[1.0,0.95],n:['paulina','mónica','monica','helena','google español']},
+  boss:{g:'m',p:[0.55,0.88],n:['grandpa','rocko','jorge','juan','pablo']}};
+const FEM=/paulina|m[oó]nica|marisol|helena|laura|sabina|isabela|francisca|ang[eé]lica|soledad|elvira|esperanza|camila|valeria|flo\b|sandy|shelley|grandma|google español|female|mujer/i,MAS=/juan|jorge|diego|ra[uú]l|pablo|carlos|enrique|[aá]lvaro|eddy|reed|rocko|grandpa|male|hombre/i;
+const Voz={on:true,map:null,
+  init(){try{this.on=localStorage.getItem('ah_voz')!=='0';}catch(e){}try{speechSynthesis.onvoiceschanged=()=>{this.map=null;};}catch(e){}},
   toggle(){this.on=!this.on;try{localStorage.setItem('ah_voz',this.on?'1':'0');if(!this.on&&window.speechSynthesis)speechSynthesis.cancel();}catch(e){}return this.on;},
-  pick(){if(this.v)return this.v;try{const vs=speechSynthesis.getVoices();this.v=vs.find(v=>/es[-_]MX/i.test(v.lang))||vs.find(v=>/es[-_]US/i.test(v.lang))||vs.find(v=>/^es/i.test(v.lang))||null;}catch(e){}return this.v;},
-  say(txt,who){if(!this.on||!window.speechSynthesis||Snd.muted)return;const P={volta:[1.45,1.12],roca:[0.55,0.92],brisa:[1.3,1.02],sombra:[0.75,1.0],escarcha:[1.2,0.98],fenix:[0.9,1.06],narr:[1,0.97],boss:[0.35,0.88]}[who]||[1,1];
-    try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt.replace(/[«»…]/g,' '));u.lang='es-MX';const v=this.pick();if(v)u.voice=v;u.pitch=P[0];u.rate=P[1];u.volume=0.95;speechSynthesis.speak(u);}catch(e){}}};
+  assign(){let vs=[];try{vs=speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang));}catch(e){}if(!vs.length)return null;
+    const mx=v=>/MX|US|419/i.test(v.lang)?0:1;vs.sort((a,b)=>mx(a)-mx(b));const used=new Set(),map={};
+    const gen=v=>FEM.test(v.name)?'f':MAS.test(v.name)?'m':'?';
+    for(const k of ['narr','volta','roca','brisa','sombra','escarcha','fenix','boss']){const P=VOICE_PREF[k];let v=null;
+      for(const nm of P.n){v=vs.find(x=>x.name.toLowerCase().includes(nm)&&(!used.has(x)||k==='narr'||k==='boss'));if(v)break;}
+      if(!v)v=vs.find(x=>gen(x)===P.g&&!used.has(x))||vs.find(x=>gen(x)===P.g)||vs.find(x=>!used.has(x))||vs[0];
+      if(k!=='narr'&&k!=='boss')used.add(v);map[k]=v;}
+    return map;},
+  say(txt,who){if(!this.on||!window.speechSynthesis||Snd.muted)return;if(!this.map)this.map=this.assign();const P=(VOICE_PREF[who]||VOICE_PREF.narr).p;
+    try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt.replace(/[«»…]/g,' '));const v=this.map&&this.map[who];if(v){u.voice=v;u.lang=v.lang;}else u.lang='es-MX';
+      u.pitch=P[0];u.rate=P[1];u.volume=0.95;speechSynthesis.speak(u);}catch(e){}}};
 Voz.init();
 
 // ---------------- Render 3D ----------------
