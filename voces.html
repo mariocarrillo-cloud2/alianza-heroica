@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alianza Heroica · Generador de voces</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}body{margin:0;font-family:Nunito,system-ui,sans-serif;background:#120a2a;color:#fff}
+  header{display:flex;align-items:center;gap:14px;padding:14px 22px;background:linear-gradient(90deg,#2b3a8a,#5a2a8a)}
+  h1{font-family:Bangers,Impact,sans-serif;letter-spacing:2px;font-size:30px;margin:0;color:#ffd23f;text-shadow:0 3px 0 #000;flex:1}
+  main{max-width:1000px;margin:0 auto;padding:20px}
+  .box{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.15);border-radius:18px;padding:16px 18px;margin-bottom:16px}
+  h2{font-family:Bangers,Impact,sans-serif;letter-spacing:2px;font-size:24px;margin:0 0 10px}
+  input,select{font:inherit;font-weight:800;border-radius:10px;padding:8px 10px;border:2px solid #fff}
+  button{font-family:inherit;font-weight:900;font-size:15px;border:0;border-radius:12px;padding:9px 14px;cursor:pointer;background:#ffd23f;color:#111;box-shadow:0 3px 0 #a07a00}
+  button.alt{background:#7fd8ff;box-shadow:0 3px 0 #2a6a9a}button:disabled{opacity:.5;cursor:default}
+  table{width:100%;border-collapse:collapse}td{padding:7px 6px;border-bottom:1px solid rgba(255,255,255,.1);vertical-align:middle}
+  td small{display:block;opacity:.7;font-weight:600}select{max-width:330px}
+  .bar{height:14px;background:rgba(255,255,255,.15);border-radius:8px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;width:0;background:#7dff9a}
+  .ok{color:#7dff9a}.err{color:#ff8a9a}code{background:rgba(255,255,255,.12);padding:1px 6px;border-radius:6px}
+</style>
+</head>
+<body>
+<header><a href="./" style="text-decoration:none"><button class="alt">🎮 Volver al juego</button></a><h1>GENERADOR DE VOCES · ELEVENLABS</h1></header>
+<main>
+  <div class="box"><h2>1 · Conectar tu cuenta</h2>
+    <p>Pega tu clave de API de ElevenLabs. Se usa solo en este navegador para generar los audios y no se guarda en ningún lado.</p>
+    <input id="key" type="password" placeholder="Clave de API (xi-api-key)" style="width:60%" autocomplete="off"> <button id="go">Conectar</button>
+    <p id="st"></p></div>
+  <div class="box" id="cast" style="display:none"><h2>2 · Elige una voz para cada personaje</h2>
+    <p>Puedes agregar más voces en español desde la <b>Biblioteca de voces</b> de ElevenLabs y luego pulsar <i>Conectar</i> otra vez. <b>Probar</b> gasta unos 40 créditos.</p>
+    <table id="tb"></table></div>
+  <div class="box" id="gen" style="display:none"><h2>3 · Generar todas las frases</h2>
+    <p id="tot"></p><button id="all">Generar y descargar voces.zip</button> <span id="gst"></span>
+    <div class="bar"><i id="pb"></i></div><p id="gerr" class="err"></p></div>
+</main>
+<script type="module">
+const API='https://api.elevenlabs.io/v1';const $=s=>document.querySelector(s);
+const CAST=[
+  {id:'volta',n:'Volta',g:'female',d:'Chica mensajera, rápida, alegre y valiente',set:{stability:0.35,similarity_boost:0.8,style:0.45}},
+  {id:'brisa',n:'Brisa',g:'female',d:'Chica de las montañas, dulce y tranquila',set:{stability:0.55,similarity_boost:0.8,style:0.25}},
+  {id:'escarcha',n:'Escarcha',g:'female',d:'Princesa del hielo, seria y elegante',set:{stability:0.6,similarity_boost:0.8,style:0.3}},
+  {id:'roca',n:'Roca',g:'male',d:'Minero gigante de piedra, voz grave, frases cortas',set:{stability:0.6,similarity_boost:0.8,style:0.3}},
+  {id:'sombra',n:'Sombra',g:'male',d:'Misterioso y bromista, voz baja',set:{stability:0.5,similarity_boost:0.8,style:0.35}},
+  {id:'fenix',n:'Fénix',g:'male',d:'Caballero de fuego, líder valiente',set:{stability:0.45,similarity_boost:0.8,style:0.45}},
+  {id:'narr',n:'Narradora',g:'female',d:'Narra la historia, cálida y emocionante',set:{stability:0.6,similarity_boost:0.8,style:0.3}},
+  {id:'boss:capataz',n:'El Capataz (jefe)',g:'male',d:'Gólem enorme y gritón',set:{stability:0.35,similarity_boost:0.8,style:0.6}},
+  {id:'boss:centinela',n:'El Centinela (jefe)',g:'male',d:'Gólem vigilante, voz de robot',set:{stability:0.8,similarity_boost:0.7,style:0.1}},
+  {id:'boss:gemelo',n:'Gemelos de Magma (jefes)',g:'male',d:'Hermanos traviesos y burlones',set:{stability:0.35,similarity_boost:0.8,style:0.6}},
+  {id:'boss:boss',n:'El Coloso (jefe final)',g:'male',d:'Voz profunda y amenazante',set:{stability:0.5,similarity_boost:0.85,style:0.5}}];
+let key='',voices=[],lines=[],choice={};
+try{choice=JSON.parse(localStorage.getItem('ah_vozcast')||'{}');}catch(e){}
+const hdr=()=>({'xi-api-key':key});
+const h32=t=>{let h=0x811c9dc5;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,'0');};
+const fname=(who,t)=>`${who.replace(':','_')}_${h32(t)}.mp3`;
+lines=await fetch('voces-lineas.json?'+Date.now()).then(r=>r.json());
+$('#go').onclick=async()=>{key=$('#key').value.trim();if(!key)return;$('#st').textContent='Conectando…';
+  try{const r=await fetch(API+'/voices',{headers:hdr()});if(!r.ok)throw new Error(r.status+' '+(await r.text()).slice(0,140));voices=(await r.json()).voices||[];
+    let sub=null;try{const q=await fetch(API+'/user/subscription',{headers:hdr()});if(q.ok)sub=await q.json();}catch(e){}
+    $('#st').innerHTML=`<span class="ok">✔ Conectado.</span> ${voices.length} voces en tu cuenta.`+(sub?` Créditos usados este mes: <b>${sub.character_count}</b> de <b>${sub.character_limit}</b>.`:'');
+    renderCast();}catch(e){$('#st').innerHTML=`<span class="err">No se pudo conectar: ${e.message}</span>`;}};
+function score(v,c){const L=v.labels||{},t=JSON.stringify(L).toLowerCase()+' '+(v.name||'').toLowerCase();let s=0;if((L.gender||'').toLowerCase()===c.g)s+=10;
+  if(/mexic|latin|spanish|español|espanol|argentin|colombia/.test(t))s+=5;if(c.id.startsWith('boss')&&/deep|old|grave|raspy/.test(t))s+=2;if(c.g==='female'&&/young|joven/.test(t)&&c.id==='volta')s+=2;return s;}
+function renderCast(){const used=new Set();for(const c of CAST){if(!choice[c.id]||!voices.find(v=>v.voice_id===choice[c.id])){const best=[...voices].sort((a,b)=>score(b,c)-score(a,c)).find(v=>!used.has(v.voice_id))||voices[0];if(best)choice[c.id]=best.voice_id;}used.add(choice[c.id]);}
+  $('#tb').innerHTML=CAST.map(c=>`<tr><td><b>${c.n}</b><small>${c.d} · ${c.g==='female'?'mujer':'hombre'}</small></td><td><select data-c="${c.id}">${voices.map(v=>{const L=v.labels||{};return `<option value="${v.voice_id}" ${choice[c.id]===v.voice_id?'selected':''}>${v.name} · ${[L.gender,L.accent,L.age,L.description].filter(Boolean).join(', ')}</option>`;}).join('')}</select></td>
+    <td><button class="alt" data-p="${c.id}">▶ Probar</button></td></tr>`).join('');
+  document.querySelectorAll('[data-c]').forEach(s=>s.onchange=()=>{choice[s.dataset.c]=s.value;save();});
+  document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>preview(b.dataset.p,b));save();
+  $('#cast').style.display='';$('#gen').style.display='';const tot=lines.reduce((a,x)=>a+x.t.length,0);$('#tot').innerHTML=`Son <b>${lines.length}</b> frases y unos <b>${tot}</b> caracteres (créditos). Al terminar se descarga un archivo <code>voces.zip</code>.`;}
+function save(){try{localStorage.setItem('ah_vozcast',JSON.stringify(choice));}catch(e){}}
+async function tts(who,text){const c=CAST.find(x=>x.id===who)||CAST.find(x=>x.id==='narr');const vid=choice[c.id];
+  for(let a=0;a<4;a++){const r=await fetch(`${API}/text-to-speech/${vid}?output_format=mp3_44100_64`,{method:'POST',headers:{...hdr(),'Content-Type':'application/json',accept:'audio/mpeg'},body:JSON.stringify({text,model_id:'eleven_multilingual_v2',language_code:'es',voice_settings:c.set})});
+    if(r.ok)return new Uint8Array(await r.arrayBuffer());if(r.status===429||r.status>=500){await new Promise(q=>setTimeout(q,2500*(a+1)));continue;}throw new Error(r.status+' '+(await r.text()).slice(0,160));}throw new Error('demasiados intentos');}
+async function preview(id,b){b.disabled=true;try{const t=(lines.find(x=>x.who===id)||{t:'Hola, equipo.'}).t;const a=await tts(id,t);new Audio(URL.createObjectURL(new Blob([a],{type:'audio/mpeg'}))).play();}catch(e){alert('No se pudo: '+e.message);}b.disabled=false;}
+// ZIP sin compresión
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+const crc32=d=>{let c=0xFFFFFFFF;for(let i=0;i<d.length;i++)c=CRC[(c^d[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;};
+function zip(files){const parts=[],cd=[];let off=0;const enc=new TextEncoder();
+  for(const f of files){const nm=enc.encode(f.name),d=f.data,c=crc32(d);const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint32(14,c,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,nm.length,true);
+    parts.push(new Uint8Array(h.buffer),nm,d);const e=new DataView(new ArrayBuffer(46));e.setUint32(0,0x02014b50,true);e.setUint16(4,20,true);e.setUint16(6,20,true);e.setUint32(16,c,true);e.setUint32(20,d.length,true);e.setUint32(24,d.length,true);e.setUint16(28,nm.length,true);e.setUint32(42,off,true);
+    cd.push(new Uint8Array(e.buffer),nm);off+=30+nm.length+d.length;}
+  const cdl=cd.reduce((a,x)=>a+x.length,0),end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,cdl,true);end.setUint32(16,off,true);
+  return new Blob([...parts,...cd,new Uint8Array(end.buffer)],{type:'application/zip'});}
+$('#all').onclick=async()=>{const b=$('#all');b.disabled=true;$('#gerr').textContent='';const files=[],man={};let i=0;
+  for(const x of lines){i++;$('#gst').textContent=`${i} de ${lines.length}…`;$('#pb').style.width=(i/lines.length*100)+'%';const fn=fname(x.who,x.t);
+    try{files.push({name:'voz/'+fn,data:await tts(x.who,x.t)});(man[x.who]=man[x.who]||{})[h32(x.t)]=fn;}catch(e){$('#gerr').textContent=`Se detuvo en la frase ${i}: ${e.message}`;break;}}
+  files.push({name:'voz/manifest.json',data:new TextEncoder().encode(JSON.stringify({voices:choice,lines:man}))});
+  const url=URL.createObjectURL(zip(files));const a=document.createElement('a');a.href=url;a.download='voces.zip';document.body.appendChild(a);a.click();
+  $('#gst').innerHTML=`<span class="ok">✔ Listo: ${files.length-1} audios. Se descargó voces.zip — avísale a Claude.</span>`;b.disabled=false;};
+</script>
+</body>
+</html>
