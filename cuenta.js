@@ -3,7 +3,7 @@
 // El avance del juego (las llaves ah_* de progreso) se guarda en Firestore en players/{uid}.save
 const FB_VER = '10.14.1';
 import { firebaseConfig } from './cuenta-config.js';
-const PROG_KEYS = ['ah_profiles', 'ah_stars', 'ah_crys', 'ah_traje', 'ah_unlocked', 'ah_team'];
+const PROG_KEYS = ['ah_profiles', 'ah_stars', 'ah_crys', 'ah_traje', 'ah_unlocked', 'ah_team', 'ah_resume'];
 const MAIL_DOMAIN = 'jugadores.alianza-heroica.app';
 export const nameKey = n => n.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const HEROS = [['volta', '⚡', '#ffd23f'], ['roca', '🪨', '#c26a2c'], ['brisa', '🌪️', '#3ddc84'], ['sombra', '🌑', '#8e44ad'], ['escarcha', '❄️', '#7fe3ff'], ['fenix', '🔥', '#ff5a1a']];

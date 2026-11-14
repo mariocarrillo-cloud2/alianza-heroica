@@ -369,7 +369,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
   <div class="mbot">
     <div id="stages"></div>
     <div class="row">
-      <button class="btn" id="b-solo">▶ Jugar</button>
+      <button class="btn" id="b-cont" style="display:none;background:#7dff9a;box-shadow:0 4px 0 #2a8a4a;line-height:1.05"></button><button class="btn" id="b-solo">▶ Jugar</button>
       <button class="btn sm" id="b-team" style="background:#ff9ad5;box-shadow:0 3px 0 #a0507a;font-size:20px">👥 Cambiar equipo</button>
       <button class="btn sm" id="b-heroes" style="background:#c8a0ff;box-shadow:0 3px 0 #6a4a9a;font-size:20px">⭐ Ficha de héroes</button>
       <a class="btn sm" href="https://claude.ai/artifact/K63A2srG2SUrM3hAdpxrRQ" target="_blank" rel="noopener" style="background:#7fe0b0;box-shadow:0 3px 0 #2f7a55;font-size:20px;text-decoration:none;color:#111">🛠 Taller</a>
@@ -408,7 +408,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 </div>
 <div id="rotate" class="bang">↻ Gira la tablet en horizontal</div>
 
-<script type="module" src="cuenta.js?v=6"></script>
+<script type="module" src="cuenta.js?v=8"></script>
 <script type="module">
 import * as THREE from 'three';
 import {OutlineEffect} from 'three/addons/effects/OutlineEffect.js';
@@ -736,7 +736,7 @@ const STORY={name:'La invasión de obsidiana',stages:[
     {t:'r',n:'El barco',sub:'¡Los gólems atraparon a los marineros!',cageTxt:['¡Rescaten a los marineros!','Rompan las jaulas mientras pelean'],deco:'ship',floor:'wood',hw:8,hd:15,lock:true,cages:[[-6,-4],[4,4.5],[9,-3.5]],obs:[[-1,0,0.6,'mast'],[8,0,0.6,'mast']],
       props:[['barril',-11,5],['barril',12,-5]],heals:[[0,5.5]],crystals:[[13,6]],waves:[{grunt:4,shooter:1},{escudero:2,grunt:3},{saltador:2,chispa:2,grunt:2},{'brute*':1,grunt:3,shooter:1}]},
     {t:'s',n:'La pasarela',sub:'Dos héroes deben bajar el puente levadizo',padTxt:'¡El puente levadizo está arriba!',deco:'gangway',floor:'wood',w:4.5,L:30,turn:-HP,fights:[{u:12,at:7,sp:{grunt:3,chispa:2}}],pads:[[26,-2.4],[26,2.4]]},
-    {t:'c',n:'La bodega',deco:'warehouse',floor:'concrete',rad:9,rest:true,obs:[[2,0,1.3,'crates2']],crystals:[[4.2,0]]},
+    {t:'c',n:'La bodega',deco:'warehouse',floor:'concrete',rad:9,rest:true,obs:[[1,4.5,1.3,'crates2']],crystals:[[3.2,4.5]]},
     {t:'s',n:'El rompeolas',sub:'¡Una bomba gólem en el rompeolas!',deco:'breakwater',floor:'concrete',w:6,L:64,timer:60,bomb:[32,4.2],obs:[[32,4.3,0.75,'bomb']],
       fights:[{u:12,sp:{grunt:4,shooter:1}},{u:30,sp:{saltador:2,grunt:3}},{u:50,sp:{escudero:1,shooter:2,grunt:3}}],props:[['barril',20,-4.4],['piedra',42,4.4]],crystals:[[60,-4.6]],secret:{side:'l',u:46,props:[['cofre',0,0]]}},
     {t:'c',n:'El faro',sub:'¡El Centinela vigila la costa!',deco:'lighthouse',floor:'concrete',rad:15,lock:true,boss:true,heals:[[-4,-11],[-4,11]],props:[['barril',6,-8],['barril',6,8],['piedra',-8,0]],
@@ -888,7 +888,7 @@ class Sim{
     for(let i=0;i<=Math.min(R.open,N.length-1);i++){const n=N[i];
       if(!R.entered[i]&&alive.some(h=>this.inNode(i,h.x,h.z,-1))){R.entered[i]=true;R.node=i;
         if(i>0)this.setBanner(n.n,n.sub||'');
-        if(n.rest){const C=this.nc(n);R.cp={x:C[0],z:C[1]};for(const h of this.heroes){if(h.down){h.down=false;h.iframes=2;}h.hp=h.maxHp;h.energy=100;}
+        if(n.rest){const C=this.nc(n);R.cp={x:C[0],z:C[1]};this.ev({k:'cpsave',i,lock:false,crys:R.crys.slice()});for(const h of this.heroes){if(h.down){h.down=false;h.iframes=2;}h.hp=h.maxHp;h.energy=100;}
           this.setBanner(n.n,'Punto de descanso · ¡Progreso guardado!');this.ev({k:'sfx',s:'revive'});this.ev({k:'ring',x:R.cp.x,z:R.cp.z,r:7,c:0x7dff9a});this.ev({k:'rest',x:R.cp.x,z:R.cp.z});R.done[i]=true;}
         if(n.hazard&&!R.fireOn[i]){R.fireOn[i]=true;for(const f of n.hazard.fire||[])this.zones.push({id:this.nid++,kind:'firepatch',x:f[0],z:f[1],r:f[2]||1.8,t:1e9,max:1e9,tick:0});}}
       // pelea por proximidad
@@ -908,7 +908,7 @@ class Sim{
         else{R.done[R.lock]=true;const was=R.lock;R.lock=-1;this.ev({k:'gate',on:false});
           if(n.boss){this.routeWin();return;}
           R.open=Math.max(R.open,was+1);this.setBanner('¡Camino libre!','Sigan adelante');this.ev({k:'sfx',s:'clear'});
-          if(n.cp){const C=this.nc(n);R.cp={x:C[0],z:C[1]};this.setBanner('¡Camino libre!','Punto de control · ¡Progreso guardado!');this.ev({k:'rest',x:C[0],z:C[1],cp:true});}
+          if(n.cp){const C=this.nc(n);R.cp={x:C[0],z:C[1]};this.ev({k:'cpsave',i:was,lock:true,crys:R.crys.slice()});this.setBanner('¡Camino libre!','Punto de control · ¡Progreso guardado!');this.ev({k:'rest',x:C[0],z:C[1],cp:true});}
           for(const h of this.heroes){if(h.down){h.down=false;h.hp=h.maxHp*0.5;}else h.hp=Math.min(h.maxHp,h.hp+h.maxHp*0.25);h.energy=Math.min(100,h.energy+30);}}}}
     // abrir siguiente nodo cuando el actual (sin cierre) quedó limpio
     else{const i=R.open;if(i<N.length-1){const n=N[i];const fightsDone=(n.fights||[]).every((f,q)=>R.fights[i][q]);const clean=!this.enemies.some(e=>!e.dead&&e.rf&&e.rf[0]===i);
@@ -948,6 +948,13 @@ class Sim{
   routeWin(){this.phase='win';this.phaseT=14;this.makeResult();const last=this.stage>=STORY.stages.length-1;const bonus=150*(this.stage+1);
     this.setBanner(last?'¡HISTORIA COMPLETADA!':'¡Etapa completada!',(last?'La ciudad está a salvo':'Siguiente: '+STORY.stages[this.stage+1].name)+' · +'+bonus+' XP');
     this.ev({k:'stageWin',stage:this.stage});this.ev({k:'xp',n:bonus});this.ev({k:'sfx',s:'win'});}
+  resumeAt(d){const R=this.R;if(!R||d.node==null)return false;const N=R.def.nodes,i=Math.min(d.node,N.length-1);
+    for(let k=0;k<i;k++){R.done[k]=true;R.entered[k]=true;if(R.fights[k])R.fights[k].fill(1);R.pads[k]=true;R.tmDone[k]=true;}
+    R.entered[i]=true;if(d.lock){R.done[i]=true;if(R.fights[i])R.fights[i].fill(1);R.open=i+1;}else R.open=i;R.node=i;R.lock=-1;R.obsKey=null;
+    (d.crys||[]).forEach((c,k)=>{if(c&&k<R.crys.length)R.crys[k]=1;});const C=this.nc(N[i]);R.cp={x:C[0],z:C[1]};
+    for(const e of this.enemies)if(!e.def.prop&&!e.def.lift)e.dead=true;this.queue=[];
+    this.heroes.forEach((h,k)=>{const a=k/4*TAU;h.x=C[0]+Math.sin(a)*1.8;h.z=C[1]+Math.cos(a)*1.8;h.hp=h.maxHp;h.down=false;});
+    this.phase='fight';this.phaseT=0;this.setBanner('Continuando: '+N[i].n,'¡Desde tu último punto de control!');this.ev({k:'sfx',s:'clear'});return true;}
   sceneSkip(dt){this.sceneCD-=dt;if(this.sceneCD>0||this.phaseT>this.phaseMax-1)return;if(this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&p&&(p.atk||p.jmp))){this.sceneCD=0.6;const el=this.phaseMax-this.phaseT;const nx=(Math.floor(el/SCENE_DUR)+1)*SCENE_DUR;this.phaseT=Math.max(0,this.phaseMax-nx);}}
   updatePhase(dt){
     if(this.phase==='ending'){this.phaseT-=dt;this.sceneSkip(dt);if(this.phaseT<=0)this.reset(this.diff,0);return;}
@@ -1487,7 +1494,12 @@ class Sim{
     if(rs){const {ab}=this.abOf(h,rs);if(h.energy>=ab.cost&&h.cd[rs]<=0&&this.heroes.some(o=>o.down))inp[rs]=true;}
     const ss=this.slotOfKind(h,['shield']);
     if(ss&&h.hp<h.maxHp*0.4&&h.energy>=25&&h.cd[ss]<=0&&e)inp[ss]=true;
-    if(tx!==null){const dx=tx-h.x,dz=tz-h.z,D=Math.hypot(dx,dz);if(D>stop){const s=Math.min(1,(D-stop)*1.5);inp.mx=dx/D*s;inp.mz=dz/D*s;}}
+    if(this.R&&tx!==null){if(this.t-(h.skT||0)>0.6){const mv=Math.hypot(h.x-(h.skX||0),h.z-(h.skZ||0));if(mv<0.25&&Math.hypot(tx-h.x,tz-h.z)>stop+1)h.unstuck=this.t+1.1;h.skT=this.t;h.skX=h.x;h.skZ=h.z;}
+      if(h.unstuck>this.t){const sh=this.R.def.nodes[this.R.node].sh.find(q=>q[0]==='s')||this.R.def.nodes[this.R.node].sh[0];if(sh[0]==='s'){const ax=sh[1],az=sh[2],ex=sh[3]-ax,ez=sh[4]-az,L=ex*ex+ez*ez||1;let q=((h.x-ax)*ex+(h.z-az)*ez)/L;q=Math.max(0,Math.min(1,q+0.15));tx=ax+ex*q;tz=az+ez*q;stop=0.2;}else{tx=sh[1];tz=sh[2];stop=0.5;}}}
+    if(tx!==null){const dx=tx-h.x,dz=tz-h.z,D=Math.hypot(dx,dz);if(D>stop){const s=Math.min(1,(D-stop)*1.5);let ux=dx/D,uz=dz/D;
+      if(this.R)for(const o of this.walkObs()){const ox=o[0]-h.x,oz=o[1]-h.z,along=ox*ux+oz*uz;if(along<=0||along>Math.min(D,o[2]+3))continue;const lat=ox*uz-oz*ux,need=o[2]+0.9;
+        if(Math.abs(lat)<need){const sd=lat>=0?1:-1,w=(need-Math.abs(lat))/need*1.8;const nx=ux+(-uz)*sd*w,nz=uz+ux*sd*w,L=Math.hypot(nx,nz)||1;ux=nx/L;uz=nz/L;break;}}
+      inp.mx=ux*s;inp.mz=uz*s;}}
     return inp;
   }
   toView(){
@@ -1503,7 +1515,7 @@ class Sim{
       projs:this.projs.map(p=>({id:p.id,kind:p.kind,obj:p.obj,x:r2(p.x),z:r2(p.z),face:r2(p.face),c:p.c||0})).concat(this.eprojs.map(p=>({id:p.id,kind:'lava',x:r2(p.x),z:r2(p.z),face:0,c:0}))),
       zones:this.zones.map(z=>({id:z.id,kind:z.kind,rain:z.rain?1:0,en:z.eid!=null?1:0,boss:z.boss?1:0,x:r2(z.x),z:r2(z.z),r:z.r,t:r2(z.t),max:z.max,len:z.len||0,face:z.face||0,c:z.c||0,x2:z.x2,z2:z.z2})),
       wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,phaseMax:r2(this.phaseMax||0),cine:this.cineT>0?r2(this.cineT):0,route:this.R?{open:this.R.open,lock:this.R.lock,crys:this.R.crys.slice(),node:this.R.node,tm:this.R.tm==null?null:r2(this.R.tm),padOcc:this.R.padOcc||null,pads:this.R.pads.slice(),saved:this.R.saved||0,sec:this.R.sec.slice(),hl:this.R.hl.map(q=>r2(q.c))}:null,phaseT:r2(this.phaseT),stage:this.stage,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
-      banner:this.banner,bannerSub:this.bannerSub,bannerT:r2(this.bannerT),ally:Math.floor(this.ally),ctrl:this.controllers.slice()
+      banner:this.banner,bannerSub:this.bannerSub,bannerT:r2(this.bannerT),names:this.names||[],ally:Math.floor(this.ally),ctrl:this.controllers.slice()
     };
   }
 }
@@ -2462,7 +2474,7 @@ class World{
         else if(v.key==='fenix')F.fire(x,y+0.8,z,1,0.45);else if(v.key==='escarcha')F.frost(x,y+1,z,1);
         else if(v.key==='brisa')F.p({x:x+(Math.random()-0.5),y:y+0.3,z:z+(Math.random()-0.5),c:0x9cffc8,vy:1.5,vx:(Math.random()-0.5)*2,s:0.35,s1:0.05,life:0.7});
         else if(v.key==='sombra')F.smoke(x,y+0.5,z,0x4a2a6a,1,0.6);else if(v.key==='roca'&&v.moving)F.dust(x,z,1,0xa08060);}
-      const isMe=v.id===focus;this.setLabel(m,isMe?'TÚ':'P'+(v.id+1),SLOT_COL[v.id]);
+      const isMe=v.id===focus,pn=view.names&&view.names[v.id];this.setLabel(m,pn?(isMe?'★ '+pn:pn):isMe?'TÚ':'P'+(v.id+1),SLOT_COL[v.id]);
       m.ring.scale.setScalar(isMe?1.15+Math.sin(t*5)*0.05:1);
     }
     const q=this.cam.quaternion;
@@ -2656,7 +2668,8 @@ class World{
       case 'armor':F.shell(ev.x,1,ev.z,ev.r*2.5,0x9fc4ff);F.burst(ev.x,1.2,ev.z,0x9fc4ff,20,8);Snd.play('clank');break;
       case 'eheal':F.ring(ev.x,ev.z,5,0x5dff8a);for(let i=0;i<8;i++)F.p({x:ev.x+(Math.random()-0.5)*4,y:0.5,z:ev.z+(Math.random()-0.5)*4,c:0x5dff8a,vy:3,s:0.5,s1:0.1,life:0.6});break;
       case 'noen':if(ev.id===focus)hud.toast('Sin energía');break;
-      case 'stageWin':saveProgress(ev.stage+1);break;
+      case 'stageWin':saveProgress(ev.stage+1);try{localStorage.setItem('ah_resume','');}catch(e){}renderStages();break;
+      case 'cpsave':try{localStorage.setItem('ah_resume',JSON.stringify({stage:view.stage,node:ev.i,lock:ev.lock,crys:ev.crys,diff,t:Date.now()}));}catch(e){}break;
       case 'sfx':Snd.play(ev.s);break;
     }
   }
@@ -2720,7 +2733,7 @@ class HUD{
   update(view,focus){try{Mus.update(view,mode);}catch(e){}this.scene(view);this.prog(view);this.hint(view,focus);this.timer(view);
     view.heroes.forEach((h,i)=>{const C=this.cards[i];const d=HEROES[h.key];
       this.set('nm'+i,C.nm,'text',d.name);C.nm.style.color=SLOT_COL[i];
-      this.set('tg'+i,C.tag,'text',(i===focus?'TÚ':(view.ctrl[i]==='ai'?'IA':'JUGADOR'))+' · Nv '+h.lvl);
+      this.set('tg'+i,C.tag,'text',((view.names&&view.names[i])||(i===focus?'TÚ':(view.ctrl[i]==='ai'?'IA':'JUGADOR')))+' · Nv '+h.lvl);
       this.set('hp'+i,C.hp,'w',Math.round(h.down?(1-h.downT/DIFF.normal.revive)*100:h.hp/h.maxHp*100));
       this.set('en'+i,C.en,'w',h.energy);
       const cls='card'+(i===focus?' me':'')+(h.down?' down':'');if(C.d.className!==cls)C.d.className=cls;});
@@ -3072,7 +3085,10 @@ function stageBoss(st){const W=st.waves[st.waves.length-1];return Object.keys(W)
 function renderStages(){const box=$('stages');const st=STORY.stages[stageSel],bk=stageBoss(st);const un=loadProgress();
   box.innerHTML=`<div id="stagechip"><div class="chipst">${Preview.ethumbs&&Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:''}<div><span>${STORIES[0].sub} · ${STORIES[0].name} · Etapa ${stageSel+1} de ${STORY.stages.length}</span><b>${st.name}</b><span>Jefe: ${ENEMIES[bk].name} · ${Math.min(un,STORY.stages.length)} de ${STORY.stages.length} completadas</span></div></div>
     <button class="btn sm" id="b-story" style="background:#ffd23f;font-size:20px">📖 Historias</button></div>`;
-  $('b-story').onclick=()=>openStory();}
+  $('b-story').onclick=()=>openStory();
+  const rs=loadResume(),cb=$('b-cont');if(cb){if(rs){const S=STORY.stages[rs.stage],nd=S&&S.route&&S.route.nodes[rs.node];cb.style.display='';cb.innerHTML=`⏯ Continuar<small style="display:block;font-size:14px">Etapa ${rs.stage+1} · ${nd?nd.n:''}</small>`;
+    cb.onclick=()=>{gesture();stageSel=rs.stage;diff=rs.diff||diff;document.querySelectorAll('[data-diff]').forEach(x=>x.classList.toggle('on',x.dataset.diff===diff));if(startLocal('solo')!==false)sim.resumeAt(rs);};}else cb.style.display='none';}}
+function loadResume(){try{const r=JSON.parse(localStorage.getItem('ah_resume')||'null');if(r&&STORY.stages[r.stage]&&STORY.stages[r.stage].route&&r.node!=null)return r;}catch(e){}return null;}
 renderStages();
 $('b-heroes').onclick=()=>openFicha(chosen);
 document.querySelectorAll('[data-diff]').forEach(b=>b.onclick=()=>{diff=b.dataset.diff;document.querySelectorAll('[data-diff]').forEach(x=>x.classList.toggle('on',x===b));});
@@ -3084,7 +3100,7 @@ function toMenu(msg){
   if(peer){try{peer.destroy();}catch(e){}peer=null;}conns=[];hostConn=null;latest=null;
   mode='menu';Snd.muted=true;sim.controllers=['ai','ai','ai','ai'];sim.reset('facil',0);localIdx=0;
   $('menu').style.display='flex';$('hud').style.display='none';$('touch').style.display='none';$('room').style.display='none';status(msg||'');renderStages();renderPick();sim.setTeam(DEFAULT_TEAM);sim.reset('facil',0);}
-function startLocal(m){if(team.length<4){status('Elige 4 héroes para tu equipo');return false;}sim.controllers=['ai','ai','ai','ai'];for(const k in remoteProf)delete remoteProf[k];sim.setTeam(team);localIdx=team.indexOf(chosen);sim.controllers[localIdx]='local';applyProfilesToSim();sim.reset(diff,stageSel);world.camInit=false;enterGame(m);}
+function startLocal(m){if(team.length<4){status('Elige 4 héroes para tu equipo');return false;}sim.controllers=['ai','ai','ai','ai'];for(const k in remoteProf)delete remoteProf[k];sim.setTeam(team);localIdx=team.indexOf(chosen);sim.controllers[localIdx]='local';sim.names=[];sim.names[localIdx]=(window.__player&&window.__player.name)||null;applyProfilesToSim();sim.reset(diff,stageSel);world.camInit=false;enterGame(m);}
 function nextAI(from){for(let k=1;k<=4;k++){const j=(from+k)%4;if(sim.controllers[j]==='ai')return j;}return -1;}
 $('b-solo').onclick=()=>{gesture();startLocal('solo');};
 const teamOK=()=>{if(team.length<4){status('Elige 4 héroes para tu equipo');return false;}return true;};
@@ -3102,13 +3118,13 @@ $('b-host').onclick=()=>{gesture();
   peer.on('connection',conn=>{
     conn.on('data',msg=>{
       if(msg.t==='hello'){let idx=sim.team.indexOf(msg.want);if(idx<0||sim.controllers[idx]!=='ai')idx=nextAI(localIdx);
-        if(idx<0){conn.send({t:'full'});return;}sim.controllers[idx]='remote';conn.idx=idx;conns.push(conn);conn.send({t:'welcome',idx,key:sim.team[idx]});
+        if(idx<0){conn.send({t:'full'});return;}sim.controllers[idx]='remote';conn.idx=idx;conns.push(conn);sim.names[idx]=typeof msg.name==='string'?msg.name.slice(0,14):null;conn.send({t:'welcome',idx,key:sim.team[idx]});
         if(msg.prof&&sim.team[idx]===msg.want){remoteProf[idx]=msg.prof;sim.setProfile(idx,msg.prof);}hud.toast('¡'+HEROES[sim.team[idx]].name+' se unió!');}
       else if(msg.t==='in'&&conn.idx!=null)sim.setInput(conn.idx,msg);
       else if(msg.t==='prof'&&conn.idx!=null){remoteProf[conn.idx]=msg.p;sim.setProfile(conn.idx,msg.p);}
-      else if(msg.t==='sw'&&conn.idx!=null){const j=nextAI(conn.idx);if(j>=0){sim.controllers[conn.idx]='ai';delete remoteProf[conn.idx];sim.setProfile(conn.idx,profiles[sim.team[conn.idx]]);sim.controllers[j]='remote';conn.idx=j;conn.send({t:'welcome',idx:j,key:sim.team[j]});}}
+      else if(msg.t==='sw'&&conn.idx!=null){const j=nextAI(conn.idx);if(j>=0){sim.controllers[conn.idx]='ai';delete remoteProf[conn.idx];sim.setProfile(conn.idx,profiles[sim.team[conn.idx]]);sim.names[j]=sim.names[conn.idx];sim.names[conn.idx]=null;sim.controllers[j]='remote';conn.idx=j;conn.send({t:'welcome',idx:j,key:sim.team[j]});}}
     });
-    conn.on('close',()=>{if(conn.idx!=null){sim.controllers[conn.idx]='ai';delete remoteProf[conn.idx];sim.setProfile(conn.idx,profiles[sim.team[conn.idx]]);hud.toast('Un jugador salió; la IA toma su lugar');}conns=conns.filter(c=>c!==conn);});
+    conn.on('close',()=>{if(conn.idx!=null){sim.controllers[conn.idx]='ai';sim.names[conn.idx]=null;delete remoteProf[conn.idx];sim.setProfile(conn.idx,profiles[sim.team[conn.idx]]);hud.toast('Un jugador salió; la IA toma su lugar');}conns=conns.filter(c=>c!==conn);});
   });
 };
 $('b-join').onclick=()=>{gesture();
@@ -3120,7 +3136,7 @@ $('b-join').onclick=()=>{gesture();
   peer.on('error',err=>{if(mode==='menu'){clearTimeout(to);status(err.type==='peer-unavailable'?'No existe la sala '+code:NET_HINT+' ('+err.type+')');}});
   peer.on('open',()=>{
     const conn=hostConn=peer.connect(PREFIX+code,{reliable:true});
-    conn.on('open',()=>conn.send({t:'hello',want:chosen,prof:profiles[chosen]}));
+    conn.on('open',()=>conn.send({t:'hello',want:chosen,prof:profiles[chosen],name:(window.__player&&window.__player.name)||null}));
     conn.on('data',msg=>{
       if(msg.t==='welcome'){clearTimeout(to);localIdx=msg.idx;if(msg.key&&profiles[msg.key])conn.send({t:'prof',p:profiles[msg.key]});if(mode!=='client'){world.camInit=false;enterGame('client');$('room').textContent='Sala: '+code;$('room').style.display='inline-block';}}
       else if(msg.t==='s'){latest=msg.v;for(const e of msg.ev)pendingEv.push(e);}
@@ -3144,7 +3160,7 @@ function frame(now){
     for(const e of events)if(e.k==='xp')onXP(e.n,view);
   }else{
     if(mode!=='menu'){
-      if(inp.sw){const j=nextAI(localIdx);if(j>=0){sim.controllers[localIdx]='ai';sim.controllers[j]='local';localIdx=j;hud.toast('Ahora juegas con '+HEROES[sim.team[j]].name);}}
+      if(inp.sw){const j=nextAI(localIdx);if(j>=0){sim.controllers[localIdx]='ai';sim.controllers[j]='local';if(sim.names){sim.names[j]=sim.names[localIdx];sim.names[localIdx]=null;}localIdx=j;hud.toast('Ahora juegas con '+HEROES[sim.team[j]].name);}}
       sim.setInput(localIdx,inp);
     }
     acc+=dt;let n=0;while(acc>=STEP&&n<4){sim.step(STEP);acc-=STEP;n++;}if(n===4)acc=0;
