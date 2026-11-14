@@ -1673,7 +1673,7 @@ const VOICE_PREF={ // género y voces preferidas (nombres de voces de iPad, Mac,
   boss:{g:'m',p:[0.55,0.88],n:['grandpa','rocko','jorge','juan','pablo']}};
 const FEM=/paulina|m[oó]nica|marisol|helena|laura|sabina|isabela|francisca|ang[eé]lica|soledad|elvira|esperanza|camila|valeria|flo\b|sandy|shelley|grandma|google español|female|mujer/i,MAS=/juan|jorge|diego|ra[uú]l|pablo|carlos|enrique|[aá]lvaro|eddy|reed|rocko|grandpa|male|hombre/i;
 const Voz={on:true,map:null,
-  init(){try{this.on=localStorage.getItem('ah_voz')!=='0';}catch(e){}try{speechSynthesis.onvoiceschanged=()=>{this.map=null;};}catch(e){}},
+  init(){this.load();try{this.on=localStorage.getItem('ah_voz')!=='0';}catch(e){}try{speechSynthesis.onvoiceschanged=()=>{this.map=null;};}catch(e){}},
   toggle(){this.on=!this.on;try{localStorage.setItem('ah_voz',this.on?'1':'0');if(!this.on&&window.speechSynthesis)speechSynthesis.cancel();}catch(e){}return this.on;},
   assign(){let vs=[];try{vs=speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang));}catch(e){}if(!vs.length)return null;
     const mx=v=>/MX|US|419/i.test(v.lang)?0:1;vs.sort((a,b)=>mx(a)-mx(b));const used=new Set(),map={};
@@ -1683,7 +1683,15 @@ const Voz={on:true,map:null,
       if(!v)v=vs.find(x=>gen(x)===P.g&&!used.has(x))||vs.find(x=>gen(x)===P.g)||vs.find(x=>!used.has(x))||vs[0];
       if(k!=='narr'&&k!=='boss')used.add(v);map[k]=v;}
     return map;},
-  say(txt,who){if(!this.on||!window.speechSynthesis||Snd.muted)return;if(!this.map)this.map=this.assign();const P=(VOICE_PREF[who]||VOICE_PREF.narr).p;
+  man:null,au:null,
+  load(){fetch('assets/voz/manifest.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(m=>{if(m&&m.lines)this.man=m.lines;}).catch(()=>{});},
+  h32(t){let h=0x811c9dc5;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,'0');},
+  say(txt,who){if(!this.on||Snd.muted||!txt)return;
+    const f=this.man&&this.man[who]&&this.man[who][this.h32(txt)];
+    if(f){try{if(window.speechSynthesis)speechSynthesis.cancel();if(!this.au)this.au=new Audio();this.au.pause();this.au.src='assets/voz/'+f;this.au.volume=1;this.au.play().catch(()=>{});return;}catch(e){}}
+    if(this.au)try{this.au.pause();}catch(e){}
+    if(who&&who.startsWith('boss:'))who='boss';if(!window.speechSynthesis)return;
+    if(!this.map)this.map=this.assign();const P=(VOICE_PREF[who]||VOICE_PREF.narr).p;
     try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt.replace(/[«»…]/g,' '));const v=this.map&&this.map[who];if(v){u.voice=v;u.lang=v.lang;}else u.lang='es-MX';
       u.pitch=P[0];u.rate=P[1];u.volume=0.95;speechSynthesis.speak(u);}catch(e){}}};
 Voz.init();
@@ -2740,7 +2748,7 @@ class HUD{
     if(!(this.prF=(this.prF||0)+1)||this.prF%30===1){const al=document.getElementById('ally'),pr=e.offsetParent;if(al&&pr){e.style.top=(al.getBoundingClientRect().bottom-pr.getBoundingClientRect().top+4)+'px';}}
     const st=STORY.stages[view.stage],N=st.route.nodes,cur=Math.max(V.node,V.lock),got=V.crys.reduce((a,b)=>a+b,0);const key=cur+'|'+V.open+'|'+got;if(key===this.prK)return;this.prK=key;e.style.display='block';
     e.innerHTML=`<div class="pd">${N.map((n,i)=>`<i class="${i<cur?'ok':i===cur?'on':''}${n.boss?' bs':n.rest||n.cp?' rs':''}"></i>`).join('')}</div><div class="pt">Zona ${cur+1} de ${N.length} · ${N[cur].n} <b>💎 ${got}/${V.crys.length}</b></div>`;}
-  bossCard(kind){const e=document.getElementById('bcard');if(!kind){e.classList.remove('on');return;}const d=ENEMIES[kind];e.querySelector('.bt').textContent=d.title||'';e.querySelector('.bn').textContent=d.name.toUpperCase();e.querySelector('.bq').textContent=d.quote?'«'+d.quote+'»':'';
+  bossCard(kind){const e=document.getElementById('bcard');if(!kind){e.classList.remove('on');return;}const d=ENEMIES[kind];e.querySelector('.bt').textContent=d.title||'';e.querySelector('.bn').textContent=d.name.toUpperCase();e.querySelector('.bq').textContent=d.quote?'«'+d.quote+'»':'';if(d.quote)Voz.say(d.quote,'boss:'+kind);
     e.classList.remove('on');void e.offsetWidth;e.classList.add('on');clearTimeout(this.bcT);this.bcT=setTimeout(()=>e.classList.remove('on'),4200);}
   timer(view){const e=this.tmEl||(this.tmEl=document.getElementById('rtimer'));const tm=view.route&&view.route.tm;const txt=tm==null?'':'💣 '+Math.floor(tm/60)+':'+String(Math.ceil(tm%60)%60).padStart(2,'0');
     if(txt&&this.prEl&&e.offsetParent){e.style.top=(this.prEl.getBoundingClientRect().bottom-e.offsetParent.getBoundingClientRect().top+4)+'px';}
@@ -2803,7 +2811,7 @@ class HUD{
     if(key!==this.scKey){this.scKey=key;const q=P[idx];let who='narr',html='';
       const head=view.phase==='ending'?'<div class="sct">FIN DE LA HISTORIA 1</div>':`<div class="sct">ETAPA ${view.stage+1} · ${st.name.toUpperCase()}</div>`;
       if(q.w==='narr')html=`<div class="cap">${q.t}</div>`;
-      else if(q.w.startsWith('boss:')){const k=q.w.slice(5),img=Preview.ethumbs[k];who='boss';html=`<div class="spk boss"><div class="pt">${img?`<img src="${img}">`:''}</div><div class="bb"><b>${ENEMIES[k].name}</b>${q.t}</div></div>`;}
+      else if(q.w.startsWith('boss:')){const k=q.w.slice(5),img=Preview.ethumbs[k];who=q.w;html=`<div class="spk boss"><div class="pt">${img?`<img src="${img}">`:''}</div><div class="bb"><b>${ENEMIES[k].name}</b>${q.t}</div></div>`;}
       else{const hi=+q.w.slice(1),h=view.heroes[hi]||view.heroes[0];who=h.key;const col='#'+HEROES[h.key].color.toString(16).padStart(6,'0');
         html=`<div class="spk"><div class="pt" style="border-color:${col}">${heroFace(h.key)}</div><div class="bb"><b style="color:${col}">${HEROES[h.key].name}</b>${q.t}</div></div>`;}
       e.querySelector('.scb').innerHTML=head+html;e.querySelector('.scb').classList.remove('pop');void e.offsetWidth;e.querySelector('.scb').classList.add('pop');
