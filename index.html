@@ -338,6 +338,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 @media (max-height:700px){h1{font-size:44px}.hc p,.sc span{display:none}.hc{width:130px}.sc{width:160px}}
 </style>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1.10.0/dist/es-module-shims.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body>
@@ -411,6 +412,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 <script type="module" src="cuenta.js?v=10"></script>
 <script type="module">
 import * as THREE from 'three';
+const LOWDEV=!(window.HTMLScriptElement&&HTMLScriptElement.supports&&HTMLScriptElement.supports('importmap'));
 import {OutlineEffect} from 'three/addons/effects/OutlineEffect.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
@@ -1797,8 +1799,8 @@ class FloatText{
 
 class World{
   constructor(canvas){
-    const r=this.r=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
-    r.setPixelRatio(Math.min(window.devicePixelRatio||1,1.75));r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFShadowMap;r.outputColorSpace=THREE.SRGBColorSpace;
+    const r=this.r=new THREE.WebGLRenderer({canvas,antialias:!LOWDEV,powerPreference:'high-performance'});
+    r.setPixelRatio(LOWDEV?1:Math.min(window.devicePixelRatio||1,1.75));r.shadowMap.enabled=true;r.shadowMap.type=THREE.PCFShadowMap;r.outputColorSpace=THREE.SRGBColorSpace;
     this.outline=new OutlineEffect(r,{defaultThickness:0.0045,defaultColor:[0.05,0.05,0.08],defaultAlpha:1});
     this.scene=new THREE.Scene();this.scene.fog=new THREE.Fog(0xc6e0ff,45,110);addEnv(r,this.scene,0.7);
     this.cam=new THREE.PerspectiveCamera(42,1,0.5,260);this.camT=new THREE.Vector3();this.shake=0;this.camInit=false;this.cine=null;
@@ -2948,7 +2950,7 @@ if(!team.includes(chosen))chosen=team[0];
 let heroTab='volta',slotSel=0;
 const Preview={r:null,m:null,key:null,back:0,thumbs:{},ethumbs:{},last:0,
   init(){if(this.r)return;const c=document.getElementById('pv');
-    this.r=new THREE.WebGLRenderer({canvas:c,antialias:true,alpha:true});this.r.setPixelRatio(Math.min(devicePixelRatio||1,2));this.r.outputColorSpace=THREE.SRGBColorSpace;
+    this.r=new THREE.WebGLRenderer({canvas:c,antialias:true,alpha:true});this.r.setPixelRatio(LOWDEV?1:Math.min(devicePixelRatio||1,2));this.r.outputColorSpace=THREE.SRGBColorSpace;
     this.scene=new THREE.Scene();addEnv(this.r,this.scene,1);this.scene.add(new THREE.HemisphereLight(0xffffff,0x445577,1.5));const dl=new THREE.DirectionalLight(0xffffff,1.6);dl.position.set(3,5,4);this.scene.add(dl);
     this.cam=new THREE.PerspectiveCamera(30,1,0.1,50);this.cam.position.set(0,1.5,5.4);this.cam.lookAt(0,1.0,0);
     this.disc=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.25,0.14,40),new THREE.MeshToonMaterial({color:0x2a3266,gradientMap:world.grad}));this.disc.position.y=-0.07;this.scene.add(this.disc);
@@ -2994,7 +2996,7 @@ function renderPick(){
 }
 // ----- 3D del equipo en la pantalla principal -----
 const TeamView={r:null,ms:[],key:'',last:0,lw:0,lh:0,
-  init(){if(this.r)return;const c=$('tv');this.r=new THREE.WebGLRenderer({canvas:c,antialias:true,alpha:true});this.r.setPixelRatio(Math.min(devicePixelRatio||1,2));this.r.outputColorSpace=THREE.SRGBColorSpace;
+  init(){if(this.r)return;const c=$('tv');this.r=new THREE.WebGLRenderer({canvas:c,antialias:true,alpha:true});this.r.setPixelRatio(LOWDEV?1:Math.min(devicePixelRatio||1,2));this.r.outputColorSpace=THREE.SRGBColorSpace;
     this.scene=new THREE.Scene();addEnv(this.r,this.scene,1);this.scene.add(new THREE.HemisphereLight(0xffffff,0x334466,1.5));const dl=new THREE.DirectionalLight(0xffffff,1.7);dl.position.set(2,5,6);this.scene.add(dl);
     const rim=new THREE.DirectionalLight(0xff9ad5,0.9);rim.position.set(-4,3,-4);this.scene.add(rim);
     this.cam=new THREE.PerspectiveCamera(26,1,0.1,60);this.cam.position.set(0,1.35,10);this.cam.lookAt(0,1.05,0);this.outline=new OutlineEffect(this.r,{defaultThickness:0.005});},
