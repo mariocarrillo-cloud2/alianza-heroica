@@ -27,7 +27,7 @@ const css = `#acc{position:fixed;inset:0;z-index:9999;display:flex;align-items:c
 #acc p{font-size:18px;font-weight:700;margin:8px 0;line-height:1.35}#acc .err{color:#ff8a9a;min-height:24px;font-weight:800}
 #acc button{font-family:inherit;font-weight:900;font-size:20px;border:0;border-radius:16px;padding:12px 18px;margin:6px;cursor:pointer;background:#ffd23f;color:#111;box-shadow:0 4px 0 #a07a00}
 #acc button.alt{background:#7fd8ff;box-shadow:0 4px 0 #2a6a9a}#acc button.gh{background:transparent;color:#fff;box-shadow:none;text-decoration:underline;font-size:16px}
-#acc input{font-family:inherit;font-size:24px;font-weight:800;padding:10px 14px;border-radius:14px;border:3px solid #fff;width:80%;text-align:center;margin:6px 0}
+#acc input{-webkit-user-select:text;user-select:text;color:#111;background:#fff;-webkit-text-fill-color:#111;font-family:inherit;font-size:24px;font-weight:800;padding:10px 14px;border-radius:14px;border:3px solid #fff;width:80%;text-align:center;margin:6px 0}
 #acc .pin{display:flex;gap:8px;justify-content:center;margin:10px 0}#acc .pin i{width:34px;height:42px;border-radius:10px;background:rgba(255,255,255,.15);border:2px solid #fff;font-style:normal;font-size:26px;line-height:42px}
 #acc .pad{display:grid;grid-template-columns:repeat(3,76px);gap:8px;justify-content:center}#acc .pad button{margin:0;font-size:28px;padding:12px 0;background:#fff}
 #acc .who{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:10px 0}#acc .who button{min-width:130px;background:#fff}
