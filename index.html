@@ -276,7 +276,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 .btn.sm{font-size:18px;padding:6px 14px;background:#ddd;box-shadow:0 3px 0 #888}
 .btn.sm.on{background:#ffd23f;box-shadow:0 3px 0 #a07800}
 #code{font-family:Bangers;font-size:28px;width:140px;text-align:center;text-transform:uppercase;border-radius:12px;border:3px solid #7fd8ff;background:#0e1633;color:#fff;padding:6px;-webkit-user-select:text;user-select:text}
-#status{min-height:22px;margin-top:10px;font-weight:800;color:#ffd23f}
+#status{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:80;max-width:min(720px,92vw);text-align:center;font-weight:800;font-size:18px;color:#111;background:#ffd23f;border:3px solid #000;border-radius:14px;padding:10px 16px;box-shadow:0 6px 18px rgba(0,0,0,.5);pointer-events:none}#status:empty{display:none}
 .keys{margin-top:8px;font-size:12px;opacity:.75;line-height:1.5}
 #heroes{position:fixed;inset:0;display:none;align-items:flex-start;justify-content:center;background:radial-gradient(circle at 30% 40%,#1c2350,#070a18);z-index:5;overflow:auto}
 .hx{width:min(1100px,98vw);padding:10px 12px 20px}
@@ -2939,7 +2939,7 @@ loadAssets((n,tot)=>{const el=document.getElementById('loadst');if(el)el.textCon
 let mode='menu',localIdx=0,chosen='volta',diff='facil',stageSel=0;
 let peer=null,conns=[],hostConn=null,latest=null,pendingEv=[],netEv=[],netT=0,sendT=0;
 const sendInp=emptyInput();let sendSw=false;
-const $=id=>document.getElementById(id);const status=s=>$('status').textContent=s;
+const $=id=>document.getElementById(id);let stT=0;document.body.appendChild($('status'));const status=s=>{$('status').textContent=s||'';clearTimeout(stT);if(s)stT=setTimeout(()=>{$('status').textContent='';},12000);};
 let team=(()=>{try{const t=JSON.parse(localStorage.getItem('ah_team')||'null');if(Array.isArray(t)&&t.length===4&&t.every(k=>HEROES[k])&&new Set(t).size===4)return t;}catch(e){}return DEFAULT_TEAM.slice();})();
 function saveTeam(){try{localStorage.setItem('ah_team',JSON.stringify(team));}catch(e){}}
 if(!team.includes(chosen))chosen=team[0];
