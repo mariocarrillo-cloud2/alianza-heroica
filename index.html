@@ -2925,7 +2925,7 @@ function onXP(n,view){const teamKeys=view.heroes.map(h=>h.key);const ups=gainXP(
   const show=ups.includes(mine)?mine:ups[0];const P=profiles[show];
   hud.toast('¡'+HEROES[show].name+' sube a nivel '+P.lvl+'!'+(P.lvl===5||P.lvl===10?' Nuevo poder desbloqueado':'')+' · ⭐ +1 punto');Snd.play('clear');}
 // ---------------- Red ----------------
-const PREFIX='alianza-heroica-v1-';const ALPH='ABCDEFGHJKMNPQRSTUVWXYZ';
+const PREFIX='alianza-heroica-v1-';const PEER_CFG={debug:0,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:stun.cloudflare.com:3478'}]}};const ALPH='ABCDEFGHJKMNPQRSTUVWXYZ';
 const genCode=()=>Array.from({length:4},()=>ALPH[Math.floor(Math.random()*ALPH.length)]).join('');
 const NET_HINT='No se pudo conectar. Revisa tu internet e inténtalo de nuevo.';
 
@@ -3138,7 +3138,7 @@ $('b-voz').addEventListener('pointerup',e=>{e.preventDefault();const on=Voz.togg
 $('b-host').onclick=()=>{gesture();
   if(!teamOK())return;if(!window.Peer){status(NET_HINT);return;}
   const code=genCode();status('Creando sala…');
-  try{peer=new window.Peer(PREFIX+code,{debug:0});}catch(e){status(NET_HINT);return;}
+  try{peer=new window.Peer(PREFIX+code,PEER_CFG);}catch(e){status(NET_HINT);return;}
   const to=setTimeout(()=>{if(mode==='menu')status(NET_HINT);},9000);
   peer.on('open',()=>{clearTimeout(to);startLocal('host');$('room').textContent='Sala: '+code;$('room').style.display='inline-block';hud.toast('Comparte el código '+code);});
   peer.on('error',err=>{clearTimeout(to);if(mode==='menu')status(err.type==='unavailable-id'?'Ese código ya existe, intenta otra vez.':NET_HINT+' ('+err.type+')');});
@@ -3158,12 +3158,12 @@ $('b-join').onclick=()=>{gesture();
   const code=$('code').value.trim().toUpperCase();if(code.length!==4){status('Escribe el código de 4 letras de la sala');return;}
   if(!window.Peer){status(NET_HINT);return;}
   status('Buscando sala '+code+'…');
-  try{peer=new window.Peer({debug:0});}catch(e){status(NET_HINT);return;}
-  const to=setTimeout(()=>{if(mode==='menu')status('No se encontró la sala '+code+'. Revisa el código.');},10000);
+  try{peer=new window.Peer(PEER_CFG);let stage=0;}catch(e){status(NET_HINT);return;}
+  const to=setTimeout(()=>{if(mode==='menu')status(stage===0?'No hay internet o el servidor no responde. Intenta otra vez.':stage===1?'Se encontró la sala '+code+' pero los iPads no lograron conectarse. Pongan los dos en el mismo Wi-Fi (sin datos móviles) y que el iPad que creó la sala esté en el juego, sin bloquear la pantalla.':'La sala '+code+' no respondió. Que el que creó la sala revise que sigue abierta.');},15000);
   peer.on('error',err=>{if(mode==='menu'){clearTimeout(to);status(err.type==='peer-unavailable'?'No existe la sala '+code:NET_HINT+' ('+err.type+')');}});
   peer.on('open',()=>{
-    const conn=hostConn=peer.connect(PREFIX+code,{reliable:true});
-    conn.on('open',()=>conn.send({t:'hello',want:chosen,prof:profiles[chosen],name:(window.__player&&window.__player.name)||null}));
+    stage=1;status('Conectando con la sala '+code+'…');const conn=hostConn=peer.connect(PREFIX+code,{reliable:true});
+    conn.on('open',()=>{stage=2;status('Entrando…');}),conn.on('open',()=>conn.send({t:'hello',want:chosen,prof:profiles[chosen],name:(window.__player&&window.__player.name)||null}));
     conn.on('data',msg=>{
       if(msg.t==='welcome'){clearTimeout(to);localIdx=msg.idx;if(msg.key&&profiles[msg.key])conn.send({t:'prof',p:profiles[msg.key]});if(mode!=='client'){world.camInit=false;enterGame('client');$('room').textContent='Sala: '+code;$('room').style.display='inline-block';}}
       else if(msg.t==='s'){latest=msg.v;for(const e of msg.ev)pendingEv.push(e);}
