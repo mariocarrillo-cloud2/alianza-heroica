@@ -34,7 +34,7 @@ const css = `#acc{position:fixed;inset:0;z-index:9999;display:flex;align-items:c
 #acc .heroes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0}#acc .heroes button{font-size:28px;width:62px;height:62px;padding:0;background:rgba(255,255,255,.15);box-shadow:none;border:3px solid transparent}
 #acc .heroes button.on{border-color:#ffd23f;background:rgba(255,210,63,.3)}
 #acc .spin{width:44px;height:44px;border:5px solid rgba(255,255,255,.25);border-top-color:#ffd23f;border-radius:50%;margin:14px auto;animation:accs 1s linear infinite}@keyframes accs{to{transform:rotate(360deg)}}
-#accbar{position:fixed;left:12px;bottom:10px;z-index:60;font-family:Nunito,system-ui,sans-serif;font-weight:800;font-size:14px;background:rgba(0,0,0,.55);color:#fff;border-radius:14px;padding:6px 12px;display:none;align-items:center;gap:8px}
+body.ingame #accbar{display:none!important}#accbar{position:fixed;left:12px;bottom:10px;z-index:60;font-family:Nunito,system-ui,sans-serif;font-weight:800;font-size:14px;background:rgba(0,0,0,.55);color:#fff;border-radius:14px;padding:6px 12px;display:none;align-items:center;gap:8px}
 #accbar button{font:inherit;border:0;border-radius:10px;padding:4px 10px;background:#ffd23f;cursor:pointer}#accbar .dot{width:9px;height:9px;border-radius:50%;background:#7dff9a}#accbar .dot.off{background:#ff8a3d}`;
 const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 const box = document.createElement('div'); box.id = 'acc'; document.body.appendChild(box);
@@ -43,7 +43,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 function show(html) { box.style.display = 'flex'; box.innerHTML = `<div class="card">${html}</div>`; }
 function hide() { box.style.display = 'none'; }
 function setNet(ok) { const d = bar.querySelector('.dot'); if (d) d.classList.toggle('off', !ok); }
-function showBar(name) { bar.style.display = 'flex'; bar.innerHTML = `<span class="dot"></span>🎮 ${esc(name)}${isDad(user) ? '<a href="admin.html?v=6" target="_blank" rel="noopener" style="background:#7fd8ff;color:#111;border-radius:10px;padding:4px 10px;text-decoration:none">⚙️ Panel de administrador</a>' : ''}<button id="acc-out">Cambiar jugador</button>`; bar.querySelector('#acc-out').onclick = logout; }
+function showBar(name) { bar.style.display = 'flex'; bar.innerHTML = `<span class="dot"></span>🎮 ${esc(name)}${isDad(user) ? '<button id="acc-adm" style="background:#7fd8ff">⚙️ Panel de administrador</button>' : ''}<button id="acc-out">Cambiar jugador</button>`; bar.querySelector('#acc-out').onclick = logout; const ad = bar.querySelector('#acc-adm'); if (ad) ad.onclick = () => { location.href = 'admin.html?v=7'; }; }
 const recent = () => { try { return JSON.parse(ls.get('ah_recent') || '[]'); } catch (e) { return []; } };
 const addRecent = n => { const r = recent().filter(x => nameKey(x) !== nameKey(n)); r.unshift(n); ls.set('ah_recent', JSON.stringify(r.slice(0, 6))); };
 

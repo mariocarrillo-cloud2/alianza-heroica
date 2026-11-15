@@ -408,7 +408,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 </div>
 <div id="rotate" class="bang">↻ Gira la tablet en horizontal</div>
 
-<script type="module" src="cuenta.js?v=9"></script>
+<script type="module" src="cuenta.js?v=10"></script>
 <script type="module">
 import * as THREE from 'three';
 import {OutlineEffect} from 'three/addons/effects/OutlineEffect.js';
@@ -3121,11 +3121,11 @@ $('b-heroes').onclick=()=>openFicha(chosen);
 document.querySelectorAll('[data-diff]').forEach(b=>b.onclick=()=>{diff=b.dataset.diff;document.querySelectorAll('[data-diff]').forEach(x=>x.classList.toggle('on',x===b));});
 $('b-fs').onclick=()=>{const el=document.documentElement;try{(el.requestFullscreen||el.webkitRequestFullscreen).call(el);}catch(e){status('En iPad: Compartir → Agregar a inicio para pantalla completa.');}};
 const gesture=()=>{Snd.init();if(Snd.ctx&&Snd.ctx.state==='suspended')Snd.ctx.resume();};
-function enterGame(m){mode=m;$('menu').style.display='none';$('hud').style.display='block';Snd.muted=false;
+function enterGame(m){mode=m;document.body.classList.add('ingame');$('menu').style.display='none';$('hud').style.display='block';Snd.muted=false;
   const touch=('ontouchstart' in window)||navigator.maxTouchPoints>0;$('touch').style.display=touch?'block':'none';$('btns').style.transform='scale('+Math.max(0.7,Math.min(1,innerHeight/800,innerWidth/1050)).toFixed(3)+')';$('help').style.display=touch?'none':'block';$('tray').style.display=touch?'none':'flex';}
 function toMenu(msg){
   if(peer){try{peer.destroy();}catch(e){}peer=null;}conns=[];hostConn=null;latest=null;
-  mode='menu';Snd.muted=true;sim.controllers=['ai','ai','ai','ai'];sim.reset('facil',0);localIdx=0;
+  mode='menu';document.body.classList.remove('ingame');Snd.muted=true;sim.controllers=['ai','ai','ai','ai'];sim.reset('facil',0);localIdx=0;
   $('menu').style.display='flex';$('hud').style.display='none';$('touch').style.display='none';$('room').style.display='none';status(msg||'');renderStages();renderPick();sim.setTeam(DEFAULT_TEAM);sim.reset('facil',0);}
 function startLocal(m){if(team.length<4){status('Elige 4 héroes para tu equipo');return false;}sim.controllers=['ai','ai','ai','ai'];for(const k in remoteProf)delete remoteProf[k];sim.setTeam(team);localIdx=team.indexOf(chosen);sim.controllers[localIdx]='local';sim.names=[];sim.names[localIdx]=(window.__player&&window.__player.name)||null;applyProfilesToSim();sim.reset(diff,stageSel);world.camInit=false;enterGame(m);}
 function nextAI(from){for(let k=1;k<=4;k++){const j=(from+k)%4;if(sim.controllers[j]==='ai')return j;}return -1;}
