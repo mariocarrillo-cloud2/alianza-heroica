@@ -3203,7 +3203,7 @@ function frame(now){
 requestAnimationFrame(frame);
 // ---------------- Anti-zoom para Safari en iPad ----------------
 (function(){
-  const inMenu=t=>t&&t.closest&&t.closest('#menu,#sel,#heroes,#story');
+  const inMenu=t=>t&&t.closest&&!t.closest('#touch')&&!!t.closest('#menu,#sel,#heroes,#story,#acc,#accbar,button,a,input,select,textarea,label');
   for(const ev of ['gesturestart','gesturechange','gestureend'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
   document.addEventListener('touchstart',e=>{if(e.touches.length>1||!inMenu(e.target))e.preventDefault();},{passive:false});
   document.addEventListener('touchmove',e=>{if(e.touches.length>1||!inMenu(e.target))e.preventDefault();},{passive:false});
