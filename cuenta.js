@@ -3,7 +3,7 @@
 // El avance del juego (las llaves ah_* de progreso) se guarda en Firestore en players/{uid}.save
 const FB_VER = '10.14.1';
 import { firebaseConfig } from './cuenta-config.js';
-const PROG_KEYS = ['ah_profiles', 'ah_stars', 'ah_crys', 'ah_traje', 'ah_unlocked', 'ah_team', 'ah_resume', 'ah_logros'];
+const PROG_KEYS = ['ah_profiles', 'ah_stars', 'ah_crys', 'ah_traje', 'ah_unlocked', 'ah_team', 'ah_resume', 'ah_logros', 'ah_arena'];
 const MAIL_DOMAIN = 'jugadores.alianza-heroica.app';
 export const nameKey = n => n.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const HEROS = [['volta', '⚡', '#ffd23f'], ['roca', '🪨', '#c26a2c'], ['brisa', '🌪️', '#3ddc84'], ['sombra', '🌑', '#8e44ad'], ['escarcha', '❄️', '#7fe3ff'], ['fenix', '🔥', '#ff5a1a']];
@@ -160,7 +160,14 @@ async function enter(u) {
     return;
   }
   const cloud = doc0.save || {}, cloudHas = Object.keys(cloud).length > 0, owner = ls.get('ah_owner');
-  const go = () => { ready = true; hide(); showBar(doc0.name); F.updateDoc(ref, { lastSeen: F.serverTimestamp() }).catch(() => { }); window.__player = { uid: u.uid, name: doc0.name }; };
+  const go = () => { ready = true; hide(); showBar(doc0.name); F.updateDoc(ref, { lastSeen: F.serverTimestamp() }).catch(() => { }); window.__player = { uid: u.uid, name: doc0.name };
+    const key = doc0.nameKey || nameKey(doc0.name);
+    window.__acct = {
+      key, name: doc0.name,
+      async saveRecord(r) { const ref2 = F.doc(F.db, 'records', key); let old = null; try { const s = await F.getDoc(ref2); if (s.exists()) old = s.data(); } catch (e) { }
+        if (old && (old.best || 0) >= r.best) return false; await F.setDoc(ref2, { name: doc0.name, best: r.best | 0, hero: String(r.hero || ''), kills: r.kills | 0, at: Date.now() }); return true; },
+      async loadRecords() { const qs = await F.getDocs(F.collection(F.db, 'records')); const out = []; qs.forEach(d => out.push(d.data())); return out.sort((a, b) => (b.best - a.best) || (b.kills - a.kills)); }
+    }; };
   if (owner === u.uid) { // este iPad ya tiene los datos de este jugador
     if (cloudHas && JSON.stringify(cloud) !== JSON.stringify(snapshot()) && (!doc0.updatedAt || +(ls.get('ah_synced') || 0) < doc0.updatedAt.toMillis())) { loadSaveIntoDevice(u.uid, cloud); ls.set('ah_synced', String(Date.now())); return location.reload(); }
     go(); queueSync(); return;

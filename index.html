@@ -29,6 +29,10 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 .hp i{background:linear-gradient(90deg,#3ddc84,#9cff6b)}
 .en i{background:linear-gradient(90deg,#2b8cff,#7fd8ff)}
 .card.down .hp i{background:#ff5b5b}
+#arenap{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(8,6,24,.82)}#arenap.on{display:flex}
+#arenap .lbox,#logros .lbox{width:min(980px,95vw);max-height:92vh;display:flex;flex-direction:column;background:linear-gradient(170deg,#2b3a8a,#3a1f6a);border:4px solid #000;border-radius:18px;box-shadow:8px 8px 0 #000;padding:14px}
+#arenap .lhd{display:flex;align-items:center;gap:12px;margin-bottom:10px}#arenap .lhd b{font-family:Bangers,Impact,sans-serif;font-size:34px;letter-spacing:2px;color:#ffd23f;text-shadow:0 3px 0 #000;flex:1}
+#arec table{width:100%;border-collapse:collapse;font-weight:800}#arec td,#arec th{padding:8px;border-bottom:1px solid rgba(255,255,255,.15);text-align:left}#arec th{color:#ffd23f;font-size:14px}#arec tr.me td{background:rgba(255,210,63,.18)}#arec{overflow:auto;max-height:52vh}
 #logros{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(8,6,24,.82)}#logros.on{display:flex}
 #logros .lbox{width:min(980px,95vw);max-height:92vh;display:flex;flex-direction:column;background:linear-gradient(170deg,#2b3a8a,#3a1f6a);border:4px solid #000;border-radius:18px;box-shadow:8px 8px 0 #000;padding:14px}
 #logros .lhd{display:flex;align-items:center;gap:12px;margin-bottom:10px}#logros .lhd b{font-family:Bangers,Impact,sans-serif;font-size:34px;letter-spacing:2px;color:#ffd23f;text-shadow:0 3px 0 #000;flex:1}#logros .lhd span{font-weight:900}
@@ -383,6 +387,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
     <div class="row">
       <button class="btn" id="b-cont" style="display:none;background:#7dff9a;box-shadow:0 4px 0 #2a8a4a;line-height:1.05"></button><button class="btn" id="b-solo">▶ Jugar</button>
       <button class="btn sm" id="b-team" style="background:#ff9ad5;box-shadow:0 3px 0 #a0507a;font-size:20px">👥 Cambiar equipo</button>
+      <button class="btn sm" id="b-arena" style="background:#ff7a7a;box-shadow:0 3px 0 #9a3a3a;font-size:20px">🏟️ Arena</button>
       <button class="btn sm" id="b-logros" style="background:#ffb84d;box-shadow:0 3px 0 #9a6a1a;font-size:20px">🏅 Logros</button>
       <button class="btn sm" id="b-heroes" style="background:#c8a0ff;box-shadow:0 3px 0 #6a4a9a;font-size:20px">⭐ Ficha de héroes</button>
       <a class="btn sm" href="https://claude.ai/artifact/K63A2srG2SUrM3hAdpxrRQ" target="_blank" rel="noopener" style="background:#7fe0b0;box-shadow:0 3px 0 #2f7a55;font-size:20px;text-decoration:none;color:#111">🛠 Taller</a>
@@ -410,6 +415,9 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
   <div class="mtop"><div class="mtitle">HISTORIAS</div><button class="btn" id="b-stclose">← Volver</button></div>
   <div class="sgrid"><div class="slist" id="slist"></div><div class="spanel" id="spanel"></div></div>
 </div>
+<div id="arenap"><div class="lbox"><div class="lhd"><b>🏟️ ARENA DE HÉROES</b><button class="btn sm" id="b-aclose">✖ Cerrar</button></div>
+  <p style="font-weight:800;margin:0 0 8px">Oleadas sin fin de gólems: cada 5 oleadas aparece un jefe. ¿Hasta dónde aguantan? Se juega con tu equipo y la dificultad elegida.</p>
+  <div id="arec"></div><div style="text-align:center;margin-top:10px"><button class="btn" id="b-aplay" style="background:#7dff9a;box-shadow:0 4px 0 #2a8a4a">▶ ¡A la arena!</button> <button class="btn" id="b-ahost" style="background:#7fd8ff;box-shadow:0 4px 0 #2a6a9a">📡 Crear sala de arena</button></div></div></div>
 <div id="logros"><div class="lbox"><div class="lhd"><b>🏅 LOGROS</b><span id="lcount"></span><button class="btn sm" id="b-lclose">✖ Cerrar</button></div><div id="lgrid"></div></div></div>
 <div id="achpop"><div class="ai"></div><div><small>¡NUEVO LOGRO!</small><b></b><span></span></div></div>
 <div id="heroes" class="stripes">
@@ -423,7 +431,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 </div>
 <div id="rotate" class="bang">↻ Gira la tablet en horizontal</div>
 
-<script type="module" src="cuenta.js?v=11"></script>
+<script type="module" src="cuenta.js?v=12"></script>
 <script type="module">
 import * as THREE from 'three';
 const LOWDEV=!(window.HTMLScriptElement&&HTMLScriptElement.supports&&HTMLScriptElement.supports('importmap'));
@@ -847,6 +855,11 @@ STORY.ending=[{w:'narr',t:'Con el Coloso derrotado, la obsidiana se volvió polv
 const COMBO_TIERS=[{n:10,w:'¡Bien!',c:'#7fe0ff',en:8,al:2},{n:20,w:'¡Genial!',c:'#5dff8a',en:12,al:4},{n:35,w:'¡Increíble!',c:'#ffd23f',en:16,al:6},{n:50,w:'¡Imparable!',c:'#ff8a3d',en:20,al:8},{n:75,w:'¡LEGENDARIO!',c:'#ff4fd8',en:25,al:12}];
 const DIFF={facil:{wind:1.3,enemyDmg:2.3,revive:4,enemyHp:0.95,tokens:3,maxE:9,elite:0.05},normal:{wind:1.1,enemyDmg:2.8,revive:7,enemyHp:1.1,tokens:4,maxE:11,elite:0.09},dificil:{wind:0.95,enemyDmg:3.4,revive:10,enemyHp:1.4,tokens:6,maxE:13,elite:0.16,armorLight:true}};
 
+const ARENA_S={name:'Arena de héroes',theme:'ciudad',lvl:1,waves:[],arena:true};
+function arenaWave(n){const W={};const c=Math.min(26,5+Math.round(n*1.6));const pool=[['grunt',1,1]];if(n>=2)pool.push(['shooter',2,0.5]);if(n>=3)pool.push(['chispa',3,0.5]);if(n>=4)pool.push(['saltador',4,0.4]);
+  if(n>=5)pool.push(['escudero',5,0.4]);if(n>=6)pool.push(['brute',6,0.25]);if(n>=8)pool.push(['invocador',8,0.15]);const tw=pool.reduce((a,p)=>a+p[2],0);
+  const r=mulberry32(900+n);for(let i=0;i<c;i++){let x=r()*tw;for(const p of pool){x-=p[2];if(x<=0){W[p[0]]=(W[p[0]]||0)+1;break;}}}
+  if(n%5===0){const B=['capataz','centinela','gemelo','boss'];const b=B[(n/5-1)%4];W[b]=b==='gemelo'?2:1;}return W;}
 class Sim{
   constructor(){this.controllers=['ai','ai','ai','ai'];this.setTeam(DEFAULT_TEAM);this.curMul=1;this.reset('facil',0);}
   setTeam(t){this.team=t.slice(0,4);this.profiles=this.team.map(defaultProfile);this.bonus=teamBonuses(this.team).eff;}
@@ -858,12 +871,12 @@ class Sim{
     h.dmgMul=1+0.03*(p.lvl-1);h.maxHp=Math.round(h.def.hp*(1+0.05*(p.lvl-1)));if(old)h.hp=Math.min(h.maxHp,h.hp*h.maxHp/old);else h.hp=h.maxHp;}
   abOf(h,slot){const id=h.load[SLOTS.indexOf(slot)];return {id,ab:h.def.abil[id],rank:h.ranks[id]||1};}
   reset(diff,stage){this.introDone={};this.cineT=0;this.cineK=null;
-    this.diff=diff;this.D=DIFF[diff];this.stage=stage||0;this.S=STORY.stages[this.stage];rng=mulberry32(1337+this.stage);
+    this.diff=diff;this.D=DIFF[diff];const AR=stage==='arena';this.arenaMode=AR;this.arenaKills=0;this.stage=AR?0:(stage||0);this.S=AR?{...ARENA_S,waves:[]}:STORY.stages[this.stage];rng=mulberry32(1337+this.stage);
     this.t=0;this.nid=100;
     this.heroes=this.team.map((k,i)=>this.makeHero(k,i));
     this.enemies=[];this.projs=[];this.eprojs=[];this.zones=[];this.orbs=[];this.hitKind='ability';
     this.R=null;if(this.S.route)this.routeInit();else for(let i=0;i<6;i++){const a=rng()*TAU,r=7+rng()*10;this.spawnAt('crate',Math.sin(a)*r,Math.cos(a)*r);}
-    this.wave=0;this.phase='intro';this.phaseT=this.R?((this.S.scene||[]).length+1)*SCENE_DUR:3;this.phaseMax=this.phaseT;this.sceneCD=0;this.stT=0;this.result=null;this.setBanner(this.S.name,'Etapa '+(this.stage+1));
+    this.wave=0;this.phase='intro';this.phaseT=this.R?((this.S.scene||[]).length+1)*SCENE_DUR:3;this.phaseMax=this.phaseT;this.sceneCD=0;this.stT=0;this.result=null;this.setBanner(this.S.name,this.arenaMode?'¡Aguanten todas las oleadas que puedan!':'Etapa '+(this.stage+1));
     this.ally=0;this.events=[];this.hitstop=0;this.queue=[];this.spawnT=0;this.lastAbility=null;
     this.inputs=this.heroes.map(()=>emptyInput());this.bossAddT=15;this.synReadyT=0;this.curMul=1;this.slowmo=0;this.ultPend=null;this.eScale=1;
   }
@@ -885,7 +898,7 @@ class Sim{
     if(!e)e=this.nearestEnemy(h,range);return e;}
   magnet(h,e,reach,max){if(!e||h.air)return;const d=Math.sqrt(dist2(h,e)),gap=d-(reach+e.def.r-0.35);if(gap<=0)return;const g=Math.min(gap,max),fx=Math.sin(h.face),fz=Math.cos(h.face);h.kx+=fx*g*10;h.kz+=fz*g*10;}
   confine(p,r){if(this.R){this.routeConfine(p,r);return;}const l=Math.hypot(p.x,p.z),m=ARENA_R-r;if(l>m){p.x*=m/l;p.z*=m/l;}}
-  lvl(){return this.S.lvl;}
+  lvl(){return this.arenaMode?1+Math.max(0,this.wave-1)*0.09:this.S.lvl;}
   teamScale(){const L=this.heroes&&this.heroes.length?this.heroes.reduce((a,h)=>a+(h.lvl||1),0)/this.heroes.length:1;return {dmg:1+0.06*(L-1),hp:1+0.05*(L-1)};}
   zone(z){z.id=this.nid++;z.mul=this.curMul;this.zones.push(z);return z;}
   freeze(e,t){if(e.dead||e.stunT>0)return;const tt=e.def.boss?t*0.4:t;if(tt<=0)return;e.freezeT=Math.max(e.freezeT,tt);e.windup=0;e.chargeT=0;this.zones=this.zones.filter(z=>z.eid!==e.id);
@@ -1024,21 +1037,21 @@ class Sim{
       if(this.queue.length){this.spawnT-=dt;if(this.spawnT<=0&&this.enemies.filter(e=>!e.def.prop).length<this.D.maxE){this.spawn(this.queue.shift());this.spawnT=0.7;}}
       this.bossLogic(dt);
       if(!this.queue.length&&this.enemies.every(e=>e.dead||e.def.prop)){
-        if(this.wave>=W.length){this.phase='win';this.phaseT=14;this.makeResult();
+        if(!this.arenaMode&&this.wave>=W.length){this.phase='win';this.phaseT=14;this.makeResult();
           const last=this.stage>=STORY.stages.length-1;const bonus=100*(this.stage+1);
           this.setBanner(last?'¡HISTORIA COMPLETADA!':'¡Etapa completada!',(last?'La ciudad está a salvo':'Siguiente: '+STORY.stages[this.stage+1].name)+' · +'+bonus+' XP');
           this.ev({k:'stageWin',stage:this.stage});this.ev({k:'xp',n:bonus});this.ev({k:'sfx',s:'win'});}
         else{this.phase='clear';this.phaseT=2.5;this.setBanner('¡Oleada superada!');
           for(const h of this.heroes){if(h.down){h.down=false;h.hp=h.maxHp*0.5;}else h.hp=Math.min(h.maxHp,h.hp+h.maxHp*0.3);h.energy=Math.min(100,h.energy+30);}
           this.ev({k:'sfx',s:'clear'});}
-      }else if(this.heroes.every(h=>h.down)){this.phase='lose';this.phaseT=6;this.setBanner('Los héroes cayeron…','¡Intentemos otra vez!');this.ev({k:'sfx',s:'lose'});}
+      }else if(this.heroes.every(h=>h.down)){this.phase='lose';this.phaseT=6;if(this.arenaMode){this.phaseT=9;const sv=Math.max(0,this.wave-1);this.setBanner('¡Superaron '+sv+' oleada'+(sv===1?'':'s')+'!','Gólems vencidos: '+this.arenaKills);this.ev({k:'arenaEnd',best:sv,kills:this.arenaKills});}else this.setBanner('Los héroes cayeron…','¡Intentemos otra vez!');this.ev({k:'sfx',s:'lose'});}
     }
     else if(this.phase==='clear'){this.phaseT-=dt;if(this.phaseT<=0)this.startWave(this.wave);}
     else if(this.phase==='win'){this.phaseT-=dt;if(this.phaseT<11&&this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&(p.atk||p.jmp)))this.phaseT=0;if(this.phaseT<=0){if(this.stage>=STORY.stages.length-1&&STORY.ending){this.phase='ending';this.phaseT=this.phaseMax=STORY.ending.length*SCENE_DUR;this.sceneCD=0.8;this.result=null;}else this.reset(this.diff,this.stage>=STORY.stages.length-1?0:this.stage+1);}}
-    else if(this.phase==='lose'){this.phaseT-=dt;if(this.phaseT<=0)this.reset(this.diff,this.stage);}
+    else if(this.phase==='lose'){this.phaseT-=dt;if(this.phaseT<=0)this.reset(this.diff,this.arenaMode?'arena':this.stage);}
   }
   startWave(n){
-    const W=this.S.waves;this.wave=n+1;const q=[];
+    const W=this.S.waves;if(this.arenaMode&&!W[n])W[n]=arenaWave(n+1);this.wave=n+1;const q=[];
     for(const k in W[n])for(let i=0;i<W[n][k];i++)q.push(k);
     for(let i=q.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[q[i],q[j]]=[q[j],q[i]];}
     q.sort((a,b)=>(ENEMIES[b].boss?1:0)-(ENEMIES[a].boss?1:0));
@@ -1216,7 +1229,7 @@ class Sim{
     this.ally=Math.min(100,this.ally+amt*(e.def.prop?0.005:0.03));
     this.ev({k:'hit',id:e.id,x:e.x,z:e.z,n:amt,crit:stunned,big:amt>=15,hk:hk==='finisher'?2:hk==='heavy'?1:0});
     if(amt>=15)this.hitstop=Math.max(this.hitstop,hk==='finisher'?0.09:0.05);else if(hk==='light'||hk==='heavy')this.hitstop=Math.max(this.hitstop,0.025);
-    if(e.hp<=0){e.dead=true;this.zones=this.zones.filter(z=>z.eid!==e.id);this.ev({k:'die',x:e.x,z:e.z,kind:e.kind,boss:!!e.def.boss,prop:!!e.def.prop});
+    if(e.hp<=0){e.dead=true;if(!e.def.prop)this.arenaKills=(this.arenaKills||0)+1;this.zones=this.zones.filter(z=>z.eid!==e.id);this.ev({k:'die',x:e.x,z:e.z,kind:e.kind,boss:!!e.def.boss,prop:!!e.def.prop});
       if(e.def.boom&&!e.boomed)this.boom(e,false);
       if(!e.def.prop){const k=src||e.lastSrc;if(k&&k.st)k.st.ko++;}
       if(e.def.ai==='summon'){let n=0;for(const o of this.enemies)if(o.bubBy===e.id&&o.bub>0){o.bub=0;n++;this.ev({k:'bubpop',x:o.x,z:o.z,r:o.def.r});}if(n)this.ev({k:'txt',x:e.x,z:e.z,s:'¡Escudos fuera!',c:'#d08cff',big:true});}
@@ -1579,7 +1592,7 @@ class Sim{
       orbs:this.orbs.map(o=>({id:o.id,kind:o.kind,x:r2(o.x),z:r2(o.z)})),
       projs:this.projs.map(p=>({id:p.id,kind:p.kind,obj:p.obj,x:r2(p.x),z:r2(p.z),face:r2(p.face),c:p.c||0})).concat(this.eprojs.map(p=>({id:p.id,kind:'lava',x:r2(p.x),z:r2(p.z),face:0,c:0}))),
       zones:this.zones.map(z=>({id:z.id,kind:z.kind,rain:z.rain?1:0,en:z.eid!=null?1:0,boss:z.boss?1:0,x:r2(z.x),z:r2(z.z),r:z.r,t:r2(z.t),max:z.max,len:z.len||0,face:z.face||0,c:z.c||0,x2:z.x2,z2:z.z2})),
-      wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,phaseMax:r2(this.phaseMax||0),cine:this.cineT>0?r2(this.cineT):0,cineK:this.cineT>0?this.cineK||null:null,cineM:r2(this.cineM||0),route:this.R?{open:this.R.open,lock:this.R.lock,crys:this.R.crys.slice(),node:this.R.node,tm:this.R.tm==null?null:r2(this.R.tm),padOcc:this.R.padOcc||null,pads:this.R.pads.slice(),saved:this.R.saved||0,sec:this.R.sec.slice(),hl:this.R.hl.map(q=>r2(q.c)),goal:(()=>{try{const g=this.routeGoal();return [r2(g.x),r2(g.z)];}catch(e){return null;}})()}:null,phaseT:r2(this.phaseT),stage:this.stage,diff:this.diff,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
+      wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,phaseMax:r2(this.phaseMax||0),cine:this.cineT>0?r2(this.cineT):0,cineK:this.cineT>0?this.cineK||null:null,cineM:r2(this.cineM||0),route:this.R?{open:this.R.open,lock:this.R.lock,crys:this.R.crys.slice(),node:this.R.node,tm:this.R.tm==null?null:r2(this.R.tm),padOcc:this.R.padOcc||null,pads:this.R.pads.slice(),saved:this.R.saved||0,sec:this.R.sec.slice(),hl:this.R.hl.map(q=>r2(q.c)),goal:(()=>{try{const g=this.routeGoal();return [r2(g.x),r2(g.z)];}catch(e){return null;}})()}:null,phaseT:r2(this.phaseT),stage:this.stage,diff:this.diff,arena:this.arenaMode?{wave:this.wave,kills:this.arenaKills||0}:null,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
       banner:this.banner,bannerSub:this.bannerSub,bannerT:r2(this.bannerT),names:this.names||[],ally:Math.floor(this.ally),ctrl:this.controllers.slice()
     };
   }
@@ -2874,7 +2887,7 @@ class HUD{
       this.set('en'+i,C.en,'w',h.energy);
       const cls='card'+(i===focus?' me':'')+(h.down?' down':'');if(C.d.className!==cls)C.d.className=cls;});
     this.set('stn',this.stage.querySelector('b'),'text','Etapa '+(view.stage+1)+' · '+view.stageName);
-    this.set('stw',this.stage.querySelector('span'),'text',view.wave?`Oleada ${view.wave} de ${view.nW}`:'');
+    this.set('stw',this.stage.querySelector('span'),'text',view.arena?`Oleada ${view.wave} · ${view.arena.kills} gólems`:view.wave?`Oleada ${view.wave} de ${view.nW}`:'');
     this.set('ally',this.allyF,'w',view.ally);const full=view.ally>=100;this.ally.classList.toggle('full',full);
     const b=view.enemies.find(e=>ENEMIES[e.kind].boss);this.set('bv',this.boss,'display',b?'block':'none');
     if(b){this.set('bl',this.bossL,'text',(b.rage?'😡 ':'')+ENEMIES[b.kind].name+(b.rage?' · FURIA':''));this.set('bhp',this.bossHp,'w',Math.round(b.hp/b.maxHp*100));this.set('bst',this.bossSt,'w',Math.round(b.stag/b.maxStag*100));this.set('bar',this.bossAr,'w',b.maxArmor?Math.round(b.armor/b.maxArmor*100):0);this.set('barv',this.bossArW,'display',b.maxArmor&&b.armor>0?'block':'none');}
@@ -3102,7 +3115,7 @@ ASSETS.onModel=nm=>{for(const [id,m] of world.enemyM)if(ENEMY_MODEL[m.kind]&&ENE
 loadAssets((n,tot)=>{const el=document.getElementById('loadst');if(el)el.textContent=n<7?`Cargando personajes… ${Math.round(n/7*100)}%`:'';})
   .then(()=>{ASSETS.bg&&ASSETS.bg.then(()=>{try{Preview.makeThumbs();if($('story').style.display==='flex')renderStory();}catch(e){}});for(const map of [world.heroM,world.enemyM]){for(const m of map.values())world.scene.remove(m.g);map.clear();}try{Preview.makeThumbs();renderPick();renderStages();if($('story').style.display==='flex')renderStory();if($('sel').style.display==='flex')renderSel();if($('heroes').style.display==='flex'){Preview.key=null;Preview.setHero(heroTab);renderHeroes();}}catch(e){console.warn(e);}const el=document.getElementById('loadst');if(el)el.textContent='';})
   .catch(e=>{console.warn('modelos',e);const el=document.getElementById('loadst');if(el)el.textContent='';});
-let mode='menu',localIdx=0,chosen='volta',diff='facil',stageSel=0;
+let mode='menu',localIdx=0,chosen='volta',diff='facil',stageSel=0,arenaNext=false;
 let peer=null,conns=[],hostConn=null,latest=null,pendingEv=[],netEv=[],netT=0,sendT=0;
 const sendInp=emptyInput();let sendSw=false;
 const $=id=>document.getElementById(id);let stT=0;document.body.appendChild($('status'));const status=s=>{$('status').textContent=s||'';clearTimeout(stT);if(s)stT=setTimeout(()=>{$('status').textContent='';},12000);};
@@ -3284,6 +3297,18 @@ function renderStages(){const box=$('stages');const st=STORY.stages[stageSel],bk
 function loadResume(){try{const r=JSON.parse(localStorage.getItem('ah_resume')||'null');if(r&&STORY.stages[r.stage]&&STORY.stages[r.stage].route&&r.node!=null)return r;}catch(e){}return null;}
 renderStages();
 $('b-heroes').onclick=()=>openFicha(chosen);
+async function renderArena(){const box=$('arec');let loc={};try{loc=JSON.parse(localStorage.getItem('ah_arena')||'{}');}catch(e){}
+  box.innerHTML=`<p style="font-weight:800">Tu mejor marca en este iPad: <b style="color:#ffd23f">${loc.best||0} oleadas</b>${loc.kills?' · '+loc.kills+' gólems':''}</p><p style="opacity:.8">Cargando récords de la familia…</p>`;
+  if(!window.__acct){box.innerHTML+='<p>Entra con tu cuenta para ver la tabla de la familia.</p>';return;}
+  try{const R=await window.__acct.loadRecords();const me=window.__acct.key;const md=['🥇','🥈','🥉'];
+    box.innerHTML=`<p style="font-weight:800">Tu mejor marca en este iPad: <b style="color:#ffd23f">${loc.best||0} oleadas</b></p><table><tr><th>#</th><th>Jugador</th><th>Oleadas</th><th>Gólems</th><th>Héroe</th></tr>${R.map((r,i)=>`<tr class="${(r.name||'').toLowerCase()===(window.__acct.name||'').toLowerCase()?'me':''}"><td>${md[i]||i+1}</td><td>${(r.name||'?').replace(/</g,'')}</td><td>${r.best}</td><td>${r.kills||0}</td><td>${HEROES[r.hero]?HEROES[r.hero].name:''}</td></tr>`).join('')||'<tr><td colspan="5">Nadie ha jugado todavía. ¡Sé el primero!</td></tr>'}</table>`;}
+  catch(e){box.innerHTML+='<p style="color:#ff9a9a">No se pudo cargar la tabla de la familia (falta actualizar las reglas en Firebase).</p>';}}
+function onArenaEnd(ev){let loc={};try{loc=JSON.parse(localStorage.getItem('ah_arena')||'{}');}catch(e){}const nb=ev.best>(loc.best||0)||(ev.best===(loc.best||0)&&ev.kills>(loc.kills||0));
+  if(nb){loc={best:ev.best,kills:ev.kills,hero:chosen,at:Date.now()};try{localStorage.setItem('ah_arena',JSON.stringify(loc));}catch(e){}hud.toast('🏆 ¡Nuevo récord personal!');}
+  if(window.__acct&&nb)window.__acct.saveRecord({best:ev.best,kills:ev.kills,hero:chosen}).catch(()=>{});}
+$('b-arena').onclick=()=>{gesture();$('arenap').classList.add('on');renderArena();};$('b-aclose').onclick=()=>$('arenap').classList.remove('on');
+$('b-ahost').onclick=()=>{arenaNext=true;$('arenap').classList.remove('on');$('b-host').click();setTimeout(()=>{if(mode==='menu')arenaNext=false;},12000);};
+$('b-aplay').onclick=()=>{gesture();arenaNext=true;$('arenap').classList.remove('on');if(startLocal('solo')===false)arenaNext=false;};
 function renderLogros(){Ach.check();$('lcount').textContent=Ach.count()+' de '+ACHS.length;
   $('lgrid').innerHTML=ACHS.map(a=>{const ok=Ach.has(a.id),cos=COSTUMES.find(c=>c.ach===a.id),pr=Ach.prog(a);
     return `<div class="lg${ok?' ok':''}"><div class="i">${a.ic}</div><div><b>${a.n}</b><p>${a.d}</p>${pr!=null&&!ok?`<div class="pb"><i style="width:${pr/a.goal*100}%"></i></div><p>${pr} / ${a.goal}</p>`:''}${cos?`<small>Premio: traje ${cos.ic} ${cos.n}</small>`:''}${ok?'<small>✔ ¡Conseguido!</small>':''}</div></div>`;}).join('');}
@@ -3297,7 +3322,7 @@ function toMenu(msg){
   if(peer){try{peer.destroy();}catch(e){}peer=null;}conns=[];hostConn=null;latest=null;
   mode='menu';document.body.classList.remove('ingame');Snd.muted=true;sim.controllers=['ai','ai','ai','ai'];sim.reset('facil',0);localIdx=0;
   $('menu').style.display='flex';$('hud').style.display='none';$('touch').style.display='none';$('room').style.display='none';status(msg||'');renderStages();renderPick();sim.setTeam(DEFAULT_TEAM);sim.reset('facil',0);}
-function startLocal(m){if(team.length<4){status('Elige 4 héroes para tu equipo');return false;}sim.controllers=['ai','ai','ai','ai'];for(const k in remoteProf)delete remoteProf[k];sim.setTeam(team);localIdx=team.indexOf(chosen);sim.controllers[localIdx]='local';sim.names=[];sim.names[localIdx]=(window.__player&&window.__player.name)||null;applyProfilesToSim();sim.reset(diff,stageSel);world.camInit=false;enterGame(m);}
+function startLocal(m){if(team.length<4){status('Elige 4 héroes para tu equipo');return false;}sim.controllers=['ai','ai','ai','ai'];for(const k in remoteProf)delete remoteProf[k];sim.setTeam(team);localIdx=team.indexOf(chosen);sim.controllers[localIdx]='local';sim.names=[];sim.names[localIdx]=(window.__player&&window.__player.name)||null;applyProfilesToSim();sim.reset(diff,arenaNext?'arena':stageSel);arenaNext=false;world.camInit=false;enterGame(m);}
 function nextAI(from){for(let k=1;k<=4;k++){const j=(from+k)%4;if(sim.controllers[j]==='ai')return j;}return -1;}
 $('b-solo').onclick=()=>{gesture();startLocal('solo');};
 const teamOK=()=>{if(team.length<4){status('Elige 4 héroes para tu equipo');return false;}return true;};
@@ -3367,14 +3392,14 @@ function frame(now){
     if(mode==='host'){for(const e of events)netEv.push(e);netT+=dt;
       if(netT>=0.05){netT=0;const msg={t:'s',v:view,ev:netEv};netEv=[];for(const c of conns)if(c.open){try{c.send(msg);}catch(e){}}}}
   }
-  if(mode!=='menu'){try{Ach.feed(view,events,localIdx);}catch(e){}}
+  if(mode!=='menu'){try{Ach.feed(view,events,localIdx);}catch(e){}for(const e of events)if(e.k==='arenaEnd'){try{onArenaEnd(e);}catch(_){}}}
   if(mode!=='menu')world.sync(view,dt,localIdx,events);
   if(mode!=='menu')hud.update(view,localIdx);else{try{Mus.update(null,'menu');}catch(e){}}
 }
 requestAnimationFrame(frame);
 // ---------------- Anti-zoom para Safari en iPad ----------------
 (function(){
-  const inMenu=t=>t&&t.closest&&!t.closest('#touch')&&!!t.closest('#menu,#sel,#heroes,#story,#logros,#acc,#accbar,button,a,input,select,textarea,label');
+  const inMenu=t=>t&&t.closest&&!t.closest('#touch')&&!!t.closest('#menu,#sel,#heroes,#story,#logros,#arenap,#acc,#accbar,button,a,input,select,textarea,label');
   for(const ev of ['gesturestart','gesturechange','gestureend'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
   document.addEventListener('touchstart',e=>{if(e.touches.length>1||!inMenu(e.target))e.preventDefault();},{passive:false});
   document.addEventListener('touchmove',e=>{if(e.touches.length>1||!inMenu(e.target))e.preventDefault();},{passive:false});

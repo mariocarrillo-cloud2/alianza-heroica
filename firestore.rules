@@ -20,6 +20,14 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['save','updatedAt','lastSeen','avatar']));
       allow delete: if isAdmin();
     }
+    // Récords del modo arena: toda la familia los ve; cada quien solo escribe el suyo.
+    match /records/{key} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && (isAdmin() || get(/databases/$(database)/documents/logins/$(key)).data.uid == request.auth.uid)
+        && request.resource.data.keys().hasOnly(['name','best','hero','kills','at'])
+        && request.resource.data.best is int && request.resource.data.best < 1000;
+    }
     // Qué versión de cuenta usa cada nombre (cambia cuando Papá pone un PIN nuevo). No guarda PINs.
     match /logins/{key} {
       allow read: if true;
