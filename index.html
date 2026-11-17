@@ -455,6 +455,8 @@ const MX_MAP={Idle:['MXA_FightIdle'],Unarmed_Idle:['MXA_FightIdle'],Running_A:['
   Walking_D_Skeletons:['MXA_Walking'],'1H_Melee_Attack_Chop':['MXA_CrossPunch',0.6,1.35],'2H_Melee_Attack_Chop':['MXA_Slam2H',0.4,1.4],Taunt:['MXA_Victory',0,2.3],MX_Hurricane:['MXA_HurricaneKick',0.25,1.35]};
 const HERO_MODEL={volta:['volta',null,'mx'],roca:['roca',null,'mx'],brisa:['brisa',null,'mx'],sombra:['sombra',null,'mx'],escarcha:['escarcha',null,'mx'],fenix:['fenix',null,'mx']};
 const ENEMY_MODEL={escudero:['escudero',null,'mx'],grunt:['grunt',null,'mx'],shooter:['shooter',null,'mx'],brute:['brute',null,'mx'],capataz:['capataz',null,'mx'],centinela:['centinela',null,'mx'],gemelo:['gemelo',null,'mx'],chispa:['chispa',null,'mx'],saltador:['saltador',null,'mx'],invocador:['invocador',null,'mx'],boss:['boss',null,'mx']};
+Object.assign(ENEMY_MODEL,{hgrunt:['grunt','ice','mx'],hshooter:['shooter','ice','mx'],hescudero:['escudero','ice','mx'],hchispa:['chispa','snow','mx'],hsaltador:['saltador','ice','mx'],hbrute:['brute','snow','mx'],hinvocador:['invocador','iceV','mx'],cazador:['gemelo','snow','mx'],guardian:['centinela','iceC','mx'],general:['capataz','iceN','mx'],reina:['boss','iceQ','mx']});
+const LOOKS={ice:{t:[0.55,0.82,1],ta:0.75,g:0.18,gc:[0.4,0.8,1]},snow:{t:[0.95,0.97,1],ta:0.8,v:1.1,g:0.1,gc:[0.7,0.9,1]},iceV:{t:[0.6,0.6,1],ta:0.7,g:0.25,gc:[0.6,0.5,1]},iceC:{t:[0.4,0.95,1],ta:0.75,g:0.35,gc:[0.3,1,1]},iceN:{t:[0.2,0.3,0.6],ta:0.75,g:0.2,gc:[0.5,0.8,1]},iceQ:{t:[0.92,0.88,1],ta:0.8,g:0.35,gc:[0.7,0.6,1],v:1.05}};
 const HERO_ANIM={volta:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},roca:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},sombra:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},
   fenix:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},brisa:{atk:['MX_Cast','MX_Sweep','MX_Cast']},escarcha:{atk:['MX_Cast','MX_Sweep','MX_Cast']}};
 // Animación de cada poder: [clip, duración s]. Solo modelos Meshy/Mixamo.
@@ -679,6 +681,15 @@ const ENEMIES={
   gemelo:{quote:'¡Dos veces más calor, dos veces más diversión!',title:'Los hermanos de la fábrica',name:'Gemelos de Magma',armor:220,hp:720,speed:3.0,dmg:16,range:2.6,windup:0.9,cd:2.4,r:1.3,stag:130,color:0x5a1a1a,scale:2.0,boss:true,charge:true,slam:3.6,xp:90},
   boss:{quote:'Han llegado lejos, pequeños héroes. Aquí termina su camino.',title:'Señor de la obsidiana',name:'El Coloso',armor:800,hp:2400,speed:2.3,dmg:28,range:5,windup:1.3,cd:3.2,r:2.0,stag:220,color:0x2a1a3a,scale:3.0,boss:true,charge:true,slam:5.5,volley:true,xp:250},
 };
+// ----- Ejército de cristal (Historia 2): mismas habilidades con otro aspecto -----
+(()=>{const IC=(b,o)=>Object.assign({},ENEMIES[b],{color:0x9fd8ff},o);
+  Object.assign(ENEMIES,{hgrunt:IC('grunt',{name:'Soldado de cristal'}),hshooter:IC('shooter',{name:'Lanzahielo'}),hescudero:IC('escudero',{name:'Escudero de hielo'}),
+    hchispa:IC('chispa',{name:'Bola de nieve'}),hsaltador:IC('saltador',{name:'Saltanieve'}),hbrute:IC('brute',{name:'Gigante de nieve'}),hinvocador:IC('invocador',{name:'Hechicero de escarcha'}),
+    nidoh:IC('nido',{name:'Portal de hielo',spawns:['hgrunt','hgrunt','hchispa','hshooter']}),
+    cazador:IC('gemelo',{name:'El Cazador de escarcha',title:'Bestia del bosque nevado',quote:'¡Auuu! Este bosque es territorio de la Reina.',hp:1500,armor:320,speed:3.4,scale:2.3,xp:200}),
+    guardian:IC('centinela',{name:'Guardián de cristal',title:'Vigía de las cuevas',quote:'Cien inviernos he vigilado. Ustedes no pasarán.',hp:1700,armor:420,xp:230}),
+    general:IC('capataz',{name:'General Invernal',title:'Comandante del ejército de cristal',quote:'¡Firmes, soldados! ¡Formación de ataque!',hp:1900,armor:560,charge:true,xp:260}),
+    reina:IC('boss',{name:'La Reina Escarcha',title:'Señora del invierno eterno',quote:'Bienvenidos a mi reino. Aquí todo se congela… incluso ustedes.',hp:2800,armor:850,xp:400})});})();
 const HP=Math.PI/2;
 const CT=(u,v,r)=>{const c=Math.cos(r),s=Math.sin(r);return [[u,v,1.35,'cont',r],[u+c*1.7,v+s*1.7,1.35,'x'],[u-c*1.7,v-s*1.7,1.35,'x']];};
 // ----- Constructor de recorridos: encadena plazas y calles y calcula puertas y posiciones -----
@@ -687,7 +698,7 @@ function mkRoute(style,intro,specs){
   const W=(o,f,r,u,v)=>[+(o[0]+f[0]*u+r[0]*v).toFixed(2),+(o[1]+f[1]*u+r[1]*v).toFixed(2)];
   let prev=null;
   specs.forEach((sp,idx)=>{const n={n:sp.n,sub:sp.sub,deco:sp.deco||(sp.t==='s'?'path':'plaza'),floor:sp.floor};
-    for(const k of ['lock','boss','rest','cp','timer','timerTxt','hazard','nestTxt','cageTxt','padTxt','waves','spawn'])if(sp[k]!==undefined)n[k]=sp[k];
+    for(const k of ['lock','boss','rest','cp','timer','timerTxt','hazard','nestTxt','nestKind','cageTxt','padTxt','waves','spawn'])if(sp[k]!==undefined)n[k]=sp[k];
     let o,f,r;
     if(sp.t==='s'){// calle
       if(sp.turn){a+=sp.turn;}f=F(a);r=Rt(a);let sx,sz;
@@ -832,10 +843,91 @@ const STORY={name:'La invasión de obsidiana',stages:[
     {t:'s',n:'La ladera',sub:'Dos héroes deben abrir la puerta del cráter',padTxt:'¡La puerta del cráter está cerrada!',deco:'path',w:6.5,L:40,fights:[{u:12,sp:{grunt:4,shooter:1}},{u:26,sp:{brute:1,chispa:2,grunt:2}}],props:[['piedra',8,4.4],['barril',20,-4.4]],pads:[[36,-3],[36,3]]},
     {t:'c',n:'El cráter',sub:'¡El Coloso despierta!',deco:'crater',floor:'rock',rad:16,lock:true,boss:true,hazard:{fire:[[-9,-9],[-9,9],[7,-10],[7,10]]},heals:[[-12,0],[11,0]],props:[['barril',0,-10],['barril',0,10],['piedra',-6,0]],
       waves:[{grunt:5,shooter:2},{brute:2,chispa:3,grunt:2},{escudero:2,invocador:1,saltador:2,grunt:2},{boss:1,grunt:3,shooter:2}]}])},
+  // ======================= HISTORIA 2: EL REINO HELADO =======================
+  {name:'El bosque nevado',theme:'nieve',lvl:2.5,story:1,minion:'hgrunt',scene:[
+     {w:'narr',t:'Unos días después, una carta congelada llegó a Ciudad Aurora. Venía del reino del norte.'},
+     {w:'narr',t:'«Querida sobrina Escarcha: el invierno eterno ya comenzó. Mi ejército de cristal marcha hacia el sur. Nadie podrá detenerme.» — La Reina Escarcha.'},
+     {w:'h0',t:'¿La tía de Escarcha? ¿Y quiere congelar todo el mundo?'},
+     {w:'boss:reina',t:'El calor, el ruido, las ciudades… todo eso termina hoy. Solo quedará hielo, silencio y mi reino.'},
+     {w:'h1',t:'El camino al norte pasa por el bosque nevado. ¡Abrígense, equipo!'},
+     {w:'h2',t:'Dicen que en ese bosque caza una bestia de hielo… hay que ir con cuidado.'}],waves:[],
+   route:mkRoute('snow','El bosque nevado es la entrada al reino helado. Los soldados de cristal congelaron a los leñadores del pueblo y los tienen atrapados. Crucen el bosque, liberen a los leñadores y venzan al Cazador de escarcha.',[
+    {t:'r',n:'Entrada del bosque',deco:'plaza',floor:'snow',hw:10,hd:7,props:[['piedra',-4,-6],['barril',-4,6]],obs:[[-7,4,1.0,'tree'],[7,-4,1.0,'tree']]},
+    {t:'s',n:'Sendero de pinos',sub:'Rompan cajas y busquen pasajes secretos',deco:'path',floor:'snow',w:6.5,L:68,fights:[{u:14,sp:{hgrunt:4}},{u:30,sp:{hgrunt:3,hshooter:2}},{u:46,sp:{hsaltador:1,hgrunt:4}},{u:60,sp:{hchispa:2,hgrunt:3}}],
+      crates:[[10,-4],[24,4],[40,-4.4],[55,4.3]],props:[['barril',18,4.4],['piedra',34,-4.4],['poste',50,4.6]],obs:[[22,4.9,1.0,'tree'],[44,-4.9,1.0,'tree']],secret:{side:'r',u:36,props:[['cofre',0,1]],crystal:true}},
+    {t:'r',n:'El claro helado',sub:'¡Se cierra el paso! Peleen sobre el hielo',deco:'plaza',floor:'ice',hw:16,hd:12,lock:true,cp:true,
+      obs:[[-6,-6,1.3,'rockobs'],[6,6,1.3,'rockobs'],[-8,6,1.0,'tree'],[8,-6,1.0,'tree']],props:[['barril',-10,0],['barril',10,0],['piedra',0,10]],crystals:[[-11,-13]],
+      waves:[{hgrunt:4,hshooter:2},{hescudero:2,hgrunt:3,hchispa:2},{hsaltador:2,hgrunt:3,hshooter:1},{hbrute:1,hgrunt:3,hinvocador:1}]},
+    {t:'s',n:'La ladera',sub:'¡Cuidado con los carámbanos que caen!',deco:'path',floor:'snow',w:6.2,L:56,turn:HP,hazard:{fall:true},
+      fights:[{u:12,sp:{hsaltador:1,hgrunt:4}},{u:28,sp:{hgrunt:3,hshooter:2}},{u:44,sp:{hchispa:3,hgrunt:3}}],props:[['barril',22,4.4],['piedra',38,-4.4]],crystals:[[50,-4.4]]},
+    {t:'r',n:'Aserradero congelado',sub:'¡Liberen a los leñadores!',cageTxt:['¡Liberen a los leñadores!','Rompan los bloques de hielo mientras pelean'],deco:'plaza',floor:'snow',hw:14,hd:11,lock:true,cages:[[-6,-6],[6,6],[8,-6]],
+      obs:[[-7,6,1.6,'tent'],[2,-1,1.0,'tree']],props:[['barril',-10,0],['piedra',0,9]],heals:[[0,6]],crystals:[[11,10]],waves:[{hgrunt:4,hshooter:1},{hescudero:2,hgrunt:3,hchispa:2},{hbrute:1,hsaltador:2,hgrunt:2}]},
+    {t:'c',n:'Cabaña del guardabosques',deco:'plaza',floor:'snow',rad:9,rest:true,obs:[[1,4.5,1.3,'tent']],crystals:[[3.2,-4.5]]},
+    {t:'s',n:'El puente de troncos',sub:'Dos héroes deben bajar el puente',padTxt:'¡El puente está levantado!',deco:'path',floor:'snow',w:5,L:34,fights:[{u:12,at:7,sp:{hgrunt:3,hchispa:2}}],pads:[[30,-2.4],[30,2.4]]},
+    {t:'c',n:'La guarida del cazador',sub:'¡El Cazador de escarcha!',deco:'plaza',floor:'ice',rad:15,lock:true,boss:true,heals:[[-11,0],[11,0]],props:[['barril',0,-10],['barril',0,10],['piedra',-6,0]],obs:[[-8,-8,1.0,'tree'],[8,8,1.0,'tree']],
+      waves:[{hgrunt:5,hshooter:2},{hbrute:1,hchispa:2,hgrunt:2},{cazador:1,hgrunt:3,hshooter:1}]}])},
+  {name:'Las cuevas de cristal',theme:'nieve',lvl:2.8,story:1,minion:'hgrunt',scene:[
+     {w:'narr',t:'El Cazador cayó sobre la nieve. En su collar brillaba un mapa tallado en hielo.'},
+     {w:'h3',t:'Este mapa marca unas cuevas debajo de la montaña. ¡Ahí fabrican a los soldados de cristal!'},
+     {w:'boss:reina',t:'Mi Guardián cuida las cuevas desde hace cien inviernos. Sus cristales ven todo… y nunca olvidan.'},
+     {w:'h0',t:'Entonces tendremos que movernos rápido y sin parar.'},
+     {w:'h2',t:'Y romper esos cristales gigantes. Si dejan de brillar, se acaban los soldados.'}],waves:[],
+   route:mkRoute('snow','Bajo la montaña hay cuevas llenas de cristales mágicos. De ellos nacen los soldados de la Reina. Destruyan los portales de hielo, desactiven la bomba de escarcha y venzan al Guardián de cristal.',[
+    {t:'r',n:'Boca de la cueva',deco:'plaza',floor:'ice',hw:10,hd:7,props:[['piedra',-4,-6],['barril',-4,6]],obs:[[-7,4,1.2,'spire'],[7,-4,1.2,'spire']]},
+    {t:'s',n:'Túnel de hielo',sub:'El suelo resbala… ¡y los cristales brillan!',deco:'path',floor:'ice',w:6,L:64,fights:[{u:12,sp:{hgrunt:4}},{u:28,sp:{hgrunt:3,hshooter:2}},{u:44,sp:{hsaltador:2,hgrunt:3}},{u:58,sp:{hchispa:2,hescudero:1,hgrunt:2}}],
+      crates:[[10,4],[26,-4],[40,4.3]],props:[['barril',18,-4.4],['piedra',34,4.4],['barril',52,-4.4]],obs:[[22,-4.9,1.0,'spire'],[46,4.9,1.0,'spire']],secret:{side:'l',u:30,props:[['cofre',0,0]],crystal:true}},
+    {t:'r',n:'Sala de los portales',sub:'Los portales de hielo crean soldados sin parar',deco:'plaza',floor:'ice',hw:15,hd:12,lock:true,cp:true,nests:[[-5,-9],[5,9],[7,-8]],nestKind:'nidoh',nestTxt:['¡Destruyan los portales de hielo!','Mientras brillen saldrán más soldados'],
+      obs:[[0,0,1.6,'rockobs'],[-7,6,1.2,'spire']],props:[['barril',-9,-2],['barril',9,2]],crystals:[[-10,12]],waves:[{hgrunt:3,hshooter:1},{hbrute:1,hgrunt:3,hchispa:2},{hescudero:2,hshooter:2,hgrunt:2}]},
+    {t:'s',n:'El río subterráneo',sub:'¡Una bomba de escarcha!',deco:'path',floor:'ice',w:6,L:60,turn:-HP,timer:60,bomb:[30,4.2],obs:[[30,4.3,0.75,'bomb']],
+      fights:[{u:12,sp:{hgrunt:4,hshooter:1}},{u:28,sp:{hsaltador:2,hgrunt:3}},{u:46,sp:{hescudero:1,hshooter:2,hgrunt:3}}],props:[['barril',20,-4.4],['piedra',42,4.4]],crystals:[[56,-4.4]]},
+    {t:'c',n:'Gruta tibia',deco:'plaza',floor:'snow',rad:9,rest:true,obs:[[1,4.5,1.3,'rockobs']],crystals:[[3.2,4.5]]},
+    {t:'s',n:'La galería',sub:'Dos héroes deben abrir la reja de hielo',padTxt:'¡Una reja de hielo cierra el paso!',deco:'path',floor:'ice',w:6,L:40,fights:[{u:12,sp:{hgrunt:4,hshooter:1}},{u:26,sp:{hbrute:1,hchispa:2,hgrunt:2}}],props:[['piedra',8,4.4],['barril',20,-4.4]],pads:[[36,-3],[36,3]]},
+    {t:'c',n:'Corazón de cristal',sub:'¡El Guardián de cristal!',deco:'plaza',floor:'ice',rad:15,lock:true,boss:true,heals:[[-11,0],[11,0]],props:[['barril',0,-10],['barril',0,10]],obs:[[-8,-8,1.2,'spire'],[8,8,1.2,'spire'],[-8,8,1.2,'spire'],[8,-8,1.2,'spire']],
+      waves:[{hgrunt:5,hshooter:2},{hescudero:2,hinvocador:1,hgrunt:2},{guardian:1,hgrunt:3,hshooter:2}]}])},
+  {name:'La fortaleza',theme:'nieve',lvl:3.1,story:1,minion:'hgrunt',scene:[
+     {w:'narr',t:'Al romperse el Guardián, las cuevas se apagaron. Arriba, entre la nieve, apareció una fortaleza de hielo.'},
+     {w:'boss:general',t:'¡Firmes, soldados! Nadie entra en la fortaleza de Su Majestad. ¡NADIE!'},
+     {w:'h1',t:'Ese es el General Invernal. Dicen que nunca ha perdido una batalla.'},
+     {w:'h3',t:'Siempre hay una primera vez.'},
+     {w:'boss:reina',t:'Mi General los convertirá en estatuas de hielo. Serán la decoración perfecta para mi salón.'},
+     {w:'h0',t:'¡Hay prisioneros del pueblo en la fortaleza! Los sacamos y luego vamos por el General.'}],waves:[],
+   route:mkRoute('snow','La fortaleza de hielo protege el camino a la cumbre. Adentro hay prisioneros del pueblo y un ejército entero. Crucen los muros, rescaten a los prisioneros y venzan al General Invernal.',[
+    {t:'r',n:'Puerta de la fortaleza',deco:'plaza',floor:'snow',hw:10,hd:7,props:[['barril',-4,-6],['piedra',-4,6]],obs:[[-7,4,1.2,'rockobs']]},
+    {t:'s',n:'Muralla exterior',sub:'¡Soldados en la muralla!',deco:'path',floor:'ice',w:6.5,L:70,fights:[{u:14,sp:{hgrunt:4,hshooter:1}},{u:30,sp:{hescudero:2,hgrunt:3}},{u:46,sp:{hsaltador:2,hshooter:2}},{u:62,sp:{hchispa:2,hgrunt:3,hshooter:1}}],
+      crates:[[10,-4],[22,4],[38,-4.5],[55,4.3]],props:[['barril',18,4.4],['barril',42,-4.4],['piedra',28,-4.4]],secret:{side:'r',u:34,props:[['cofre',0,1]],crystal:true}},
+    {t:'r',n:'Patio de armas',sub:'¡Se cierra el portón! Aguanten',deco:'plaza',floor:'ice',hw:16,hd:12,lock:true,cp:true,obs:[[-5,-6,1.3,'rockobs'],[5,6,1.3,'rockobs']],props:[['barril',-9,0],['barril',9,0],['piedra',0,11]],crystals:[[-10,-13]],
+      waves:[{hgrunt:4,hshooter:2},{hescudero:2,hgrunt:3,hchispa:2},{hbrute:1,hgrunt:3,hinvocador:1},{hsaltador:2,hgrunt:3,hshooter:2},{'hbrute*':1,hgrunt:3}]},
+    {t:'s',n:'Escaleras heladas',sub:'¡Cuidado con lo que cae de las torres!',deco:'path',floor:'ice',w:6,L:56,turn:HP,hazard:{fall:true},
+      fights:[{u:12,sp:{hsaltador:2,hgrunt:3}},{u:28,sp:{hgrunt:3,hshooter:2}},{u:44,sp:{hchispa:3,hescudero:1,hgrunt:2}}],props:[['barril',22,4.4],['barril',38,-4.4]],crystals:[[50,4.4]]},
+    {t:'r',n:'Calabozos',sub:'¡Liberen a los prisioneros!',cageTxt:['¡Liberen a los prisioneros!','Rompan los bloques de hielo mientras pelean'],deco:'plaza',floor:'snow',hw:14,hd:11,lock:true,cages:[[-6,-5],[6,5],[8,-6]],
+      props:[['barril',-10,0],['piedra',0,9]],heals:[[0,6]],crystals:[[11,10]],waves:[{hgrunt:4,hshooter:2},{hescudero:2,hgrunt:3,hchispa:2},{hbrute:1,hsaltador:2,hgrunt:2}]},
+    {t:'c',n:'Cocina del castillo',deco:'plaza',floor:'snow',rad:9,rest:true,crystals:[[3.2,4.5]]},
+    {t:'s',n:'El puente levadizo',sub:'Dos héroes deben bajar el puente',padTxt:'¡El puente levadizo está arriba!',deco:'path',floor:'ice',w:5,L:32,fights:[{u:12,at:7,sp:{hgrunt:3,hchispa:2}}],pads:[[28,-2.4],[28,2.4]]},
+    {t:'c',n:'Salón del trono vacío',sub:'¡El General Invernal!',deco:'plaza',floor:'ice',rad:16,lock:true,boss:true,heals:[[-12,0],[12,0]],props:[['barril',0,-10],['barril',0,10],['piedra',-6,0]],
+      waves:[{hgrunt:5,hshooter:2},{hbrute:2,hchispa:3,hgrunt:2},{general:1,hgrunt:3,hshooter:2}]}])},
+  {name:'La cumbre',theme:'nieve',lvl:3.2,story:1,minion:'hgrunt',scene:[
+     {w:'narr',t:'El General Invernal se rindió. Desde lo alto de la montaña, una tormenta de nieve empezó a girar.'},
+     {w:'boss:reina',t:'¿Vencieron a mi General? Entonces suban a la cumbre… y vean de frente el invierno eterno.'},
+     {w:'h2',t:'Esta tormenta se siente hasta en los huesos… pero no vamos a regresar.'},
+     {w:'h1',t:'Escarcha dice que su tía no siempre fue así. Algo la congeló por dentro.'},
+     {w:'h0',t:'Entonces vamos a vencerla… y a ayudarla. ¡A la cumbre, Alianza!'}],waves:[],
+   route:mkRoute('snow','En la cumbre de la montaña, la Reina Escarcha alimenta la tormenta que congela al mundo. Suban por el sendero, liberen a los guardias del reino, crucen el glaciar y enfrenten a la Reina.',[
+    {t:'r',n:'Pie de la montaña',deco:'plaza',floor:'snow',hw:10,hd:7,props:[['piedra',-4,-6],['piedra',-4,6]],obs:[[-7,4,1.0,'tree']]},
+    {t:'s',n:'Sendero de ventisca',sub:'¡Caen bloques de hielo!',deco:'path',floor:'snow',w:6.5,L:66,hazard:{fall:true},fights:[{u:12,sp:{hgrunt:4}},{u:28,sp:{hgrunt:3,hshooter:2}},{u:44,sp:{hsaltador:2,hgrunt:3}},{u:60,sp:{hchispa:2,hbrute:1,hgrunt:2}}],
+      props:[['piedra',8,4.4],['piedra',22,-4.4],['barril',36,4.4],['piedra',50,-4.4]],obs:[[16,-4.8,1.2,'rockobs'],[40,4.8,1.2,'spire']],secret:{side:'l',u:30,props:[['cofre',0,0]],crystal:true}},
+    {t:'r',n:'Campamento de cristal',sub:'¡Liberen a los guardias del reino!',cageTxt:['¡Liberen a los guardias!','Rompan los bloques de hielo mientras pelean'],deco:'plaza',floor:'ice',hw:15,hd:12,lock:true,cp:true,cages:[[-6,-9],[6,9],[8,-8]],obs:[[-7,7,1.6,'tent'],[2,-2,1.6,'tent']],
+      props:[['barril',-10,0],['piedra',0,10]],crystals:[[-10,-13]],waves:[{hgrunt:4,hshooter:1},{hescudero:2,hgrunt:3,hchispa:2},{hbrute:1,hsaltador:2,hgrunt:2},{hgrunt:4,hshooter:2,hinvocador:1}]},
+    {t:'s',n:'El glaciar',sub:'¡Una bomba de escarcha en el glaciar!',deco:'path',floor:'ice',w:6,L:58,turn:-HP,timer:60,bomb:[30,-4.2],obs:[[30,-4.3,0.75,'bomb']],
+      fights:[{u:12,at:7,sp:{hsaltador:2,hgrunt:2}},{u:30,at:7,sp:{hchispa:2,hshooter:2,hgrunt:2}},{u:46,sp:{hescudero:2,hgrunt:3}}],crystals:[[40,3.3]]},
+    {t:'c',n:'Refugio de piedra',deco:'plaza',floor:'snow',rad:9,rest:true,crystals:[[-3.2,4.5]]},
+    {t:'s',n:'La última cuesta',sub:'Dos héroes deben abrir la puerta de la cumbre',padTxt:'¡La puerta de la cumbre está cerrada!',deco:'path',floor:'snow',w:6.5,L:40,fights:[{u:12,sp:{hgrunt:4,hshooter:1}},{u:26,sp:{hbrute:1,hchispa:2,hgrunt:2}}],props:[['piedra',8,4.4],['barril',20,-4.4]],pads:[[36,-3],[36,3]]},
+    {t:'c',n:'La cumbre helada',sub:'¡La Reina Escarcha!',deco:'plaza',floor:'ice',rad:16,lock:true,boss:true,heals:[[-12,0],[11,0]],props:[['barril',0,-10],['barril',0,10],['piedra',-6,0]],obs:[[-9,-9,1.2,'spire'],[9,9,1.2,'spire']],
+      waves:[{hgrunt:5,hshooter:2},{hbrute:2,hchispa:3,hgrunt:2},{hescudero:2,hinvocador:1,hsaltador:2,hgrunt:2},{reina:1,hgrunt:3,hshooter:2}]}])},
 ]};
 for(const st of STORY.stages){if(!st.route||st.waves.length)continue;const ag={},bs={};for(const n of st.route.nodes){for(const f of n.fights||[])for(const k in f.sp)ag[k]=(ag[k]||0)+f.sp[k];
   for(const W of n.waves||[])for(const k0 in W){const k=k0.replace('*','');(ENEMIES[k].boss?bs:ag)[k]=((ENEMIES[k].boss?bs:ag)[k]||0)+W[k0];}}st.waves=[ag,bs];}
-const STAGE_PAR=[600,600,600,660];
+const STAGE_PAR=[600,600,600,660,620,620,640,700];
+const STORY_START=[0,4];const storyOf=i=>i>=4?1:0;const storyEnd=i=>i===3||i===STORY.stages.length-1;const endingOf=i=>storyOf(i)===1?STORY.ending2:STORY.ending;
 const SCENE_DUR=4.6;const BOSS_LINE=4.2;
 // Diálogo antes de pelear con cada jefe
 const BOSS_TALK={
@@ -845,9 +937,23 @@ const BOSS_TALK={
     {w:'h1',t:'¡Por eso los barcos encontraban el camino! El faro los está guiando.'},{w:'h2',t:'Si lo vencemos, los barcos de gólems se perderán en el mar.'},{w:'narr',t:'Dispara desde lejos: ¡acérquense y no se queden quietos!'}],
   gemelo:[{w:'boss:gemelo',t:'¡Dos veces más calor, dos veces más diversión!'},{w:'boss:gemelo',t:'Somos los Gemelos de Magma. Uno derrite el metal y el otro lo convierte en gólems.'},
     {w:'h3',t:'Son dos… ¿y si los separamos? Solos no son tan fuertes.'},{w:'narr',t:'¡Divídanse en parejas para pelear contra los dos al mismo tiempo!'}],
+  cazador:[{w:'boss:cazador',t:'¡Auuu! Este bosque es territorio de la Reina.'},{w:'boss:cazador',t:'Soy el Cazador de escarcha. Huelo a los intrusos desde el otro lado de la montaña.'},
+    {w:'h1',t:'Pues ya nos encontraste. ¡Suelta a los leñadores!'},{w:'narr',t:'¡Embiste en línea recta! Apártense de su camino y atáquenlo por los lados.'}],
+  guardian:[{w:'boss:guardian',t:'Cien inviernos he vigilado. Ustedes no pasarán.'},{w:'boss:guardian',t:'Soy el Guardián de cristal. De mis cristales nacen los soldados de la Reina.'},
+    {w:'h2',t:'Si lo rompemos a él, se acaban los soldados. ¡Vamos!'},{w:'narr',t:'Dispara ráfagas de hielo desde lejos: ¡acérquense rápido y no se queden quietos!'}],
+  general:[{w:'boss:general',t:'¡Firmes, soldados! ¡Formación de ataque!'},{w:'boss:general',t:'Soy el General Invernal. En mil batallas, nunca he perdido una.'},
+    {w:'h3',t:'Siempre hay una primera vez, General.'},{w:'narr',t:'Golpea el suelo y también embiste. ¡Rómpanle la armadura con golpes fuertes!'}],
+  reina:[{w:'boss:reina',t:'Bienvenidos a mi reino. Aquí todo se congela… incluso ustedes.'},{w:'boss:reina',t:'El mundo era ruidoso, caliente y cruel. Con el invierno eterno, por fin habrá calma.'},
+    {w:'h0',t:'El mundo también tiene risas, familias y veranos. ¡No vamos a dejar que lo congeles!'},{w:'h2',t:'Escarcha te extraña, Reina. ¡Todavía puedes volver!'},
+    {w:'boss:reina',t:'¡Silencio! Si quieren detenerme… ¡tendrán que vencer a la tormenta misma!'},{w:'narr',t:'¡La batalla final del norte! Esquiven el hielo que cae del cielo y ataquen todos juntos.'}],
   boss:[{w:'boss:boss',t:'Han llegado lejos, pequeños héroes. Aquí termina su camino.'},{w:'boss:boss',t:'Esta ciudad fue construida sobre mi reino. Cada calle, cada casa… era mi piedra.'},
     {w:'h0',t:'Eso fue hace mil años. Hoy aquí viven familias, y las vamos a proteger.'},{w:'h2',t:'Ríndete, Coloso. ¡Ya vencimos a todos tus jefes!'},
     {w:'boss:boss',t:'Entonces vengan… ¡y conozcan la furia del volcán!'},{w:'narr',t:'¡La batalla final! Esquiven sus golpes de lava y ataquen todos juntos.'}]};
+STORY.ending2=[{w:'narr',t:'La Reina Escarcha cayó de rodillas. El cristal de hielo que llevaba en el pecho se rompió en mil pedazos.'},
+  {w:'boss:reina',t:'¿Qué… qué hice? Ese cristal me congeló el corazón. Lo siento mucho, sobrina… lo siento mucho a todos.'},
+  {w:'h0',t:'Ya pasó. Lo importante es que ahora todos están a salvo.'},{w:'narr',t:'La tormenta se detuvo. El sol volvió a brillar sobre el reino del norte y la nieve se volvió suave otra vez.'},
+  {w:'h1',t:'¡Otra misión cumplida, Alianza!'},{w:'h3',t:'Oigan… ¿vieron esa grieta en el cielo? Juraría que se está abriendo…'},
+  {w:'narr',t:'Muy arriba, una grieta oscura se abría poco a poco… Continuará en «La fisura de las sombras».'}];
 STORY.ending=[{w:'narr',t:'Con el Coloso derrotado, la obsidiana se volvió polvo y el volcán por fin se calmó.'},
   {w:'h0',t:'¡Lo logramos! Ciudad Aurora está a salvo.'},{w:'h1',t:'Ninguno lo habría logrado solo. Somos una alianza.'},
   {w:'h2',t:'Oigan… ¿alguien más siente frío de repente?'},
@@ -967,7 +1073,7 @@ class Sim{
         const ks=[];for(const k in f.sp)for(let c=0;c<f.sp[k];c++)ks.push(k);ks.forEach((k,c)=>{const e=this.spawnRoute(k,f.x+(f.dx||0),f.z+(f.dz||-4),4.5,7);e.rf=[i,q];});this.ev({k:'sfx',s:'wave'});
         if(f.say)this.setBanner(f.say,'');}});
       // arena con cierre
-      if(n.lock&&!R.done[i]&&R.lock<0&&alive.some(h=>this.inNode(i,h.x,h.z,-3))){R.lock=i;R.waveIdx=0;R.tag++;this.routeWave(i);if(n.cages){for(const q of n.cages){this.spawnAt('jaula',q[0],q[1]);}this.setBanner(...(n.cageTxt||['¡Rescaten a los vecinos!','Rompan las jaulas mientras pelean']));}if(n.nests){for(const q of n.nests){this.spawnAt('nido',q[0],q[1]);this.enemies[this.enemies.length-1].rtag=R.tag;}this.setBanner(...(n.nestTxt||['¡Destruyan las alcantarillas!','Mientras sigan abiertas saldrán más gólems']));}
+      if(n.lock&&!R.done[i]&&R.lock<0&&alive.some(h=>this.inNode(i,h.x,h.z,-3))){R.lock=i;R.waveIdx=0;R.tag++;this.routeWave(i);if(n.cages){for(const q of n.cages){this.spawnAt('jaula',q[0],q[1]);}this.setBanner(...(n.cageTxt||['¡Rescaten a los vecinos!','Rompan las jaulas mientras pelean']));}if(n.nests){for(const q of n.nests){this.spawnAt(n.nestKind||'nido',q[0],q[1]);this.enemies[this.enemies.length-1].rtag=R.tag;}this.setBanner(...(n.nestTxt||['¡Destruyan las alcantarillas!','Mientras sigan abiertas saldrán más gólems']));}
         this.ev({k:'gate',on:true});this.ev({k:'sfx',s:'warn'});}}
     // oleadas de la arena cerrada
     if(R.lock>=0){const n=N[R.lock];
@@ -1016,8 +1122,8 @@ class Sim{
     for(let a=q.length-1;a>0;a--){const j=Math.floor(rng()*(a+1));[q[a],q[j]]=[q[j],q[a]];}q.sort((a,b)=>(ENEMIES[b.replace('*','')].boss?1:0)-(ENEMIES[a.replace('*','')].boss?1:0));
     this.queue=q;this.spawnT=0.5;const boss=q.find(k=>ENEMIES[k.replace('*','')].boss);
     if(boss){this.setBanner('¡JEFE!',ENEMIES[boss].name);this.ev({k:'sfx',s:'bossIn'});}else this.setBanner(n.n,'Oleada '+this.R.waveIdx+' de '+n.waves.length);}
-  routeWin(){this.phase='win';this.phaseT=14;this.makeResult();const last=this.stage>=STORY.stages.length-1;const bonus=150*(this.stage+1);
-    this.setBanner(last?'¡HISTORIA COMPLETADA!':'¡Etapa completada!',(last?'La ciudad está a salvo':'Siguiente: '+STORY.stages[this.stage+1].name)+' · +'+bonus+' XP');
+  routeWin(){this.phase='win';this.phaseT=14;this.makeResult();const last=storyEnd(this.stage);const bonus=150*(this.stage+1);
+    this.setBanner(last?'¡HISTORIA COMPLETADA!':'¡Etapa completada!',(last?(storyOf(this.stage)?'El reino del norte está a salvo':'La ciudad está a salvo'):'Siguiente: '+STORY.stages[this.stage+1].name)+' · +'+bonus+' XP');
     this.ev({k:'stageWin',stage:this.stage});this.ev({k:'xp',n:bonus});this.ev({k:'sfx',s:'win'});}
   resumeAt(d){const R=this.R;if(!R||d.node==null)return false;const N=R.def.nodes,i=Math.min(d.node,N.length-1);
     for(let k=0;k<i;k++){R.done[k]=true;R.entered[k]=true;if(R.fights[k])R.fights[k].fill(1);R.pads[k]=true;R.tmDone[k]=true;}
@@ -1028,7 +1134,7 @@ class Sim{
     this.phase='fight';this.phaseT=0;this.setBanner('Continuando: '+N[i].n,'¡Desde tu último punto de control!');this.ev({k:'sfx',s:'clear'});return true;}
   sceneSkip(dt){this.sceneCD-=dt;if(this.sceneCD>0||this.phaseT>this.phaseMax-1)return;if(this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&p&&(p.atk||p.jmp))){this.sceneCD=0.6;const el=this.phaseMax-this.phaseT;const nx=(Math.floor(el/SCENE_DUR)+1)*SCENE_DUR;this.phaseT=Math.max(0,this.phaseMax-nx);}}
   updatePhase(dt){
-    if(this.phase==='ending'){this.phaseT-=dt;this.sceneSkip(dt);if(this.phaseT<=0)this.reset(this.diff,0);return;}
+    if(this.phase==='ending'){this.phaseT-=dt;this.sceneSkip(dt);if(this.phaseT<=0)this.reset(this.diff,this.stage+1<STORY.stages.length?this.stage+1:0);return;}
     if(this.R){if(this.phase==='intro'){this.phaseT-=dt;this.sceneSkip(dt);if(this.phaseT<=0){this.phase='fight';this.setBanner(this.S.route.nodes[0].n,this.S.name);}return;}
       if(this.phase==='fight'){this.stT+=dt;this.updateRoute(dt);return;}}
     const W=this.S.waves;
@@ -1038,7 +1144,7 @@ class Sim{
       this.bossLogic(dt);
       if(!this.queue.length&&this.enemies.every(e=>e.dead||e.def.prop)){
         if(!this.arenaMode&&this.wave>=W.length){this.phase='win';this.phaseT=14;this.makeResult();
-          const last=this.stage>=STORY.stages.length-1;const bonus=100*(this.stage+1);
+          const last=storyEnd(this.stage);const bonus=100*(this.stage+1);
           this.setBanner(last?'¡HISTORIA COMPLETADA!':'¡Etapa completada!',(last?'La ciudad está a salvo':'Siguiente: '+STORY.stages[this.stage+1].name)+' · +'+bonus+' XP');
           this.ev({k:'stageWin',stage:this.stage});this.ev({k:'xp',n:bonus});this.ev({k:'sfx',s:'win'});}
         else{this.phase='clear';this.phaseT=2.5;this.setBanner('¡Oleada superada!');
@@ -1047,7 +1153,7 @@ class Sim{
       }else if(this.heroes.every(h=>h.down)){this.phase='lose';this.phaseT=6;if(this.arenaMode){this.phaseT=9;const sv=Math.max(0,this.wave-1);this.setBanner('¡Superaron '+sv+' oleada'+(sv===1?'':'s')+'!','Gólems vencidos: '+this.arenaKills);this.ev({k:'arenaEnd',best:sv,kills:this.arenaKills});}else this.setBanner('Los héroes cayeron…','¡Intentemos otra vez!');this.ev({k:'sfx',s:'lose'});}
     }
     else if(this.phase==='clear'){this.phaseT-=dt;if(this.phaseT<=0)this.startWave(this.wave);}
-    else if(this.phase==='win'){this.phaseT-=dt;if(this.phaseT<11&&this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&(p.atk||p.jmp)))this.phaseT=0;if(this.phaseT<=0){if(this.stage>=STORY.stages.length-1&&STORY.ending){this.phase='ending';this.phaseT=this.phaseMax=STORY.ending.length*SCENE_DUR;this.sceneCD=0.8;this.result=null;}else this.reset(this.diff,this.stage>=STORY.stages.length-1?0:this.stage+1);}}
+    else if(this.phase==='win'){this.phaseT-=dt;if(this.phaseT<11&&this.inputs.some((p,i)=>this.controllers[i]!=='ai'&&(p.atk||p.jmp)))this.phaseT=0;if(this.phaseT<=0){if(storyEnd(this.stage)&&endingOf(this.stage)){this.phase='ending';this.phaseT=this.phaseMax=endingOf(this.stage).length*SCENE_DUR;this.sceneCD=0.8;this.result=null;}else this.reset(this.diff,this.stage>=STORY.stages.length-1?0:this.stage+1);}}
     else if(this.phase==='lose'){this.phaseT-=dt;if(this.phaseT<=0)this.reset(this.diff,this.arenaMode?'arena':this.stage);}
   }
   startWave(n){
@@ -1073,12 +1179,12 @@ class Sim{
   }
   bossLogic(dt){
     const bosses=this.enemies.filter(e=>e.def.boss&&!e.dead);if(!bosses.length)return;
-    for(const b of bosses)if(!b.half&&b.hp<b.maxHp*0.5){b.half=true;b.enraged=true;b.hzT=2;this.queue.push('grunt','grunt');
+    for(const b of bosses)if(!b.half&&b.hp<b.maxHp*0.5){b.half=true;b.enraged=true;b.hzT=2;this.queue.push(this.S.minion||'grunt',this.S.minion||'grunt');
       this.setBanner('¡'+b.def.name+' se enfurece!','Esquiva la lava que cae del cielo');this.ev({k:'enrage',id:b.id,x:b.x,z:b.z,r:b.def.r});this.ev({k:'shake',a:1});this.hitstop=Math.max(this.hitstop,0.25);}
     for(const b of bosses)if(b.enraged&&b.stunT<=0){b.hzT-=dt;if(b.hzT<=0){b.hzT=5.5;const wm=this.D.wind||1;const tg=this.heroes.filter(h=>!h.down);
       for(const h of tg.slice(0,3)){const a=rng()*TAU,r=rng()*2;this.zones.push({id:this.nid++,eid:b.id,kind:'ebomb',x:h.x+Math.sin(a)*r,z:h.z+Math.cos(a)*r,r:2.2,t:1.5*wm,max:1.5*wm,rain:true});}
       this.ev({k:'sfx',s:'warn'});}}
-    this.bossAddT-=dt;if(this.bossAddT<=0){this.bossAddT=16;this.queue.push('grunt','grunt');}
+    this.bossAddT-=dt;if(this.bossAddT<=0){this.bossAddT=16;const mn=this.S.minion||'grunt';this.queue.push(mn,mn);}
   }
   // ----- héroes -----
   updateHero(h,inp,dt){
@@ -1747,7 +1853,8 @@ const VOICE_PREF={ // género y voces preferidas (nombres de voces de iPad, Mac,
   sombra:{g:'m',p:[0.9,1.0],n:['reed','diego','jorge','raul','raúl','pablo']},
   fenix:{g:'m',p:[1.0,1.05],n:['eddy','juan','jorge','raul','raúl','diego']},
   narr:{g:'f',p:[1.0,0.95],n:['paulina','mónica','monica','helena','google español']},
-  boss:{g:'m',p:[0.55,0.88],n:['grandpa','rocko','jorge','juan','pablo']}};
+  boss:{g:'m',p:[0.55,0.88],n:['grandpa','rocko','jorge','juan','pablo']},
+  reina:{g:'f',p:[0.82,0.88],n:['grandma','mónica','monica','helena','paulina']}};
 const FEM=/paulina|m[oó]nica|marisol|helena|laura|sabina|isabela|francisca|ang[eé]lica|soledad|elvira|esperanza|camila|valeria|flo\b|sandy|shelley|grandma|google español|female|mujer/i,MAS=/juan|jorge|diego|ra[uú]l|pablo|carlos|enrique|[aá]lvaro|eddy|reed|rocko|grandpa|male|hombre/i;
 const Voz={on:true,map:null,
   init(){this.load();try{this.on=localStorage.getItem('ah_voz')!=='0';}catch(e){}try{speechSynthesis.onvoiceschanged=()=>{this.map=null;};}catch(e){}},
@@ -1767,7 +1874,7 @@ const Voz={on:true,map:null,
     const f=this.man&&this.man[who]&&this.man[who][this.h32(txt)];
     if(f){try{if(window.speechSynthesis)speechSynthesis.cancel();if(!this.au)this.au=new Audio();this.au.pause();this.au.src='assets/voz/'+f;this.au.volume=1;this.au.play().catch(()=>{});return;}catch(e){}}
     if(this.au)try{this.au.pause();}catch(e){}
-    if(who&&who.startsWith('boss:'))who='boss';if(!window.speechSynthesis)return;
+    if(who&&who.startsWith('boss:'))who=who==='boss:reina'?'reina':'boss';if(!window.speechSynthesis)return;
     if(!this.map)this.map=this.assign();const P=(VOICE_PREF[who]||VOICE_PREF.narr).p;
     try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt.replace(/[«»…]/g,' '));const v=this.map&&this.map[who];if(v){u.voice=v;u.lang=v.lang;}else u.lang='es-MX';
       u.pitch=P[0];u.rate=P[1];u.volume=0.95;speechSynthesis.speak(u);}catch(e){}}};
@@ -1788,6 +1895,7 @@ const THEMES={
   ruta_plaza:{sky:[0x3d8ef0,0xd6ecff],fog:0xc6e0ff,ground:0x6fbf4a,plaza:0xe3d3ad,lines:0xc9b78e,pillar:0xbfb5a0,crystal:0x7fd8ff,sun:0xffffff},
   puerto:{sky:[0x2f7fd8,0xffe0b0],fog:0xe6e0d0,ground:0x2b8bd8,groundBasic:true,plaza:0xb98a5a,lines:0x7a5432,pillar:0x7a5a3a,crystal:0xffd23f,sun:0xfff0d8},
   fabrica:{sky:[0x2c313a,0xa89880],fog:0x7a7470,ground:0x4a4a4f,plaza:0x8a8d92,lines:0xd9a400,pillar:0x5a5f66,crystal:0xff8c1a,sun:0xffe0c0},
+  nieve:{sky:[0x6fa8e0,0xe8f4ff],fog:0xdceaf8,ground:0xf2f6fb,plaza:0xc8d8e8,lines:0x7fb0e0,pillar:0x9ab8d0,crystal:0x7fd8ff,sun:0xfff4e8},
   volcan:{sky:[0x1a0505,0xff6a2a],fog:0x6a2418,ground:0xff5a1a,groundBasic:true,plaza:0x3a302c,lines:0x8a2a10,pillar:0x2a2220,crystal:0xff3b1a,sun:0xffb080},
 };
 
@@ -1916,6 +2024,11 @@ class World{
       wood:()=>pat('wood',(g,z)=>{for(let i=0;i<8;i++){const c=140+(i%3)*14;g.fillStyle=`rgb(${c},${c*0.68|0},${c*0.42|0})`;g.fillRect(0,i*32,z,30);g.fillStyle='rgba(60,35,15,.6)';g.fillRect(0,i*32+30,z,2);g.fillRect((i*97)%z,i*32,2,30);}}),
       metal:()=>pat('metal',(g,z)=>{g.fillStyle='#7a7f88';g.fillRect(0,0,z,z);g.fillStyle='#9aa0aa';for(let y=0;y<16;y++)for(let x=0;x<16;x++){g.save();g.translate(x*16+8,y*16+8);g.rotate((x+y)%2?0.6:-0.6);g.fillRect(-5,-1.5,10,3);g.restore();}g.strokeStyle='#5a5f66';g.lineWidth=3;g.strokeRect(1,1,z-2,z-2);}),
       concrete:()=>pat('concrete',(g,z)=>{g.fillStyle='#a8a8a2';g.fillRect(0,0,z,z);const R=mulberry32(8);for(let i=0;i<700;i++){const c=150+R()*40|0;g.fillStyle=`rgb(${c},${c},${c-4})`;g.fillRect(R()*z,R()*z,2,2);}g.strokeStyle='#8a8a84';g.lineWidth=2;g.strokeRect(0,0,z,z);g.beginPath();g.moveTo(z/2,0);g.lineTo(z/2,z);g.stroke();}),
+      snow:()=>pat('snow',(g,z)=>{g.fillStyle='#f4f8fc';g.fillRect(0,0,z,z);const R=mulberry32(12);for(let i=0;i<600;i++){const c=225+R()*30|0;g.fillStyle=`rgb(${c-8},${c-2},${c})`;const r=1+R()*4;g.beginPath();g.arc(R()*z,R()*z,r,0,7);g.fill();}
+        for(let i=0;i<40;i++){g.fillStyle='rgba(160,190,220,.25)';g.beginPath();g.ellipse(R()*z,R()*z,6+R()*14,3+R()*5,R()*3,0,7);g.fill();}}),
+      ice:()=>pat('ice',(g,z)=>{const gr=g.createLinearGradient(0,0,z,z);gr.addColorStop(0,'#bfe6ff');gr.addColorStop(0.5,'#d9f2ff');gr.addColorStop(1,'#a8daf8');g.fillStyle=gr;g.fillRect(0,0,z,z);const R=mulberry32(13);
+        g.strokeStyle='rgba(255,255,255,.75)';g.lineWidth=1.5;for(let i=0;i<16;i++){g.beginPath();let x=R()*z,y=R()*z;g.moveTo(x,y);for(let k=0;k<4;k++){x+=(R()-0.5)*60;y+=(R()-0.5)*60;g.lineTo(x,y);}g.stroke();}
+        g.fillStyle='rgba(255,255,255,.35)';for(let i=0;i<10;i++){g.beginPath();g.ellipse(R()*z,R()*z,20+R()*30,4+R()*6,-0.6,0,7);g.fill();}}),
       rock:()=>pat('rock',(g,z)=>{g.fillStyle='#2a2422';g.fillRect(0,0,z,z);const R=mulberry32(9);for(let i=0;i<60;i++){const c=55+R()*30|0;g.fillStyle=`rgb(${c},${c*0.85|0},${c*0.8|0})`;const x=R()*z,y=R()*z,r=8+R()*18;g.beginPath();for(let k=0;k<6;k++){const a=k/6*Math.PI*2;g.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);}g.fill();}
         g.strokeStyle='rgba(255,90,20,.55)';g.lineWidth=2;for(let i=0;i<6;i++){g.beginPath();let x=R()*z,y=R()*z;g.moveTo(x,y);for(let k=0;k<4;k++){x+=(R()-0.5)*40;y+=(R()-0.5)*40;g.lineTo(x,y);}g.stroke();}}),
       grass:()=>pat('grass',(g,z)=>{g.fillStyle='#62b24a';g.fillRect(0,0,z,z);const R=mulberry32(6);for(let i=0;i<900;i++){g.fillStyle=R()<0.5?'#58a644':'#73c257';g.fillRect(R()*z,R()*z,2,4);}}),
@@ -1931,7 +2044,7 @@ class World{
       for(let i=0;i<14;i++){g.strokeStyle='rgba(120,120,120,.18)';g.lineWidth=1.5;g.beginPath();let x=R()*z,y=R()*z;g.moveTo(x,y);for(let k=0;k<5;k++){x+=(R()-0.5)*50;y+=(R()-0.5)*50;g.lineTo(x,y);}g.stroke();}});
     {const t=noiseT.clone();t.needsUpdate=true;t.repeat.set(110,110);this.groundMesh.material.map=t;this.groundMesh.material.needsUpdate=true;}
     const floorMat=(n,sz)=>{const f=n.floor||'tiles';const t=FT[f]().clone();t.needsUpdate=true;t.repeat.set(sz[0]/(f==='wood'?3:4),sz[1]/(f==='wood'?3:4));return this.toon(0xffffff,{map:t});};
-    const RS=RT.style||'city',ROAD={port:'wood',factory:'metal',volcano:'rock'}[RS];const asphalt=this.toon(0x55565e),curb=this.toon({city:0xd8d2c4,port:0x4a3020,factory:0x2a2a2a,volcano:0x1a1412}[RS]||0xd8d2c4),lineM=new THREE.MeshBasicMaterial({color:0xf2e6b0}),pl=[];
+    const RS=RT.style||'city',ROAD={port:'wood',factory:'metal',volcano:'rock',snow:'snow'}[RS];const asphalt=this.toon(0x55565e),curb=this.toon({city:0xd8d2c4,port:0x4a3020,factory:0x2a2a2a,snow:0xa8bccf,volcano:0x1a1412}[RS]||0xd8d2c4),lineM=new THREE.MeshBasicMaterial({color:0xf2e6b0}),pl=[];
     const slab=(geo,mat,x,top,z,ry)=>{const m=this.mesh(geo,mat,x,top-0.15,z,false);m.rotation.y=ry||0;m.receiveShadow=true;add(m);return m;};
     N.forEach((n,i)=>n.sh.forEach((s,k)=>{const ty=0.10+(i%3)*0.014+k*0.007;
       if(s[0]==='c'){slab(new THREE.CylinderGeometry(s[3]+0.7,s[3]+0.9,0.3,48),curb,s[1],0.02,s[2]);const m=slab(new THREE.CylinderGeometry(s[3],s[3],0.3,48),n.deco==='street'||n.deco==='alley'?this.toon(T.plaza):ROAD&&!n.floor?floorMat({floor:ROAD},[s[3]*2,s[3]*2]):floorMat(n,[s[3]*2,s[3]*2]),s[1],ty,s[2]);
@@ -1952,7 +2065,9 @@ class World{
       for(const sx of [-1.5,1.5])for(const sz of [-0.7,0.7])g.add(this.mesh(new THREE.CylinderGeometry(0.06,0.06,2.5,5),T_(0x5a3a22),sx,1.25,sz));
       const fc=[0xff5a3a,0xffd23f,0x7dd84a,0xff9a3a];for(let k=0;k<6;k++)g.add(this.mesh(new THREE.SphereGeometry(0.18,8,6),T_(fc[k%4]),-1.1+k*0.44,1.12,(k%2)*0.3-0.15));
       g.position.set(x,0.1,z);g.rotation.y=ry;add(g);return g;};
-    const tree=(x,z,s)=>{const t=this.mesh(new THREE.CylinderGeometry(0.25,0.35,1.6,6),T_(0x7a4b2a),x,0.8*s,z);t.scale.setScalar(s);add(t);const l=this.mesh(new THREE.ConeGeometry(1.6,3.4,7),T_(rnd()<0.5?0x2f8f3a:0x3fa34d),x,3.3*s,z);l.scale.setScalar(s);add(l);};
+    const tree=(x,z,s)=>{const t=this.mesh(new THREE.CylinderGeometry(0.25,0.35,1.6,6),T_(0x7a4b2a),x,0.8*s,z);t.scale.setScalar(s);add(t);
+      if((RT.style||'city')==='snow'){for(let k=0;k<3;k++){const l=this.mesh(new THREE.ConeGeometry(1.7-k*0.4,1.9,8),T_(rnd()<0.5?0x1f5a3a:0x2a6a44),x,(2.0+k*1.15)*s,z);l.scale.setScalar(s);add(l);const sn=this.mesh(new THREE.ConeGeometry(1.25-k*0.32,0.7,8),T_(0xf4f8ff),x,(2.55+k*1.15)*s,z);sn.scale.setScalar(s);add(sn);}return;}
+      const l=this.mesh(new THREE.ConeGeometry(1.6,3.4,7),T_(rnd()<0.5?0x2f8f3a:0x3fa34d),x,3.3*s,z);l.scale.setScalar(s);add(l);};
     const round=(x,z,s)=>{const t=this.mesh(new THREE.CylinderGeometry(0.22,0.3,1.4,6),T_(0x7a4b2a),x,0.8,z);add(t);const l=this.mesh(new THREE.IcosahedronGeometry(1.3*s,0),T_(rnd()<0.5?0x3f9a3a:0x56b04a),x,2.4,z);add(l);};
     const bench=(x,z,ry)=>{const g=new THREE.Group();g.add(this.mesh(new THREE.BoxGeometry(1.8,0.12,0.6),T_(0xa0703a),0,0.5,0));g.add(this.mesh(new THREE.BoxGeometry(1.8,0.5,0.1),T_(0xa0703a),0,0.85,-0.27));for(const sx of [-0.8,0.8])g.add(this.mesh(new THREE.BoxGeometry(0.1,0.5,0.5),T_(0x3a3a44),sx,0.25,0));g.position.set(x,0.1,z);g.rotation.y=ry;add(g);};
     const lamp=(x,z)=>{add(this.mesh(new THREE.CylinderGeometry(0.1,0.12,3.6,6),T_(0x3a3a44),x,1.8,z));add(this.mesh(new THREE.SphereGeometry(0.28,8,6),T_(0xfff2b0,{emissive:0xffe080}),x,3.6,z,false));};
@@ -2014,14 +2129,15 @@ class World{
       g.position.set(x,0,z);g.rotation.y=ry;add(g);fade([g],x,z,3.2);};
     const tank=(x,z,h)=>{const g=new THREE.Group();g.add(this.mesh(new THREE.CylinderGeometry(2,2,h,16),T_(0xc8ccd0),0,h/2,0));g.add(this.mesh(new THREE.SphereGeometry(2,16,8,0,TAU,0,Math.PI/2),T_(0xc8ccd0),0,h,0));
       for(let y=1;y<h;y+=1.6)g.add(this.mesh(new THREE.TorusGeometry(2.02,0.06,4,24),T_(0x5a5a62),0,y,0).rotateX(Math.PI/2));g.position.set(x,0,z);add(g);fade([g],x,z,2.6);};
-    const spire=(x,z,h)=>{const g=new THREE.Group();const r=this.mesh(new THREE.ConeGeometry(1.6+rnd(),h,6),T_(0x2a2220),0,h/2,0);r.rotation.y=rnd()*3;g.add(r);
+    const spire=(x,z,h)=>{const g=new THREE.Group();const r=this.mesh(new THREE.ConeGeometry(1.6+rnd(),h,6),ST==='snow'?T_(0x9fdcff,{emissive:0x2a6a9a,emissiveIntensity:0.5}):T_(0x2a2220),0,h/2,0);r.rotation.y=rnd()*3;g.add(r);
       if(rnd()<0.5){const c=this.mesh(new THREE.OctahedronGeometry(0.7),T_(0x9b4dff,{emissive:0x5a1a9a,emissiveIntensity:0.8}),0.9,0.9,0.6,false);c.scale.y=1.8;c.rotation.z=0.3;g.add(c);}
       g.position.set(x,0,z);add(g);fade([g],x,z,2);};
-    const rock=(x,z,s)=>{const r=this.mesh(new THREE.DodecahedronGeometry(s,0),T_(0x3a302c),x,s*0.5,z);r.rotation.set(rnd()*3,rnd()*3,rnd()*3);add(r);fade([r],x,z,s);};
-    const sideDeco=(x,z,face,big,low)=>{if(low){if(ST==='volcano')rock(x,z,0.6+rnd()*0.6);else if(ST==='port'){if(rnd()<0.5)bollard(x,z);else container(x,z,face+Math.PI/2,COLS[Math.floor(rnd()*COLS.length)]);}else machine(x,z,face,1.6+rnd());return;}
+    const rock=(x,z,s)=>{const r=this.mesh(new THREE.DodecahedronGeometry(s,0),T_(ST==='snow'?0xd8e4f0:0x3a302c),x,s*0.5,z);r.rotation.set(rnd()*3,rnd()*3,rnd()*3);add(r);fade([r],x,z,s);};
+    const sideDeco=(x,z,face,big,low)=>{if(low){if(ST==='volcano'||ST==='snow')rock(x,z,0.6+rnd()*0.6);else if(ST==='port'){if(rnd()<0.5)bollard(x,z);else container(x,z,face+Math.PI/2,COLS[Math.floor(rnd()*COLS.length)]);}else machine(x,z,face,1.6+rnd());return;}
       if(ST==='port'){if(rnd()<0.3)warehouse(x,z,face,6+rnd()*2,6+rnd()*3);else stackC(x,z,face+Math.PI/2*(rnd()<0.5?1:0));}
       else if(ST==='factory'){if(rnd()<0.3)tank(x,z,4+rnd()*5);else machine(x,z,face,3+rnd()*4);}
-      else if(ST==='volcano'){if(rnd()<0.6)spire(x,z,4+rnd()*(big?9:6));else rock(x,z,1+rnd()*1.5);}};
+      else if(ST==='volcano'){if(rnd()<0.6)spire(x,z,4+rnd()*(big?9:6));else rock(x,z,1+rnd()*1.5);}
+      else if(ST==='snow'){if(rnd()<0.65)tree(x,z,1+rnd()*(big?0.9:0.5));else if(rnd()<0.5)spire(x,z,3+rnd()*(big?6:4));else rock(x,z,1+rnd()*1.4);}};
     // edificios y faroles a los lados de las calles
     for(const n of N){for(const s of n.sh){if(s[0]!=='s')continue;const dx=s[3]-s[1],dz=s[4]-s[2],L=Math.hypot(dx,dz),ux=dx/L,uz=dz/L,px=-uz,pz=ux;const alley=n.deco==='alley';
       for(let d=0;d<L;d+=alley?5:6.5)for(const side of [-1,1]){const off=s[5]+(alley?3:4.5)+rnd()*2,x=s[1]+ux*d+px*off*side,z=s[2]+uz*d+pz*off*side;
@@ -2135,14 +2251,15 @@ class World{
       if(ST==='city'){if(rnd()<0.5)tree(x,z,0.8+rnd()*0.7);else round(x,z,0.8+rnd()*0.5);}
       else if(ST==='port'){if(d>9&&rnd()<0.15)boat(x,z,rnd()*TAU,false);else if(rnd()<0.25){const b=this.mesh(new THREE.CylinderGeometry(0.4,0.5,1,8),T_(rnd()<0.5?0xd94a3a:0xffd23f),x,0.3,z);add(b);}}
       else if(ST==='factory'){if(rnd()<0.2)tank(x,z,5+rnd()*6);else if(rnd()<0.3)machine(x,z,rnd()*TAU,3+rnd()*5);}
-      else if(ST==='volcano'){if(rnd()<0.3)spire(x,z,5+rnd()*12);else if(rnd()<0.5)rock(x,z,0.8+rnd()*2);}}}
+      else if(ST==='volcano'){if(rnd()<0.3)spire(x,z,5+rnd()*12);else if(rnd()<0.5)rock(x,z,0.8+rnd()*2);}
+      else if(ST==='snow'){if(rnd()<0.55)tree(x,z,0.9+rnd()*0.9);else if(rnd()<0.25)spire(x,z,4+rnd()*8);else if(rnd()<0.4)rock(x,z,0.8+rnd()*1.8);}}}
     // cuartos secretos
     const wallM=T_(0x9a5a42),dark=T_(0x6a5a50);
     for(const n of N){if(!n.secret)continue;const W=n.secret.wall;for(const s of n.secret.sh){if(s[0]!=='r')continue;const ra=s[5]||0;slab(new THREE.BoxGeometry(s[3]*2,0.3,s[4]*2),dark,s[1],0.1,s[2],ra);
       const X=[Math.cos(ra),-Math.sin(ra)],Z=[Math.sin(ra),Math.cos(ra)];
       const sides=[[s[1]+X[0]*s[3],s[2]+X[1]*s[3],0.6,s[4]*2+0.6],[s[1]-X[0]*s[3],s[2]-X[1]*s[3],0.6,s[4]*2+0.6],[s[1]+Z[0]*s[4],s[2]+Z[1]*s[4],s[3]*2+0.6,0.6],[s[1]-Z[0]*s[4],s[2]-Z[1]*s[4],s[3]*2+0.6,0.6]];
       let near=0,bd=1e9;sides.forEach((q,k)=>{const d=Math.hypot(q[0]-W[0],q[1]-W[1]);if(d<bd){bd=d;near=k;}});
-      sides.forEach((q,k)=>{if(k===near)return;const b=this.mesh(new THREE.BoxGeometry(q[2],3.4,q[3]),ST==='volcano'?T_(0x2a2220):ST==='factory'?T_(0x5a5f66):wallM,q[0],1.7,q[1]);b.rotation.y=ra;b.castShadow=true;add(b);});
+      sides.forEach((q,k)=>{if(k===near)return;const b=this.mesh(new THREE.BoxGeometry(q[2],3.4,q[3]),ST==='volcano'?T_(0x2a2220):ST==='factory'?T_(0x5a5f66):ST==='snow'?T_(0xb8d4ea):wallM,q[0],1.7,q[1]);b.rotation.y=ra;b.castShadow=true;add(b);});
       const tc=this.mesh(new THREE.SphereGeometry(0.22,8,6),T_(0xffd27a,{emissive:0xff9a2a}),s[1],2.6,s[2],false);add(tc);const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:FXTEX.glow,color:0xffb040,transparent:true,opacity:0.6,depthWrite:false,blending:THREE.AdditiveBlending}));gl.scale.setScalar(3);gl.position.copy(tc.position);noOutline(gl);add(gl);}}
     // placas de presión
     this.padsM=[];N.forEach((n,i)=>{for(const q of n.pads||[]){const g=new THREE.Group();g.add(this.mesh(new THREE.CylinderGeometry(1.15,1.25,0.18,24),T_(0x5a5f6a),0,0.09,0));const top=this.mesh(new THREE.CylinderGeometry(0.95,0.95,0.06,24),T_(0x8a8f9a,{emissive:0x000000}),0,0.2,0);g.add(top);
@@ -2181,6 +2298,7 @@ class World{
     if(this.boats)for(const b of this.boats){b.position.y=0.05+Math.sin(t*1.5+b.userData.ph)*0.08;b.rotation.z=Math.sin(t*1.2+b.userData.ph)*0.05;}
     if(this.flags)for(const f of this.flags)f.rotation.y=Math.sin(t*2+f.position.x)*0.25;
     if(this.burn&&me0)for(const b of this.burn){if(Math.abs(b.z-me0.z)>30||Math.abs(b.x-me0.x)>30)continue;if(Math.random()<dt*14)this.fx.fire(b.x+(Math.random()-0.5)*1.4,1.2,b.z+(Math.random()-0.5)*2.4,1,1.1);if(Math.random()<dt*3)this.fx.smoke(b.x,2.2,b.z,0x2a2422,1,2.2);}
+    if(this.theme==='nieve'){const n=Math.random()<dt*30?1:0;for(let i=0;i<n*2;i++)this.fx.p({x:this.camT.x+(Math.random()-0.5)*34,y:10+Math.random()*4,z:this.camT.z+(Math.random()-0.5)*26-4,c:0xffffff,tex:'star',vx:(Math.random()-0.5)*0.8+0.4,vy:-1.6-Math.random(),vz:0,g:0,s:0.22,s1:0.18,life:6});}
     if(this.fountain&&Math.random()<dt*20){const f=this.fountain.position;this.fx.p({x:f.x+(Math.random()-0.5)*0.4,y:3,z:f.z+(Math.random()-0.5)*0.4,c:0xbfe8ff,tex:'star',vx:(Math.random()-0.5)*3,vy:3,vz:(Math.random()-0.5)*3,g:9,s:0.35,s1:0.1,life:0.6});}
     const me=view.heroes[focus];
     if(me&&this.blds){const C=this.cam.position,HS=view.heroes.filter((h,i)=>i===focus||!h.down);for(const b of this.blds){let hide=false;if(Math.abs(b.z-me.z)<40&&Math.abs(b.x-me.x)<40)for(const h of HS){const ax=h.x,az=h.z,vx=C.x-ax,vz=C.z-az,L2=vx*vx+vz*vz||1;let u=((b.x-ax)*vx+(b.z-az)*vz)/L2;if(u<0.01)continue;u=Math.min(1,u);const px=ax+vx*u-b.x,pz=az+vz*u-b.z;if(px*px+pz*pz>(b.r+1.1)*(b.r+1.1))continue;const ry=1.3+(C.y-1.3)*Math.max(0,u-(b.r+1.1)/Math.sqrt(L2));if((b.h||99)>ry-0.2){hide=true;break;}}const to=hide?0.15:1;if(Math.abs(b.o-to)>0.01){b.o+=(to-b.o)*Math.min(1,dt*8);for(const m of b.ms){if(m.map&&!m.userData.fo){m.opacity=0.55*b.o;continue;}const tr=b.o<0.99;if(m.transparent!==tr){m.transparent=tr;m.needsUpdate=true;}m.opacity=b.o;m.depthWrite=b.o>0.5;}}}}
@@ -2278,7 +2396,7 @@ class World{
     const src=ASSETS.models[name];if(src.mx)height*=1.12;const obj=SkeletonUtils.clone(src.scene);obj.scale.multiplyScalar(height/src.h);
     const mats=[];obj.traverse(o=>{if(o.isMesh){o.castShadow=true;o.frustumCulled=false;const om=o.material;
       const nm=src.mx?(()=>{const c=om.clone();c.userData.outlineParameters=NO_OUTLINE;for(const k of ['map','normalMap','roughnessMap'])if(c[k]){c[k].anisotropy=8;}return c;})():new THREE.MeshToonMaterial({map:om.map||null,color:tint,gradientMap:this.grad});o.material=nm;mats.push(nm);}});
-    if(src.mx&&HEROES[name])applyCostume(mats,name);
+    if(src.mx&&HEROES[name])applyCostume(mats,name);else if(typeof tint==='string'&&LOOKS[tint])applyLook(mats,LOOKS[tint],0);
     const mixer=new THREE.AnimationMixer(obj);mixer.mx=!!src.mx;mixer.mxm=src.mx?name:null;return {obj,mats,mixer};
   }
   playA(m,name,opt={}){const clip=clipFor(m.mixer,name);if(!clip)return;let a=m.actions[name];if(!a){a=m.mixer.clipAction(clip);m.actions[name]=a;}
@@ -2857,7 +2975,7 @@ class HUD{
       const fmt=x=>Math.floor(x/60)+':'+String(x%60).padStart(2,'0');
       const best=(f)=>{let bi=-1,bv=0;r.heroes.forEach((h,i)=>{if(h[f]>bv){bv=h[f];bi=i;}});return bi;};
       const tt={};const add=(i,s)=>{if(i>=0)(tt[i]=tt[i]||[]).push(s);};add(best('dmg'),'💥 Más daño');add(best('maxcc'),'🔥 Mejor combo');add(best('ko'),'🏆 Más derribos');add(best('rev'),'💚 Rescatista');
-      const last=r.stage>=STORY.stages.length-1;
+      const last=storyEnd(r.stage);
       el.innerHTML=`<h2>${last?'¡Historia completada!':'¡Etapa completada!'}</h2><div class="sn">Etapa ${r.stage+1} · ${STORY.stages[r.stage].name}</div>
         <div class="stars">${[['Etapa completada'],['Combo de x20 o más'],['En menos de '+fmt(r.par)]].map((l,i)=>`<div class="star${r.stars[i]?' on':''}"><i>⭐</i><span>${l[0]}</span></div>`).join('')}</div>
         <div class="sum">Tiempo <b>${fmt(r.t)}</b> · Combo más alto <b>x${r.maxcc}</b> · Caídas del equipo <b>${r.downs}</b>${r.cr&&r.cr.n?` · Cristales <b>${r.cr.c}/${r.cr.n}</b>`:''}${nst>prev&&prev>0?'<span class="rec">¡Nuevo récord!</span>':''}</div>
@@ -2933,13 +3051,13 @@ class HUD{
   scene(view){const e=this.scEl||(this.scEl=document.getElementById('rscene'));let P=null,st=STORY.stages[view.stage];
     let D=SCENE_DUR,el0=null,talk=false;
     if(view.cine>0&&view.cineK&&BOSS_TALK[view.cineK]){P=BOSS_TALK[view.cineK];D=BOSS_LINE;el0=Math.max(0,(view.cineM||0)-view.cine);talk=true;}
-    else if(view.phase==='intro'&&view.route&&st&&st.route)P=[...(st.scene||[]),{w:'narr',t:st.route.intro,title:true}];else if(view.phase==='ending')P=STORY.ending;
+    else if(view.phase==='intro'&&view.route&&st&&st.route)P=[...(st.scene||[]),{w:'narr',t:st.route.intro,title:true}];else if(view.phase==='ending')P=endingOf(view.stage);
     if(!P){if(this.scOn){this.scOn=false;e.classList.remove('on');document.body.classList.remove('scn');this.scKey=null;}return;}
     if(!this.scOn){this.scOn=true;e.classList.add('on');document.body.classList.add('scn');}
     const el=el0!=null?el0:Math.max(0,view.phaseMax-view.phaseT),idx=Math.min(P.length-1,Math.floor(el/D)),pg=Math.min(1,(el-idx*D)/D);
     const key=(talk?'talk:'+view.cineK:view.phase)+':'+view.stage+':'+idx;
     if(key!==this.scKey){this.scKey=key;const q=P[idx];let who='narr',html='';
-      const head=talk?`<div class="sct">⚠ JEFE · ${ENEMIES[view.cineK].name.toUpperCase()}</div>`:view.phase==='ending'?'<div class="sct">FIN DE LA HISTORIA 1</div>':`<div class="sct">ETAPA ${view.stage+1} · ${st.name.toUpperCase()}</div>`;
+      const head=talk?`<div class="sct">⚠ JEFE · ${ENEMIES[view.cineK].name.toUpperCase()}</div>`:view.phase==='ending'?`<div class="sct">FIN DE LA HISTORIA ${storyOf(view.stage)+1}</div>`:`<div class="sct">ETAPA ${view.stage+1} · ${st.name.toUpperCase()}</div>`;
       this.sceneActor(view,q,talk);
       if(q.w==='narr')html=`<div class="cap">${q.t}</div>`;
       else if(q.w.startsWith('boss:')){const k=q.w.slice(5),img=Preview.ethumbs[k];who=q.w;html=`<div class="spk boss"><div class="pt">${img?`<img src="${img}">`:''}</div><div class="bb"><b>${ENEMIES[k].name}</b>${q.t}</div></div>`;}
@@ -3007,15 +3125,19 @@ const STORIES=[
     {lvl:7,txt:'En una fábrica abandonada, los gólems están construyendo más soldados con los cristales robados. La guardan los Gemelos de Magma, dos hermanos que nunca pelean solos.',
      boss:'Son dos y embisten en línea recta. Sepáralos, esquiva sus embestidas y usen sinergias: juntos ustedes también son más fuertes.'},
     {lvl:10,txt:'El corazón del volcán. El Coloso despertó por completo y quiere hacer erupción sobre toda la ciudad. Es la batalla final: todo el equipo, todos los poderes, toda la Alianza.',
-     boss:'Un gigante con armadura: golpe de área, embestida y lluvia de lava. Cuando está débil llama refuerzos. ¡Guarden la Alianza Extrema para él!'}]},
-  {id:'hielo',name:'El reino helado',sub:'Historia 2',locked:true,bg:'linear-gradient(135deg,#0a2a5a,#7fd8ff 60%,#ffffff)',
-   syn:'Escarcha recibe una carta congelada: su tía, la Reina Escarcha, cubrió su reino de hielo eterno y ahora marcha hacia el sur con un ejército de soldados de cristal. Para salvar a su familia, la princesa tendrá que pelear contra la suya.',
-   teaser:['Bosque nevado','Cuevas de cristal','La fortaleza','La cumbre'],bosses:['Lobo de escarcha','Guardián de cristal','General invernal','La Reina Escarcha']},
+     boss:'Un gigante con armadura: golpe de área, embestida y lluvia de lava. Cuando está débil llama refuerzos. ¡Guarden la Alianza Extrema para él!'}],range:[0,3]},
+  {id:'hielo',name:'El reino helado',sub:'Historia 2',range:[4,7],bg:'linear-gradient(135deg,#0a2a5a,#7fd8ff 60%,#ffffff)',
+   syn:'Escarcha recibe una carta congelada: su tía, la Reina Escarcha, cubrió su reino de hielo eterno y ahora marcha hacia el sur con un ejército de soldados de cristal. Para salvar a su familia y al mundo, la Alianza tendrá que subir hasta la cumbre de la montaña.',
+   stages:[
+    {lvl:12,txt:'El bosque nevado es la entrada al reino helado. Los soldados de cristal congelaron a los leñadores y el Cazador de escarcha ronda entre los pinos.',boss:'Embiste en línea recta muy rápido. Apártense de su camino, atáquenlo por los lados y rómpanle la armadura con golpes fuertes.'},
+    {lvl:14,txt:'Bajo la montaña hay cuevas de cristales mágicos donde nacen los soldados de la Reina. Las vigila el Guardián de cristal desde hace cien inviernos.',boss:'Dispara ráfagas de hielo desde lejos. Acérquense rápido, no se queden en sus líneas rojas y no se separen demasiado.'},
+    {lvl:16,txt:'La fortaleza de hielo protege el camino a la cumbre. Adentro hay prisioneros del pueblo y el General Invernal, que nunca ha perdido una batalla.',boss:'Golpea el suelo y también embiste. Tiene mucha armadura: usen golpes fuertes y poderes para romperla.'},
+    {lvl:18,txt:'En la cumbre, la Reina Escarcha alimenta la tormenta que congela al mundo. Es la batalla final del norte.',boss:'Golpes de área, embestidas y lluvia de hielo. Cuando está débil llama refuerzos. ¡Guarden la Alianza Extrema para ella!'}]},
   {id:'sombras',name:'La fisura de las sombras',sub:'Historia 3',locked:true,bg:'linear-gradient(135deg,#12021f,#8e44ad 60%,#ff4dff)',
    syn:'Una grieta se abre en el cielo y por ella entran criaturas que se alimentan de la luz. Sombra las reconoce: vienen del lugar donde él nació. Esta vez, el fantasma del callejón tendrá que contar su secreto.',
    teaser:['Ruinas antiguas','El laberinto','La nave flotante','El núcleo'],bosses:['Devoraluz','Reina araña','Capitán del vacío','El Devorador']}
 ];
-const ENEMY_INFO={nido:'Alcantarilla por donde salen gólems. ¡Destrúyanla para que dejen de salir!',grunt:'Soldado básico de roca. Golpea de cerca.',shooter:'Dispara bolas de lava desde lejos. Avisa con una línea roja.',escudero:'Su escudo para los golpes ligeros de frente: usa golpe fuerte.',brute:'Grande y con armadura. No se detiene con golpes ligeros.',chispa:'Corre hacia ti y estalla. Derríbalo antes: su explosión daña a los enemigos.',saltador:'Te salta encima marcando un círculo rojo. Esquiva y atácalo al aterrizar.',invocador:'Pone burbujas a sus aliados y llama refuerzos. ¡Derrótalo primero!'};
+const ENEMY_INFO={hgrunt:'Soldado de hielo. Golpea de cerca.',hshooter:'Lanza bolas de hielo desde lejos. Avisa con una línea roja.',hescudero:'Su escudo de hielo para golpes ligeros: usa golpe fuerte.',hchispa:'Bola de nieve que rueda hacia ti y estalla. ¡Derríbala antes!',hsaltador:'Salta desde la nieve marcando un círculo rojo. Esquiva y atácalo al aterrizar.',hbrute:'Enorme y con armadura de hielo. Usa golpes fuertes.',hinvocador:'Protege a sus aliados con burbujas y llama refuerzos. ¡Primero él!',nidoh:'Portal de hielo de donde salen soldados. ¡Destrúyanlo!',nido:'Alcantarilla por donde salen gólems. ¡Destrúyanla para que dejen de salir!',grunt:'Soldado básico de roca. Golpea de cerca.',shooter:'Dispara bolas de lava desde lejos. Avisa con una línea roja.',escudero:'Su escudo para los golpes ligeros de frente: usa golpe fuerte.',brute:'Grande y con armadura. No se detiene con golpes ligeros.',chispa:'Corre hacia ti y estalla. Derríbalo antes: su explosión daña a los enemigos.',saltador:'Te salta encima marcando un círculo rojo. Esquiva y atácalo al aterrizar.',invocador:'Pone burbujas a sus aliados y llama refuerzos. ¡Derrótalo primero!'};
 
 // ---------------- Progreso guardado ----------------
 const COSTUMES=[{n:'Clásico',need:0,ic:'👕'},{n:'Alterno',need:3,ic:'🎨',hue:1},{n:'Dorado',need:5,ic:'👑',gold:0.72},
@@ -3027,7 +3149,7 @@ const COSTUMES=[{n:'Clásico',need:0,ic:'👕'},{n:'Alterno',need:3,ic:'🎨',hu
   {n:'Fantasma',ach:'secretos',ic:'👻',sat:0.1,v:1.25,g:0.25,gc:[0.8,0.9,1]},{n:'Camuflaje',ach:'cajas100',ic:'🪖',t:[0.35,0.45,0.2],ta:0.55},
   {n:'Chocolate',ach:'tresestrellas',ic:'🍫',t:[0.45,0.28,0.15],ta:0.6},{n:'Algodón de azúcar',ach:'combo',ic:'🍭',t:[1,0.6,0.85],ta:0.5},
   {n:'Tormenta',ach:'alianza',ic:'⛈️',t:[0.4,0.4,0.55],ta:0.5,g:0.3,gc:[0.5,0.8,1]},{n:'Real',ach:'sincaidas',ic:'🤴',t:[0.5,0.2,0.8],ta:0.55,gold:0.25},
-  {n:'Marinero',ach:'rescates',ic:'⚓',t:[0.1,0.55,0.7],ta:0.5},{n:'Leyenda',ach:'leyenda',ic:'🌟',gold:0.8,g:0.4,gc:[1,0.85,0.3]}];
+  {n:'Marinero',ach:'rescates',ic:'⚓',t:[0.1,0.55,0.7],ta:0.5},{n:'Leyenda',ach:'leyenda',ic:'🌟',gold:0.8,g:0.4,gc:[1,0.85,0.3]},{n:'Corona de hielo',ach:'historia2',ic:'❄️',t:[0.85,0.95,1],ta:0.7,g:0.35,gc:[0.5,0.85,1]}];
 const COSTUME_HUE={volta:2.4,roca:3.0,brisa:2.1,sombra:2.6,escarcha:-1.7,fenix:2.9};
 function loadCrys(){try{return JSON.parse(localStorage.getItem('ah_crys')||'{}');}catch(e){return {};}}
 function saveCrys(st,i){try{const c=loadCrys();const a=new Set(c[st]||[]);a.add(i);c[st]=[...a];localStorage.setItem('ah_crys',JSON.stringify(c));}catch(e){}}
@@ -3036,7 +3158,8 @@ function loadCostume(){try{return JSON.parse(localStorage.getItem('ah_traje')||'
 function saveCostume(h,i){try{const c=loadCostume();c[h]=i;localStorage.setItem('ah_traje',JSON.stringify(c));}catch(e){}}
 function costumeOpen(i){const c=COSTUMES[i];if(!c)return false;return c.ach?Ach.has(c.ach):crysTotal()>=(c.need||0);}
 function costumeOf(h){const i=loadCostume()[h]||0;return costumeOpen(i)?i:0;}
-function applyCostume(mats,hero,force){const idx=force!=null?force:costumeOf(hero);if(!idx)return;const C=COSTUMES[idx];const hue=C.hue?(COSTUME_HUE[hero]||2.5):0,gold=C.gold||0;
+function applyCostume(mats,hero,force){const idx=force!=null?force:costumeOf(hero);if(!idx)return;const C=COSTUMES[idx];applyLook(mats,C,C.hue?(COSTUME_HUE[hero]||2.5):0);}
+function applyLook(mats,C,hue){const gold=C.gold||0;
   const t=C.t||[1,1,1],ta=C.ta||0,sat=C.sat==null?1:C.sat,val=C.v||1,gl=C.g||0,gc=C.gc||C.t||[1,1,1];
   for(const m of mats){m.onBeforeCompile=sh=>{Object.assign(sh.uniforms,{uHue:{value:hue},uGold:{value:gold},uTint:{value:new THREE.Vector3(...t)},uTintA:{value:ta},uSat:{value:sat},uVal:{value:val},uGlow:{value:gl},uGlowC:{value:new THREE.Vector3(...gc)}});
     sh.fragmentShader='uniform float uHue;uniform float uGold;uniform vec3 uTint;uniform float uTintA;uniform float uSat;uniform float uVal;uniform float uGlow;uniform vec3 uGlowC;float ahMask=0.0;\n'+sh.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
@@ -3058,7 +3181,7 @@ const ACHS=[
   {id:'cajas100',ic:'📦',n:'Rompecajas',d:'Rompe 100 cajas y barriles',goal:100,st:'box'},{id:'golems500',ic:'🗿',n:'Terror de los gólems',d:'Vence a 500 gólems',goal:500,st:'gol'},
   {id:'lanzador',ic:'💪',n:'Brazo de hierro',d:'Levanta y lanza 20 objetos',goal:20,st:'lift'},{id:'combo',ic:'🥊',n:'Combo loco',d:'Llega a un combo de 50 golpes'},
   {id:'alianza',ic:'🤝',n:'Alianza extrema',d:'Usa 5 poderes de alianza',goal:5,st:'syn'},{id:'bomba',ic:'💣',n:'Desactivadores',d:'Desactiva una bomba a tiempo'},
-  {id:'todos',ic:'🦸',n:'Todo el equipo',d:'Juega con los 6 héroes',goal:6,st:'heroes'},{id:'leyenda',ic:'🌟',n:'Leyenda de Aurora',d:'Consigue 15 logros',goal:15,st:'nach'}];
+  {id:'todos',ic:'🦸',n:'Todo el equipo',d:'Juega con los 6 héroes',goal:6,st:'heroes'},{id:'leyenda',ic:'🌟',n:'Leyenda de Aurora',d:'Consigue 15 logros',goal:15,st:'nach'},{id:'historia2',ic:'❄️',n:'Fin del invierno eterno',d:'Termina la Historia 2: El reino helado'}];
 const Ach={d:null,
   load(){if(this.d)return this.d;try{this.d=JSON.parse(localStorage.getItem('ah_logros')||'{}');}catch(e){this.d={};}this.d.got=this.d.got||{};this.d.n=this.d.n||{};this.d.h=this.d.h||[];return this.d;},
   save(){try{localStorage.setItem('ah_logros',JSON.stringify(this.d));}catch(e){}},
@@ -3074,7 +3197,7 @@ const Ach={d:null,
       case 'die':if(e.prop){if(e.kind==='crate'||e.kind==='barril')this.add('box');}else if(!e.rescue)this.add('gol');if(e.boss||(e.kind&&ENEMIES[e.kind]&&ENEMIES[e.kind].boss)){D.boss=D.boss||{};D.boss[e.kind]=1;this.dirty=true;if(['capataz','centinela','gemelo','boss'].every(k=>D.boss[k]))this.give('jefes');}break;
       case 'rescue':this.add('res');break;case 'lift':this.add('lift');break;case 'syn':case 'ult':this.add('syn');break;case 'defuse':this.give('bomba');break;
       case 'ctier':if(e.id===me?.id&&e.ti>=3)this.give('combo');break;
-      case 'stageWin':{const st=e.stage;if(st===0)this.give('etapa1');if(st===1)this.give('puerto');if(st===2)this.give('fabrica');if(st===3)this.give('historia1');
+      case 'stageWin':{const st=e.stage;if(st===0)this.give('etapa1');if(st===1)this.give('puerto');if(st===2)this.give('fabrica');if(st===3)this.give('historia1');if(st===7)this.give('historia2');
         const r=view.res;if(r){if(r.downs===0)this.give('sincaidas');if(r.stars&&r.stars.every(Boolean))this.give('tresestrellas');if(r.t<240)this.give('rapido');if(r.cr&&r.cr.n&&r.cr.c>=r.cr.n)this.give('cristales');}
         if(view.diff==='dificil')this.give('dificil');break;}}}
     if(view.route&&view.route.sec){const k='sec'+view.stage;const n=view.route.sec.filter(Boolean).length;D.secS=D.secS||{};if(n>(D.secS[k]||0)){this.add('sec',n-(D.secS[k]||0));D.secS[k]=n;}}
@@ -3197,19 +3320,20 @@ let tvLoop=0;function tvFrame(now){if($('menu').style.display==='none'||$('sel')
 function startTV(){if(!tvLoop)tvLoop=requestAnimationFrame(tvFrame);}
 // ----- Historias -----
 let storySel=0,stageView=0;
-function openStory(){gesture();storySel=0;stageView=stageSel;$('story').style.display='flex';renderStory();}
+function openStory(){gesture();storySel=storyOf(stageSel);stageView=stageSel;$('story').style.display='flex';renderStory();}
 function renderStory(){const un=loadProgress();
-  $('slist').innerHTML=STORIES.map((S,i)=>{const done=i===0?Math.min(un,STORY.stages.length):0;
-    return `<div class="scard${i===storySel?' on':''}${S.locked?' lock':''}" data-i="${i}" style="background:${S.bg}"><small>${S.sub}</small><b>${S.name}</b><div class="prog">${S.locked?'🔒 Próximamente':`★ ${done} de ${STORY.stages.length} etapas`}</div></div>`;}).join('');
+  $('slist').innerHTML=STORIES.map((S,i)=>{const n=S.range?S.range[1]-S.range[0]+1:0,done=S.range?Math.max(0,Math.min(un,S.range[1]+1)-S.range[0]):0;
+    return `<div class="scard${i===storySel?' on':''}${S.locked?' lock':''}" data-i="${i}" style="background:${S.bg}"><small>${S.sub}</small><b>${S.name}</b><div class="prog">${S.locked?'🔒 Próximamente':`★ ${done} de ${n} etapas`}</div></div>`;}).join('');
   const S=STORIES[storySel];let h=`<h2>${S.name}</h2><p class="syn">${S.syn}</p>`;
   if(S.locked){h+=`<div class="etapas">${S.teaser.map((n,i)=>`<div class="et lock"><div class="top" style="background:${S.bg}"><span class="num">${i+1}</span><span class="st">🔒</span></div><div class="nm">${n}</div><div class="bs">Jefe: ${S.bosses[i]}</div></div>`).join('')}</div>
     <p class="syn" style="margin-top:12px;opacity:.75">Esta historia llega pronto. Termina la Historia 1 para estar listo: aquí los enemigos serán de nivel 10 a 20.</p>`;}
   else{
-    h+=`<div class="etapas">${STORY.stages.map((st,i)=>{const bk=stageBoss(st),lock=i>un,done=i<un;return `<div class="et${i===stageView?' on':''}${lock?' lock':''}" data-e="${i}"><div class="top" style="background:${STAGE_BG[st.theme]}">${Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:''}<span class="num">${i+1}</span><span class="st">${lock?'🔒':(loadStars()[i]?'⭐'.repeat(loadStars()[i]):done?'⭐':'')}</span></div><div class="nm">${st.name}</div><div class="bs">Jefe: ${ENEMIES[bk].name}</div></div>`;}).join('')}</div>`;
-    const st=STORY.stages[stageView],T=S.stages[stageView],bk=stageBoss(st),lock=stageView>un;
+    const RG=S.range;if(stageView<RG[0]||stageView>RG[1])stageView=RG[0];
+    h+=`<div class="etapas">${STORY.stages.map((st,i)=>{if(i<RG[0]||i>RG[1])return '';const bk=stageBoss(st),lock=i>un,done=i<un;return `<div class="et${i===stageView?' on':''}${lock?' lock':''}" data-e="${i}"><div class="top" style="background:${STAGE_BG[st.theme]}">${Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:''}<span class="num">${i-RG[0]+1}</span><span class="st">${lock?'🔒':(loadStars()[i]?'⭐'.repeat(loadStars()[i]):done?'⭐':'')}</span></div><div class="nm">${st.name}</div><div class="bs">Jefe: ${ENEMIES[bk].name}</div></div>`;}).join('')}</div>`;
+    const st=STORY.stages[stageView],T=S.stages[stageView-RG[0]],bk=stageBoss(st),lock=stageView>un;
     const kinds={};for(const W of st.waves)for(const k in W)if(!ENEMIES[k].boss)kinds[k]=(kinds[k]||0)+W[k];
     const enl=Object.entries(kinds).map(([k,n])=>`<div class="en">${Preview.ethumbs[k]?`<img src="${Preview.ethumbs[k]}">`:'<div class="ph"></div>'}<div><b>${ENEMIES[k].name} ×${n}</b><span>${ENEMY_INFO[k]||''}</span></div></div>`).join('');
-    h+=`<div class="sdet"><div><h3>Etapa ${stageView+1} · ${st.name}</h3><p class="syn">${T.txt}</p>
+    h+=`<div class="sdet"><div><h3>Etapa ${stageView-RG[0]+1} · ${st.name}</h3><p class="syn">${T.txt}</p>
       <div style="font-weight:800;margin:6px 0">Nivel recomendado: ${T.lvl} · ${st.route?st.route.nodes.length+' zonas':st.waves.length+' oleadas'} · Enemigos que encontrarás:</div><div class="enlist">${enl}</div>
       <div class="row" style="justify-content:flex-start">${lock?'<b style="color:#ff9a9a">🔒 Completa la etapa anterior para desbloquearla</b>':`<button class="btn" id="b-stplay">▶ Jugar etapa</button><button class="btn sm" id="b-stpick">Elegir y volver</button>`}</div></div>
       <div class="bosscard"><span class="lbl">JEFE</span>${Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:'<img>'}<div class="bn">${ENEMIES[bk].name}</div><div class="bt">${T.boss}</div></div></div>`;}
@@ -3286,10 +3410,10 @@ function renderHeroes(){
 $('b-hplay').onclick=()=>{const k=heroTab;if(!team.includes(k)){team[team.indexOf(chosen)]=k;saveTeam();}chosen=k;Snd.play('shield');Preview.play('Cheer',1.2);renderHeroes();};
 
 renderPick();
-const STAGE_BG={ciudad:'linear-gradient(135deg,#3d8ef0,#6fbf4a)',puerto:'linear-gradient(135deg,#2b8bd8,#b98a5a)',fabrica:'linear-gradient(135deg,#4a4a4f,#d9a400)',volcan:'linear-gradient(135deg,#3a0a05,#ff5a1a)'};
+const STAGE_BG={ciudad:'linear-gradient(135deg,#3d8ef0,#6fbf4a)',puerto:'linear-gradient(135deg,#2b8bd8,#b98a5a)',fabrica:'linear-gradient(135deg,#4a4a4f,#d9a400)',volcan:'linear-gradient(135deg,#3a0a05,#ff5a1a)',nieve:'linear-gradient(135deg,#2b6ab0,#dff2ff)'};
 function stageBoss(st){const W=st.waves[st.waves.length-1];return Object.keys(W).find(k=>ENEMIES[k].boss);}
 function renderStages(){const box=$('stages');const st=STORY.stages[stageSel],bk=stageBoss(st);const un=loadProgress();
-  box.innerHTML=`<div id="stagechip"><div class="chipst">${Preview.ethumbs&&Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:''}<div><span>${STORIES[0].sub} · ${STORIES[0].name} · Etapa ${stageSel+1} de ${STORY.stages.length}</span><b>${st.name}</b><span>Jefe: ${ENEMIES[bk].name} · ${Math.min(un,STORY.stages.length)} de ${STORY.stages.length} completadas</span></div></div>
+  box.innerHTML=`<div id="stagechip"><div class="chipst">${Preview.ethumbs&&Preview.ethumbs[bk]?`<img src="${Preview.ethumbs[bk]}">`:''}<div><span>${STORIES[storyOf(stageSel)].sub} · ${STORIES[storyOf(stageSel)].name} · Etapa ${stageSel-STORIES[storyOf(stageSel)].range[0]+1} de 4</span><b>${st.name}</b><span>Jefe: ${ENEMIES[bk].name} · ${Math.max(0,Math.min(un,STORIES[storyOf(stageSel)].range[1]+1)-STORIES[storyOf(stageSel)].range[0])} de 4 completadas</span></div></div>
     <button class="btn sm" id="b-story" style="background:#ffd23f;font-size:20px">📖 Historias</button></div>`;
   $('b-story').onclick=()=>openStory();
   const rs=loadResume(),cb=$('b-cont');if(cb){if(rs){const S=STORY.stages[rs.stage],nd=S&&S.route&&S.route.nodes[rs.node];cb.style.display='';cb.innerHTML=`⏯ Continuar<small style="display:block;font-size:14px">Etapa ${rs.stage+1} · ${nd?nd.n:''}</small>`;
