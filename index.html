@@ -3007,7 +3007,7 @@ const NET_HINT='No se pudo conectar. Revisa tu internet e inténtalo de nuevo.';
 
 // ---------------- App ----------------
 const canvas=document.getElementById('c');
-const sim=new Sim();const world=new World(canvas);const hud=new HUD();const input=new Input();
+const sim=new Sim();const world=new World(canvas);const hud=new HUD();const input=new Input();if(/[?&]debug=1/.test(location.search))window.__ah={sim,world,hud};
 ASSETS.onModel=nm=>{for(const [id,m] of world.enemyM)if(ENEMY_MODEL[m.kind]&&ENEMY_MODEL[m.kind][0]===nm){world.scene.remove(m.g);world.enemyM.delete(id);}};
 loadAssets((n,tot)=>{const el=document.getElementById('loadst');if(el)el.textContent=n<7?`Cargando personajes… ${Math.round(n/7*100)}%`:'';})
   .then(()=>{ASSETS.bg&&ASSETS.bg.then(()=>{try{Preview.makeThumbs();if($('story').style.display==='flex')renderStory();}catch(e){}});for(const map of [world.heroM,world.enemyM]){for(const m of map.values())world.scene.remove(m.g);map.clear();}try{Preview.makeThumbs();renderPick();renderStages();if($('story').style.display==='flex')renderStory();if($('sel').style.display==='flex')renderSel();if($('heroes').style.display==='flex'){Preview.key=null;Preview.setHero(heroTab);renderHeroes();}}catch(e){console.warn(e);}const el=document.getElementById('loadst');if(el)el.textContent='';})
