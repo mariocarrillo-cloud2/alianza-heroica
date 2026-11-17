@@ -29,6 +29,7 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 .hp i{background:linear-gradient(90deg,#3ddc84,#9cff6b)}
 .en i{background:linear-gradient(90deg,#2b8cff,#7fd8ff)}
 .card.down .hp i{background:#ff5b5b}
+#mmap{position:absolute;right:10px;top:62px;width:150px;height:150px;border-radius:50%;border:3px solid rgba(255,255,255,.85);background:rgba(10,14,30,.55);box-shadow:0 4px 12px rgba(0,0,0,.4);pointer-events:none;display:none}body.scn #mmap{display:none!important}
 #topr{position:absolute;right:10px;top:10px;display:flex;gap:8px;align-items:center;pointer-events:auto}
 #stage{text-align:right;line-height:1.05;text-shadow:0 2px 0 #000}
 #stage b{display:block;font-size:24px}
@@ -347,7 +348,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 <div id="bars" class="top"></div><div id="bars2"></div>
 <div id="hud">
   <div id="cards"></div>
-  <div id="topr"><span id="room"></span><div id="stage" class="bang"><b></b><span></span></div><button class="ib" id="b-voz">💬</button><button class="ib" id="b-music">🎵</button><button class="ib" id="b-menu">☰</button></div>
+  <canvas id="mmap" width="300" height="300"></canvas><div id="topr"><span id="room"></span><div id="stage" class="bang"><b></b><span></span></div><button class="ib" id="b-voz">💬</button><button class="ib" id="b-music">🎵</button><button class="ib" id="b-menu">☰</button></div>
   <div id="ally"><div class="lbl bang">★ ALIANZA</div><div class="bar"><i></i></div></div>
   <div id="boss"><div class="lbl bang"></div><div class="bar ar" style="height:7px"><i style="background:#9fc4ff"></i></div><div class="bar hp"><i></i></div><div class="bar st"><i></i></div></div>
   <div id="ultb" class="bang"></div>
@@ -900,7 +901,7 @@ class Sim{
   // ================= RECORRIDOS (estilo MUA3) =================
   routeInit(){const RT=this.S.route;this.R=null;if(!RT)return;
     this.R={def:RT,open:0,lock:-1,node:0,cp:{x:RT.nodes[0].sh[0][1],z:RT.nodes[0].sh[0][2]},fights:RT.nodes.map(n=>(n.fights||[]).map(()=>0)),done:RT.nodes.map(()=>false),
-      entered:RT.nodes.map(()=>false),pads:RT.nodes.map(()=>false),tmDone:RT.nodes.map(()=>false),tm:null,sec:RT.nodes.map(()=>false),hl:RT.nodes.flatMap(n=>(n.heals||[]).map(q=>({x:q[0],z:q[1],c:1}))),cl:RT.nodes.flatMap(n=>n.crystals||[]),crys:RT.nodes.flatMap(n=>(n.crystals||[]).map(()=>0)),fallT:2,fireOn:RT.nodes.map(()=>false),waveIdx:0,tag:0};
+      entered:RT.nodes.map(()=>false),pads:RT.nodes.map(()=>false),tmDone:RT.nodes.map(()=>false),tm:null,sec:RT.nodes.map(()=>false),hl:RT.nodes.flatMap(n=>(n.heals||[]).map(q=>({x:q[0],z:q[1],c:1}))),cl:RT.nodes.flatMap(n=>n.crystals||[]),clN:RT.nodes.flatMap((n,i)=>(n.crystals||[]).map(()=>i)),crys:RT.nodes.flatMap(n=>(n.crystals||[]).map(()=>0)),fallT:2,fireOn:RT.nodes.map(()=>false),waveIdx:0,tag:0};
     for(const [i,n] of RT.nodes.entries()){for(const c of n.crates||[])this.spawnAt('crate',c[0],c[1]);for(const q of n.props||[])this.spawnAt(q[0],q[1],q[2]);
       if(n.secret){this.spawnAt('muro',n.secret.wall[0],n.secret.wall[1]);const w=this.enemies[this.enemies.length-1];w.secret=i;w.face=n.secret.wall[3]||0;for(const q of n.secret.props||[])this.spawnAt(q[0],q[1],q[2]);}}}
   nc(n){const s=n.sh[0];if(s[0]==='c')return [s[1],s[2],s[3]];if(s[0]==='r')return [s[1],s[2],Math.min(s[3],s[4])];return [(s[1]+s[3])/2,(s[2]+s[4])/2,s[5]];}
@@ -1514,10 +1515,16 @@ class Sim{
   padGoal(h){const R=this.R;if(!R||this.controllers[h.id]!=='ai')return null;const N=R.def.nodes;const i=N.findIndex((n,j)=>n.pads&&R.entered[j]&&!R.pads[j]);if(i<0)return null;
     const n=N[i];if(!(n.fights||[]).every((f,q)=>R.fights[i][q]))return null;const hum=this.heroes.filter(o=>!o.down&&this.controllers[o.id]!=='ai');
     const free=n.pads.filter(q=>!hum.some(o=>Math.hypot(o.x-q[0],o.z-q[1])<1.4));const ais=this.heroes.filter(o=>!o.down&&this.controllers[o.id]==='ai');const k=ais.indexOf(h);return k>=0&&k<free.length?free[k]:null;}
+  aiChore(h,L){const R=this.R;if(this.phase!=='fight'||h.carry)return null;const lead=L&&!L.down&&L!==h?L:null;
+    const near=(x,z,r)=>Math.hypot(x-h.x,z-h.z)<r&&(!lead||Math.hypot(x-lead.x,z-lead.z)<15);
+    let best=null,bd=1e9;R.cl.forEach((c,i)=>{if(R.crys[i]||(R.clN&&R.clN[i]>R.open))return;const d=Math.hypot(c[0]-h.x,c[1]-h.z);if(d<bd&&near(c[0],c[1],11)){bd=d;best=[c[0],c[1],0.2,false];}});
+    if(best)return best;
+    for(const e of this.enemies){if(e.dead||e.kind!=='crate')continue;const d=Math.hypot(e.x-h.x,e.z-h.z);if(d<bd&&near(e.x,e.z,7)){bd=d;best=[e.x,e.z,h.def.attack.type==='ranged'?4:1.3,true];}}
+    return best;}
   aiInput(h){
     const inp=emptyInput();if(h.down)return inp;
     const L=this.heroes[this.leaderIdx()];
-    let tx=null,tz=null,stop=1.2;
+    let tx=null,tz=null,stop=1.2,ch=null;
     const downAlly=this.heroes.find(o=>o!==h&&o.down&&dist2(o,h)<196);
     const e=this.nearestEnemy(h,14);const pg=!downAlly&&!e?this.padGoal(h):null;
     if(pg){tx=pg[0];tz=pg[1];stop=0.3;}
@@ -1530,7 +1537,8 @@ class Sim{
       const la=this.lastAbility;
       if(la&&la.hero!==h&&this.controllers[la.hero.id]!=='ai'&&this.t-la.t<0.9&&this.t>=this.synReadyT&&dist2(la.hero,h)<144&&rng()<0.05){const s=this.offensiveSlot(h);if(s)inp[s]=true;}
       else if(h.energy>90&&D<6&&rng()<0.01){const s=this.offensiveSlot(h);if(s)inp[s]=true;}
-    }else if(L!==h&&!L.down){const a=h.id*TAU/4;tx=L.x+Math.sin(a)*2.5;tz=L.z+Math.cos(a)*2.5;stop=0.8;}
+    }else if(this.R&&(ch=this.aiChore(h,L))){tx=ch[0];tz=ch[1];stop=ch[2];if(ch[3]&&h.atkCd<=0&&Math.hypot(tx-h.x,tz-h.z)<stop+0.6&&rng()<0.25)inp.atk=true;}
+    else if(L!==h&&!L.down){const a=h.id*TAU/4;tx=L.x+Math.sin(a)*2.5;tz=L.z+Math.cos(a)*2.5;stop=0.8;}
     else if(this.R&&this.phase==='fight'){const g=this.routeGoal();tx=g.x;tz=g.z;stop=2;}
     const hs=this.slotOfKind(h,['heal','teamshield']);
     if(hs){const {ab}=this.abOf(h,hs);if(h.energy>=ab.cost&&h.cd[hs]<=0&&this.heroes.some(o=>!o.down&&o.hp<o.maxHp*0.5&&dist2(o,h)<49))inp[hs]=true;}
@@ -1558,7 +1566,7 @@ class Sim{
       orbs:this.orbs.map(o=>({id:o.id,kind:o.kind,x:r2(o.x),z:r2(o.z)})),
       projs:this.projs.map(p=>({id:p.id,kind:p.kind,obj:p.obj,x:r2(p.x),z:r2(p.z),face:r2(p.face),c:p.c||0})).concat(this.eprojs.map(p=>({id:p.id,kind:'lava',x:r2(p.x),z:r2(p.z),face:0,c:0}))),
       zones:this.zones.map(z=>({id:z.id,kind:z.kind,rain:z.rain?1:0,en:z.eid!=null?1:0,boss:z.boss?1:0,x:r2(z.x),z:r2(z.z),r:z.r,t:r2(z.t),max:z.max,len:z.len||0,face:z.face||0,c:z.c||0,x2:z.x2,z2:z.z2})),
-      wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,phaseMax:r2(this.phaseMax||0),cine:this.cineT>0?r2(this.cineT):0,cineK:this.cineT>0?this.cineK||null:null,cineM:r2(this.cineM||0),route:this.R?{open:this.R.open,lock:this.R.lock,crys:this.R.crys.slice(),node:this.R.node,tm:this.R.tm==null?null:r2(this.R.tm),padOcc:this.R.padOcc||null,pads:this.R.pads.slice(),saved:this.R.saved||0,sec:this.R.sec.slice(),hl:this.R.hl.map(q=>r2(q.c))}:null,phaseT:r2(this.phaseT),stage:this.stage,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
+      wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,phaseMax:r2(this.phaseMax||0),cine:this.cineT>0?r2(this.cineT):0,cineK:this.cineT>0?this.cineK||null:null,cineM:r2(this.cineM||0),route:this.R?{open:this.R.open,lock:this.R.lock,crys:this.R.crys.slice(),node:this.R.node,tm:this.R.tm==null?null:r2(this.R.tm),padOcc:this.R.padOcc||null,pads:this.R.pads.slice(),saved:this.R.saved||0,sec:this.R.sec.slice(),hl:this.R.hl.map(q=>r2(q.c)),goal:(()=>{try{const g=this.routeGoal();return [r2(g.x),r2(g.z)];}catch(e){return null;}})()}:null,phaseT:r2(this.phaseT),stage:this.stage,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
       banner:this.banner,bannerSub:this.bannerSub,bannerT:r2(this.bannerT),names:this.names||[],ally:Math.floor(this.ally),ctrl:this.controllers.slice()
     };
   }
@@ -2657,6 +2665,13 @@ class World{
       if(em&&ev){const sc=ENEMIES[ev.kind].scale,col=SLOT_COL[focus]||'#ffffff';T.mt.color.set(col);T.ring.material.color.set(col);
         T.g.position.set(em.g.position.x,sc*2.05+1.15+Math.sin(t*6)*0.12+(ev.ey||0),em.g.position.z);T.cone.rotation.y=t*2.5;
         T.ring.position.set(em.g.position.x,0.07,em.g.position.z);T.ring.scale.setScalar(ENEMIES[ev.kind].r*1.35+Math.sin(t*6)*0.05);}}
+    {const me=view.heroes[focus],R=view.route;if(!this.gArrow){const sh=new THREE.Shape();sh.moveTo(0,1.3);sh.lineTo(0.9,0.2);sh.lineTo(0.35,0.2);sh.lineTo(0.35,-0.7);sh.lineTo(-0.35,-0.7);sh.lineTo(-0.35,0.2);sh.lineTo(-0.9,0.2);sh.lineTo(0,1.3);
+        const ge=new THREE.ShapeGeometry(sh);ge.rotateX(-Math.PI/2);const ga=new THREE.Mesh(ge,new THREE.MeshBasicMaterial({color:0xffd23f,transparent:true,opacity:0,depthWrite:false,depthTest:false}));ga.renderOrder=15;noOutline(ga);this.scene.add(ga);this.gArrow=ga;this.gA=0;}
+      let want=0,ax=0,az=0;if(me&&!me.down&&R&&R.goal&&view.phase==='fight'&&!(view.cine>0)){ax=R.goal[0]-me.x;az=R.goal[1]-me.z;const D=Math.hypot(ax,az);
+        const busy=view.enemies.some(e=>!e.dead&&ENEMIES[e.kind]&&!ENEMIES[e.kind].prop&&Math.hypot(e.x-me.x,e.z-me.z)<12);if(D>7&&!busy)want=1;}
+      this.gA+=(want-this.gA)*Math.min(1,dt*4);const ga=this.gArrow;ga.visible=this.gA>0.02;
+      if(ga.visible){const L=Math.hypot(ax,az)||1,ux=ax/L,uz=az/L,off=2.2+Math.sin(t*5)*0.35;
+        ga.position.set(me.x+ux*off,0.12,me.z+uz*off);ga.rotation.set(0,Math.atan2(-ux,-uz),0);ga.material.opacity=0.85*this.gA;}}
     const me=view.heroes[focus];let cx=0,cz=0,n=0;for(const h of view.heroes){if(!h.down){cx+=h.x;cz+=h.z;n++;}}
     if(n){cx/=n;cz/=n;}else{cx=me.x;cz=me.z;}
     let tx=me.x*0.55+cx*0.45,tz=me.z*0.55+cz*0.45;
@@ -2773,6 +2788,20 @@ class World{
 const KEYLBL={a1:'1',a2:'2',a3:'3',a4:'4',ult:'E'};
 const PADLBL={a1:'RB+A',a2:'RB+X',a3:'RB+Y',a4:'RB+B',ult:'RT'};
 class HUD{
+  mmap(view,focus){const c=this.mmC||(this.mmC=document.getElementById('mmap'));const st=STORY.stages[view.stage],R=view.route;const on=!!(R&&st&&st.route&&view.phase==='fight');
+    if(on!==this.mmOn){this.mmOn=on;c.style.display=on?'block':'none';}if(!on)return;const me=view.heroes[focus]||view.heroes[0];if(!me)return;
+    const g=c.getContext('2d'),W=300,S=3.4,cx=me.x,cz=me.z,X=x=>W/2+(x-cx)*S,Z=z=>W/2+(z-cz)*S;g.clearRect(0,0,W,W);g.save();g.beginPath();g.arc(W/2,W/2,W/2,0,7);g.clip();
+    const N=st.route.nodes;const shp=(sh,col)=>{g.fillStyle=col;g.strokeStyle=col;for(const q of sh){if(q[0]==='c'){g.beginPath();g.arc(X(q[1]),Z(q[2]),q[3]*S,0,7);g.fill();}
+      else if(q[0]==='r'){g.save();g.translate(X(q[1]),Z(q[2]));g.rotate(-q[5]);g.fillRect(-q[3]*S,-q[4]*S,q[3]*2*S,q[4]*2*S);g.restore();}
+      else{g.lineWidth=q[5]*2*S;g.lineCap='round';g.beginPath();g.moveTo(X(q[1]),Z(q[2]));g.lineTo(X(q[3]),Z(q[4]));g.stroke();}}};
+    N.forEach((n,i)=>{shp(n.sh,i<=R.open?'rgba(255,240,200,.75)':'rgba(255,255,255,.18)');if(n.secret&&R.sec&&R.sec[i])shp(n.secret.sh,'rgba(200,160,255,.6)');});
+    let k=0;N.forEach(n=>(n.crystals||[]).forEach(q=>{if(!R.crys[k]){g.fillStyle='#5fe0ff';g.beginPath();g.arc(X(q[0]),Z(q[1]),7,0,7);g.fill();}k++;}));
+    for(const e of view.enemies){if(e.dead)continue;const d=ENEMIES[e.kind];if(!d||(d.prop&&!d.rescue))continue;g.fillStyle=d.boss?'#ff2a4a':'#ff6a6a';g.beginPath();g.arc(X(e.x),Z(e.z),d.boss?9:5,0,7);g.fill();}
+    if(R.goal){const gx=X(R.goal[0]),gz=Z(R.goal[1]),t=performance.now()/1000;const dx=gx-W/2,dz=gz-W/2,D=Math.hypot(dx,dz);
+      if(D<W/2-14){g.fillStyle='#ffd23f';g.beginPath();g.arc(gx,gz,9+Math.sin(t*6)*3,0,7);g.fill();}
+      else{const a=Math.atan2(dz,dx),r=W/2-16;g.save();g.translate(W/2+Math.cos(a)*r,W/2+Math.sin(a)*r);g.rotate(a);g.fillStyle='#ffd23f';g.beginPath();g.moveTo(14,0);g.lineTo(-10,-11);g.lineTo(-10,11);g.fill();g.restore();}}
+    view.heroes.forEach((h,i)=>{if(h.down)return;g.fillStyle=SLOT_COL[i]||'#fff';g.strokeStyle='#000';g.lineWidth=3;g.beginPath();g.arc(X(h.x),Z(h.z),i===focus?10:7,0,7);g.fill();g.stroke();});
+    g.restore();}
   constructor(){
     this.cardsEl=document.getElementById('cards');this.cards=[];
     for(let i=0;i<4;i++){const d=document.createElement('div');d.className='card';d.style.borderTopColor=SLOT_COL[i];
@@ -2824,7 +2853,7 @@ class HUD{
     if(me&&!me.down&&view.phase==='fight'){if(me.carry)txt='<b>Golpe</b> (X) para lanzar';else{let best=null,bd=9;for(const o of view.enemies){const d=ENEMIES[o.kind];if(!d||!d.lift)continue;const q=Math.hypot(o.x-me.x,o.z-me.z)-d.r;if(q<1.6&&q<bd){bd=q;best=d;}}
       if(best)txt=best.heavy&&me.key!=='roca'?'Muy pesado: solo <b>Roca</b> puede levantarlo':'<b>Fuerte</b> (Y) para levantar '+best.name.toLowerCase();}}
     if(txt!==this.hTxt){this.hTxt=txt;e.innerHTML=txt;e.style.opacity=txt?'1':'0';}}
-  update(view,focus){try{Mus.update(view,mode);}catch(e){}this.scene(view);this.prog(view);this.hint(view,focus);this.timer(view);
+  update(view,focus){try{Mus.update(view,mode);}catch(e){}try{this.mmap(view,focus);}catch(e){}this.scene(view);this.prog(view);this.hint(view,focus);this.timer(view);
     view.heroes.forEach((h,i)=>{const C=this.cards[i];const d=HEROES[h.key];
       this.set('nm'+i,C.nm,'text',d.name);C.nm.style.color=SLOT_COL[i];
       this.set('tg'+i,C.tag,'text',((view.names&&view.names[i])||(i===focus?'TÚ':(view.ctrl[i]==='ai'?'IA':'JUGADOR')))+' · Nv '+h.lvl);
