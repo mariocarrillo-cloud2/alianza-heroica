@@ -48,7 +48,11 @@ const CAST=[
   {id:'boss:capataz',n:'El Capataz (jefe)',g:'male',d:'Gólem enorme y gritón',set:{stability:0.35,similarity_boost:0.8,style:0.6}},
   {id:'boss:centinela',n:'El Centinela (jefe)',g:'male',d:'Gólem vigilante, voz de robot',set:{stability:0.8,similarity_boost:0.7,style:0.1}},
   {id:'boss:gemelo',n:'Gemelos de Magma (jefes)',g:'male',d:'Hermanos traviesos y burlones',set:{stability:0.35,similarity_boost:0.8,style:0.6}},
-  {id:'boss:boss',n:'El Coloso (jefe final)',g:'male',d:'Voz profunda y amenazante',set:{stability:0.5,similarity_boost:0.85,style:0.5}}];
+  {id:'boss:boss',n:'El Coloso (jefe final)',g:'male',d:'Voz profunda y amenazante',set:{stability:0.5,similarity_boost:0.85,style:0.5}},
+  {id:'boss:reina',n:'La Reina Escarcha (Historia 2)',g:'female',d:'Reina fría, elegante y poderosa',set:{stability:0.55,similarity_boost:0.85,style:0.45}},
+  {id:'boss:cazador',n:'El Cazador de escarcha',g:'male',d:'Bestia salvaje que aúlla',set:{stability:0.35,similarity_boost:0.8,style:0.6}},
+  {id:'boss:guardian',n:'Guardián de cristal',g:'male',d:'Antiguo, lento y solemne',set:{stability:0.75,similarity_boost:0.8,style:0.2}},
+  {id:'boss:general',n:'General Invernal',g:'male',d:'Militar que grita órdenes',set:{stability:0.4,similarity_boost:0.8,style:0.55}}];
 let key='',voices=[],lines=[],choice={};
 try{choice=JSON.parse(localStorage.getItem('ah_vozcast')||'{}');}catch(e){}
 const hdr=()=>({'xi-api-key':key});
