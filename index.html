@@ -56,7 +56,7 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 #ally .bar i{background:linear-gradient(90deg,#ff4dff,#ffd23f)}
 #ally.full .bar{animation:pulse .6s infinite alternate;border-color:#ffd23f}
 @keyframes pulse{from{box-shadow:0 0 4px #ffd23f}to{box-shadow:0 0 18px #ff4dff}}
-#boss{position:absolute;left:50%;top:116px;transform:translateX(-50%);width:min(520px,46vw);display:none;text-align:center}
+body.bossf #rprog{display:none!important}#boss{position:absolute;left:50%;top:66px;transform:translateX(-50%);width:min(520px,46vw);display:none;text-align:center}
 #boss .lbl{font-size:24px;text-shadow:0 2px 0 #000}
 #boss .bar{height:16px;border:2px solid #000}
 #boss .hp i{background:linear-gradient(90deg,#ff2d55,#ff8a3d)}
@@ -3007,7 +3007,7 @@ class HUD{
     this.set('stn',this.stage.querySelector('b'),'text',(view.arena?'🏟️ ':stageLabel(view.stage)+' · ')+view.stageName);
     this.set('stw',this.stage.querySelector('span'),'text',view.arena?`Oleada ${view.wave} · ${view.arena.kills} gólems`:view.wave?`Oleada ${view.wave} de ${view.nW}`:'');
     this.set('ally',this.allyF,'w',view.ally);const full=view.ally>=100;this.ally.classList.toggle('full',full);
-    const b=view.enemies.find(e=>ENEMIES[e.kind].boss);this.set('bv',this.boss,'display',b?'block':'none');
+    const b=view.enemies.find(e=>ENEMIES[e.kind].boss);this.set('bv',this.boss,'display',b?'block':'none');if(this.bossOn!==!!b){this.bossOn=!!b;document.body.classList.toggle('bossf',!!b);}
     if(b){this.set('bl',this.bossL,'text',(b.rage?'😡 ':'')+ENEMIES[b.kind].name+(b.rage?' · FURIA':''));this.set('bhp',this.bossHp,'w',Math.round(b.hp/b.maxHp*100));this.set('bst',this.bossSt,'w',Math.round(b.stag/b.maxStag*100));this.set('bar',this.bossAr,'w',b.maxArmor?Math.round(b.armor/b.maxArmor*100):0);this.set('barv',this.bossArW,'display',b.maxArmor&&b.armor>0?'block':'none');}
     if(view.ult){const joined=view.ult.m.includes(focus);const how=document.getElementById('touch').style.display==='block'?'TOCA ★':this.pad?'PRESIONA RT':'PRESIONA E';
       this.set('ub',this.ultb,'display','block');
