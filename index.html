@@ -2041,7 +2041,7 @@ class World{
     // ventanas
     const wp=new THREE.Shape();if(type==='van'){wp.moveTo(L/2-0.15,1.05);wp.lineTo(L/2-0.62,1.82);wp.lineTo(-L/2+0.3,1.82);wp.lineTo(-L/2+0.3,1.15);wp.lineTo(L/2-0.15,1.05);}
     else{wp.moveTo(L/2-0.98,0.99);wp.lineTo(0.5,1.47);wp.lineTo(type==='pickup'?-0.45:-0.9,1.47);wp.lineTo(type==='pickup'?-0.62:-L/2+0.6,1.0);wp.lineTo(L/2-0.98,0.99);}
-    const wg=new THREE.ExtrudeGeometry(wp,{depth:W-0.1,bevelEnabled:true,bevelThickness:0.17,bevelSize:0.13,bevelSegments:1});wg.translate(0,0,-(W-0.1)/2);wg.rotateY(Math.PI/2);
+    const wg=new THREE.ExtrudeGeometry(wp,{depth:W-0.1,bevelEnabled:true,bevelThickness:0.21,bevelSize:0.15,bevelSegments:1});wg.translate(0,0,-(W-0.1)/2);wg.rotateY(Math.PI/2);
     g.add(this.mesh(wg,T(burn?0x111111:0x23334a,{emissive:burn?0:0x0a1a2a}),0,0,0,false));
     if(type==='pickup'){g.add(this.mesh(new THREE.BoxGeometry(W*0.9,0.25,1.5),T(0x2a2a2a),0,0.92,-L/2+0.85,false));}
     // ruedas
