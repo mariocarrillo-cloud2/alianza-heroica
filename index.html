@@ -29,6 +29,16 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 .hp i{background:linear-gradient(90deg,#3ddc84,#9cff6b)}
 .en i{background:linear-gradient(90deg,#2b8cff,#7fd8ff)}
 .card.down .hp i{background:#ff5b5b}
+#logros{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(8,6,24,.82)}#logros.on{display:flex}
+#logros .lbox{width:min(980px,95vw);max-height:92vh;display:flex;flex-direction:column;background:linear-gradient(170deg,#2b3a8a,#3a1f6a);border:4px solid #000;border-radius:18px;box-shadow:8px 8px 0 #000;padding:14px}
+#logros .lhd{display:flex;align-items:center;gap:12px;margin-bottom:10px}#logros .lhd b{font-family:Bangers,Impact,sans-serif;font-size:34px;letter-spacing:2px;color:#ffd23f;text-shadow:0 3px 0 #000;flex:1}#logros .lhd span{font-weight:900}
+#lgrid{overflow:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;padding:4px}
+#lgrid .lg{background:rgba(255,255,255,.1);border:3px solid rgba(255,255,255,.2);border-radius:14px;padding:10px;display:flex;gap:10px;align-items:flex-start}
+#lgrid .lg.ok{background:rgba(255,210,63,.18);border-color:#ffd23f}#lgrid .lg .i{font-size:34px;line-height:1;filter:grayscale(1);opacity:.5}#lgrid .lg.ok .i{filter:none;opacity:1}
+#lgrid .lg b{display:block;font-size:16px}#lgrid .lg p{margin:2px 0;font-size:13px;opacity:.85;font-weight:700}#lgrid .lg small{display:block;font-size:12px;font-weight:800;color:#ffd23f}
+#lgrid .pb{height:7px;background:rgba(0,0,0,.4);border-radius:4px;overflow:hidden;margin-top:4px}#lgrid .pb i{display:block;height:100%;background:#7dff9a}
+#achpop{position:fixed;left:50%;top:18px;transform:translate(-50%,-140%);z-index:60;display:flex;gap:12px;align-items:center;background:linear-gradient(90deg,#ffd23f,#ffb84d);color:#111;border:4px solid #000;border-radius:16px;box-shadow:6px 6px 0 #000;padding:10px 18px;transition:transform .45s cubic-bezier(.3,1.5,.5,1);pointer-events:none;max-width:92vw}
+#achpop.on{transform:translate(-50%,0)}#achpop .ai{font-size:44px}#achpop small{display:block;font-weight:900;font-size:12px;letter-spacing:1px}#achpop b{display:block;font-family:Bangers,Impact,sans-serif;font-size:26px;letter-spacing:1px}#achpop span{display:block;font-weight:800;font-size:13px}
 #mmap{position:absolute;right:10px;top:62px;width:150px;height:150px;border-radius:50%;border:3px solid rgba(255,255,255,.85);background:rgba(10,14,30,.55);box-shadow:0 4px 12px rgba(0,0,0,.4);pointer-events:none;display:none}body.scn #mmap{display:none!important}
 #topr{position:absolute;right:10px;top:10px;display:flex;gap:8px;align-items:center;pointer-events:auto}
 #stage{text-align:right;line-height:1.05;text-shadow:0 2px 0 #000}
@@ -373,6 +383,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
     <div class="row">
       <button class="btn" id="b-cont" style="display:none;background:#7dff9a;box-shadow:0 4px 0 #2a8a4a;line-height:1.05"></button><button class="btn" id="b-solo">▶ Jugar</button>
       <button class="btn sm" id="b-team" style="background:#ff9ad5;box-shadow:0 3px 0 #a0507a;font-size:20px">👥 Cambiar equipo</button>
+      <button class="btn sm" id="b-logros" style="background:#ffb84d;box-shadow:0 3px 0 #9a6a1a;font-size:20px">🏅 Logros</button>
       <button class="btn sm" id="b-heroes" style="background:#c8a0ff;box-shadow:0 3px 0 #6a4a9a;font-size:20px">⭐ Ficha de héroes</button>
       <a class="btn sm" href="https://claude.ai/artifact/K63A2srG2SUrM3hAdpxrRQ" target="_blank" rel="noopener" style="background:#7fe0b0;box-shadow:0 3px 0 #2f7a55;font-size:20px;text-decoration:none;color:#111">🛠 Taller</a>
       <span style="font-weight:800">Dificultad:</span>
@@ -399,6 +410,8 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
   <div class="mtop"><div class="mtitle">HISTORIAS</div><button class="btn" id="b-stclose">← Volver</button></div>
   <div class="sgrid"><div class="slist" id="slist"></div><div class="spanel" id="spanel"></div></div>
 </div>
+<div id="logros"><div class="lbox"><div class="lhd"><b>🏅 LOGROS</b><span id="lcount"></span><button class="btn sm" id="b-lclose">✖ Cerrar</button></div><div id="lgrid"></div></div></div>
+<div id="achpop"><div class="ai"></div><div><small>¡NUEVO LOGRO!</small><b></b><span></span></div></div>
 <div id="heroes" class="stripes">
   <div id="hthumbs"></div>
   <div class="fgrid">
@@ -410,7 +423,7 @@ h1{font-family:Bangers,Impact;font-size:66px;margin:0;letter-spacing:3px;color:#
 </div>
 <div id="rotate" class="bang">↻ Gira la tablet en horizontal</div>
 
-<script type="module" src="cuenta.js?v=10"></script>
+<script type="module" src="cuenta.js?v=11"></script>
 <script type="module">
 import * as THREE from 'three';
 const LOWDEV=!(window.HTMLScriptElement&&HTMLScriptElement.supports&&HTMLScriptElement.supports('importmap'));
@@ -1566,7 +1579,7 @@ class Sim{
       orbs:this.orbs.map(o=>({id:o.id,kind:o.kind,x:r2(o.x),z:r2(o.z)})),
       projs:this.projs.map(p=>({id:p.id,kind:p.kind,obj:p.obj,x:r2(p.x),z:r2(p.z),face:r2(p.face),c:p.c||0})).concat(this.eprojs.map(p=>({id:p.id,kind:'lava',x:r2(p.x),z:r2(p.z),face:0,c:0}))),
       zones:this.zones.map(z=>({id:z.id,kind:z.kind,rain:z.rain?1:0,en:z.eid!=null?1:0,boss:z.boss?1:0,x:r2(z.x),z:r2(z.z),r:z.r,t:r2(z.t),max:z.max,len:z.len||0,face:z.face||0,c:z.c||0,x2:z.x2,z2:z.z2})),
-      wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,phaseMax:r2(this.phaseMax||0),cine:this.cineT>0?r2(this.cineT):0,cineK:this.cineT>0?this.cineK||null:null,cineM:r2(this.cineM||0),route:this.R?{open:this.R.open,lock:this.R.lock,crys:this.R.crys.slice(),node:this.R.node,tm:this.R.tm==null?null:r2(this.R.tm),padOcc:this.R.padOcc||null,pads:this.R.pads.slice(),saved:this.R.saved||0,sec:this.R.sec.slice(),hl:this.R.hl.map(q=>r2(q.c)),goal:(()=>{try{const g=this.routeGoal();return [r2(g.x),r2(g.z)];}catch(e){return null;}})()}:null,phaseT:r2(this.phaseT),stage:this.stage,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
+      wave:this.wave,nW:this.S.waves.length,res:this.phase==='win'?this.result:null,phaseMax:r2(this.phaseMax||0),cine:this.cineT>0?r2(this.cineT):0,cineK:this.cineT>0?this.cineK||null:null,cineM:r2(this.cineM||0),route:this.R?{open:this.R.open,lock:this.R.lock,crys:this.R.crys.slice(),node:this.R.node,tm:this.R.tm==null?null:r2(this.R.tm),padOcc:this.R.padOcc||null,pads:this.R.pads.slice(),saved:this.R.saved||0,sec:this.R.sec.slice(),hl:this.R.hl.map(q=>r2(q.c)),goal:(()=>{try{const g=this.routeGoal();return [r2(g.x),r2(g.z)];}catch(e){return null;}})()}:null,phaseT:r2(this.phaseT),stage:this.stage,diff:this.diff,theme:this.S.theme,stageName:this.S.name,phase:this.phase,
       banner:this.banner,bannerSub:this.bannerSub,bannerT:r2(this.bannerT),names:this.names||[],ally:Math.floor(this.ally),ctrl:this.controllers.slice()
     };
   }
@@ -2925,6 +2938,9 @@ class HUD{
   intro(view){const e=this.inEl||(this.inEl=document.getElementById('rintro'));const on=view.phase==='intro'&&!!view.route;if(on!==this.inOn){this.inOn=on;e.style.opacity=on?'1':'0';e.style.pointerEvents='none';
     if(on){const st=STORY.stages[view.stage];e.querySelector('h2').textContent=view.stageName;e.querySelector('p').textContent=st&&st.route?st.route.intro:'';}}
     if(on){const k=Math.max(0,Math.min(1,view.phaseT/12));e.querySelector('.bar i').style.width=(k*100)+'%';}}
+  achieve(a,cos){this.aq=this.aq||[];this.aq.push([a,cos]);if(!this.aqOn)this.achNext();}
+  achNext(){const q=this.aq.shift();if(!q){this.aqOn=false;return;}this.aqOn=true;const [a,cos]=q;const e=document.getElementById('achpop');e.querySelector('.ai').textContent=a.ic;e.querySelector('b').textContent=a.n;
+    e.querySelector('span').textContent=cos?'Desbloqueaste el traje '+cos.ic+' '+cos.n:a.d;e.classList.add('on');try{Snd.play('syn');}catch(_){}setTimeout(()=>{e.classList.remove('on');setTimeout(()=>this.achNext(),500);},3600);}
   toast(s){this.toastEl.textContent=s;this.toastEl.style.opacity='1';clearTimeout(this.tt);this.tt=setTimeout(()=>this.toastEl.style.opacity='0',800);}
 }
 
@@ -2989,22 +3005,67 @@ const STORIES=[
 const ENEMY_INFO={nido:'Alcantarilla por donde salen gólems. ¡Destrúyanla para que dejen de salir!',grunt:'Soldado básico de roca. Golpea de cerca.',shooter:'Dispara bolas de lava desde lejos. Avisa con una línea roja.',escudero:'Su escudo para los golpes ligeros de frente: usa golpe fuerte.',brute:'Grande y con armadura. No se detiene con golpes ligeros.',chispa:'Corre hacia ti y estalla. Derríbalo antes: su explosión daña a los enemigos.',saltador:'Te salta encima marcando un círculo rojo. Esquiva y atácalo al aterrizar.',invocador:'Pone burbujas a sus aliados y llama refuerzos. ¡Derrótalo primero!'};
 
 // ---------------- Progreso guardado ----------------
-const COSTUMES=[{n:'Clásico',need:0,ic:'👕'},{n:'Alterno',need:3,ic:'🎨'},{n:'Dorado',need:5,ic:'👑'}];
+const COSTUMES=[{n:'Clásico',need:0,ic:'👕'},{n:'Alterno',need:3,ic:'🎨',hue:1},{n:'Dorado',need:5,ic:'👑',gold:0.72},
+  {n:'Plateado',need:2,ic:'🥈',t:[0.86,0.89,0.96],ta:0.7},{n:'Medianoche',need:7,ic:'🌙',t:[0.22,0.25,0.5],ta:0.6,v:0.85},{n:'Rubí',need:9,ic:'❤️',t:[0.88,0.1,0.2],ta:0.6},
+  {n:'Esmeralda',need:11,ic:'💚',t:[0.1,0.75,0.35],ta:0.6},{n:'Zafiro',need:13,ic:'💙',t:[0.15,0.35,0.95],ta:0.6},{n:'Pastel',need:15,ic:'🍬',sat:0.45,v:1.18,t:[1,0.75,0.9],ta:0.2},
+  {n:'Neón',need:17,ic:'🟢',sat:1.8,g:0.35},{n:'Diamante',need:20,ic:'💎',t:[0.8,0.95,1],ta:0.6,g:0.25,gc:[0.6,0.9,1]},
+  {n:'Bronce',ach:'etapa1',ic:'🥉',t:[0.8,0.5,0.25],ta:0.65},{n:'Obsidiana',ach:'historia1',ic:'🌋',t:[0.12,0.1,0.14],ta:0.75,g:0.3,gc:[1,0.35,0.05]},
+  {n:'Lava',ach:'golems500',ic:'🔥',t:[1,0.35,0.05],ta:0.55,g:0.3},{n:'Hielo',ach:'dificil',ic:'🧊',t:[0.7,0.9,1],ta:0.65},
+  {n:'Fantasma',ach:'secretos',ic:'👻',sat:0.1,v:1.25,g:0.25,gc:[0.8,0.9,1]},{n:'Camuflaje',ach:'cajas100',ic:'🪖',t:[0.35,0.45,0.2],ta:0.55},
+  {n:'Chocolate',ach:'tresestrellas',ic:'🍫',t:[0.45,0.28,0.15],ta:0.6},{n:'Algodón de azúcar',ach:'combo',ic:'🍭',t:[1,0.6,0.85],ta:0.5},
+  {n:'Tormenta',ach:'alianza',ic:'⛈️',t:[0.4,0.4,0.55],ta:0.5,g:0.3,gc:[0.5,0.8,1]},{n:'Real',ach:'sincaidas',ic:'🤴',t:[0.5,0.2,0.8],ta:0.55,gold:0.25},
+  {n:'Marinero',ach:'rescates',ic:'⚓',t:[0.1,0.55,0.7],ta:0.5},{n:'Leyenda',ach:'leyenda',ic:'🌟',gold:0.8,g:0.4,gc:[1,0.85,0.3]}];
 const COSTUME_HUE={volta:2.4,roca:3.0,brisa:2.1,sombra:2.6,escarcha:-1.7,fenix:2.9};
 function loadCrys(){try{return JSON.parse(localStorage.getItem('ah_crys')||'{}');}catch(e){return {};}}
 function saveCrys(st,i){try{const c=loadCrys();const a=new Set(c[st]||[]);a.add(i);c[st]=[...a];localStorage.setItem('ah_crys',JSON.stringify(c));}catch(e){}}
 function crysTotal(){const c=loadCrys();return Object.values(c).reduce((a,b)=>a+b.length,0);}
 function loadCostume(){try{return JSON.parse(localStorage.getItem('ah_traje')||'{}');}catch(e){return {};}}
 function saveCostume(h,i){try{const c=loadCostume();c[h]=i;localStorage.setItem('ah_traje',JSON.stringify(c));}catch(e){}}
-function costumeOf(h){const i=loadCostume()[h]||0;return COSTUMES[i]&&crysTotal()>=COSTUMES[i].need?i:0;}
-function applyCostume(mats,hero){const idx=costumeOf(hero);if(!idx)return;const hue=idx===1?(COSTUME_HUE[hero]||2.5):0,gold=idx===2?0.72:0;
-  for(const m of mats){m.onBeforeCompile=sh=>{sh.uniforms.uHue={value:hue};sh.uniforms.uGold={value:gold};
-    sh.fragmentShader='uniform float uHue;uniform float uGold;\n'+sh.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
+function costumeOpen(i){const c=COSTUMES[i];if(!c)return false;return c.ach?Ach.has(c.ach):crysTotal()>=(c.need||0);}
+function costumeOf(h){const i=loadCostume()[h]||0;return costumeOpen(i)?i:0;}
+function applyCostume(mats,hero,force){const idx=force!=null?force:costumeOf(hero);if(!idx)return;const C=COSTUMES[idx];const hue=C.hue?(COSTUME_HUE[hero]||2.5):0,gold=C.gold||0;
+  const t=C.t||[1,1,1],ta=C.ta||0,sat=C.sat==null?1:C.sat,val=C.v||1,gl=C.g||0,gc=C.gc||C.t||[1,1,1];
+  for(const m of mats){m.onBeforeCompile=sh=>{Object.assign(sh.uniforms,{uHue:{value:hue},uGold:{value:gold},uTint:{value:new THREE.Vector3(...t)},uTintA:{value:ta},uSat:{value:sat},uVal:{value:val},uGlow:{value:gl},uGlowC:{value:new THREE.Vector3(...gc)}});
+    sh.fragmentShader='uniform float uHue;uniform float uGold;uniform vec3 uTint;uniform float uTintA;uniform float uSat;uniform float uVal;uniform float uGlow;uniform vec3 uGlowC;float ahMask=0.0;\n'+sh.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
     {vec3 c=diffuseColor.rgb;const mat3 toY=mat3(0.299,0.596,0.211,0.587,-0.274,-0.523,0.114,-0.322,0.312);const mat3 toR=mat3(1.0,1.0,1.0,0.956,-0.272,-1.106,0.621,-0.647,1.703);
      vec3 y=toY*c;float ch=length(y.yz);float an=atan(y.z,y.y);float skin=(y.y>0.0&&an>-0.2&&an<0.8&&ch<0.22&&y.x>0.25)?1.0:0.0;float amt=(1.0-skin)*smoothstep(0.03,0.09,ch);
      float h2=an+uHue*amt;vec3 r=toR*vec3(y.x,ch*cos(h2),ch*sin(h2));float lum=y.x;vec3 gd=vec3(1.0,0.78,0.28)*(0.3+lum*1.25);
-     r=mix(r,gd,uGold*(1.0-skin)*(0.4+0.6*smoothstep(0.02,0.08,ch+0.03)));diffuseColor.rgb=clamp(r,0.0,1.0);}`);};
-    m.customProgramCacheKey=()=>'cos'+idx+hue;m.needsUpdate=true;}}
+     float msk=(1.0-skin)*(0.4+0.6*smoothstep(0.02,0.08,ch+0.03));ahMask=msk;
+     r=mix(r,gd,uGold*msk);r=mix(r,uTint*(0.3+lum*1.35),uTintA*msk);float l2=dot(r,vec3(0.299,0.587,0.114));r=mix(r,mix(vec3(l2),r,uSat),1.0-skin);r*=mix(1.0,uVal,1.0-skin);
+     diffuseColor.rgb=clamp(r,0.0,1.0);}`).replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n totalEmissiveRadiance+=uGlowC*uGlow*ahMask;');};
+    m.customProgramCacheKey=()=>'cos2';m.needsUpdate=true;}}
+// ---------------- Logros ----------------
+const ACHS=[
+  {id:'etapa1',ic:'🏙️',n:'Héroes de la plaza',d:'Termina la etapa 1'},{id:'puerto',ic:'⚓',n:'Lobos de mar',d:'Termina la etapa 2'},
+  {id:'fabrica',ic:'🏭',n:'Fábrica cerrada',d:'Termina la etapa 3'},{id:'historia1',ic:'🌋',n:'Vencedores del Coloso',d:'Termina la Historia 1'},
+  {id:'jefes',ic:'👹',n:'Caza jefes',d:'Vence a los 4 jefes de la Historia 1'},{id:'sincaidas',ic:'🛡️',n:'Nadie se queda atrás',d:'Termina una etapa sin que nadie caiga'},
+  {id:'tresestrellas',ic:'⭐',n:'Tres estrellas',d:'Gana una etapa con 3 estrellas'},{id:'dificil',ic:'💀',n:'Valientes',d:'Gana una etapa en Difícil'},
+  {id:'rapido',ic:'⚡',n:'Rayo veloz',d:'Termina una etapa en menos de 4 minutos'},{id:'cristales',ic:'💎',n:'Ojo de águila',d:'Junta todos los cristales de una etapa'},
+  {id:'secretos',ic:'🗝️',n:'Exploradores',d:'Descubre 3 pasajes secretos',goal:3,st:'sec'},{id:'rescates',ic:'🧑‍🚒',n:'Rescatistas',d:'Rescata a 10 personas',goal:10,st:'res'},
+  {id:'cajas100',ic:'📦',n:'Rompecajas',d:'Rompe 100 cajas y barriles',goal:100,st:'box'},{id:'golems500',ic:'🗿',n:'Terror de los gólems',d:'Vence a 500 gólems',goal:500,st:'gol'},
+  {id:'lanzador',ic:'💪',n:'Brazo de hierro',d:'Levanta y lanza 20 objetos',goal:20,st:'lift'},{id:'combo',ic:'🥊',n:'Combo loco',d:'Llega a un combo de 50 golpes'},
+  {id:'alianza',ic:'🤝',n:'Alianza extrema',d:'Usa 5 poderes de alianza',goal:5,st:'syn'},{id:'bomba',ic:'💣',n:'Desactivadores',d:'Desactiva una bomba a tiempo'},
+  {id:'todos',ic:'🦸',n:'Todo el equipo',d:'Juega con los 6 héroes',goal:6,st:'heroes'},{id:'leyenda',ic:'🌟',n:'Leyenda de Aurora',d:'Consigue 15 logros',goal:15,st:'nach'}];
+const Ach={d:null,
+  load(){if(this.d)return this.d;try{this.d=JSON.parse(localStorage.getItem('ah_logros')||'{}');}catch(e){this.d={};}this.d.got=this.d.got||{};this.d.n=this.d.n||{};this.d.h=this.d.h||[];return this.d;},
+  save(){try{localStorage.setItem('ah_logros',JSON.stringify(this.d));}catch(e){}},
+  has(id){return !!this.load().got[id];},count(){return Object.keys(this.load().got).length;},
+  give(id){const D=this.load();if(D.got[id])return;const a=ACHS.find(x=>x.id===id);if(!a)return;D.got[id]=Date.now();this.save();
+    const cos=COSTUMES.find(c=>c.ach===id);try{hud.achieve(a,cos);}catch(e){}this.check();},
+  add(st,k=1){const D=this.load();D.n[st]=(D.n[st]||0)+k;for(const a of ACHS)if(a.st===st&&!D.got[a.id]&&D.n[st]>=a.goal)this.give(a.id);this.dirty=true;},
+  check(){const D=this.load();D.n.nach=Object.keys(D.got).length;D.n.heroes=D.h.length;for(const a of ACHS)if(a.st&&!D.got[a.id]&&(D.n[a.st]||0)>=a.goal)this.give(a.id);},
+  prog(a){const D=this.load();return a.st?Math.min(a.goal,a.st==='nach'?Object.keys(D.got).length:a.st==='heroes'?D.h.length:(D.n[a.st]||0)):null;},
+  feed(view,evs,focus){if(!view)return;const D=this.load();this.dirty=false;
+    const me=view.heroes[focus];if(me&&!D.h.includes(me.key)){D.h.push(me.key);this.dirty=true;this.check();}
+    for(const e of evs){switch(e.k){
+      case 'die':if(e.prop){if(e.kind==='crate'||e.kind==='barril')this.add('box');}else if(!e.rescue)this.add('gol');if(e.boss||(e.kind&&ENEMIES[e.kind]&&ENEMIES[e.kind].boss)){D.boss=D.boss||{};D.boss[e.kind]=1;this.dirty=true;if(['capataz','centinela','gemelo','boss'].every(k=>D.boss[k]))this.give('jefes');}break;
+      case 'rescue':this.add('res');break;case 'lift':this.add('lift');break;case 'syn':case 'ult':this.add('syn');break;case 'defuse':this.give('bomba');break;
+      case 'ctier':if(e.id===me?.id&&e.ti>=3)this.give('combo');break;
+      case 'stageWin':{const st=e.stage;if(st===0)this.give('etapa1');if(st===1)this.give('puerto');if(st===2)this.give('fabrica');if(st===3)this.give('historia1');
+        const r=view.res;if(r){if(r.downs===0)this.give('sincaidas');if(r.stars&&r.stars.every(Boolean))this.give('tresestrellas');if(r.t<240)this.give('rapido');if(r.cr&&r.cr.n&&r.cr.c>=r.cr.n)this.give('cristales');}
+        if(view.diff==='dificil')this.give('dificil');break;}}}
+    if(view.route&&view.route.sec){const k='sec'+view.stage;const n=view.route.sec.filter(Boolean).length;D.secS=D.secS||{};if(n>(D.secS[k]||0)){this.add('sec',n-(D.secS[k]||0));D.secS[k]=n;}}
+    if(this.dirty)this.save();}};
 function loadStars(){try{return JSON.parse(localStorage.getItem('ah_stars')||'{}');}catch(e){return {};}}
 function saveStars(i,n){try{const s=loadStars();s[i]=Math.max(s[i]||0,n);localStorage.setItem('ah_stars',JSON.stringify(s));}catch(e){}}
 function loadProgress(){try{return +(localStorage.getItem('ah_unlocked')||0);}catch(e){return 0;}}
@@ -3036,7 +3097,7 @@ const NET_HINT='No se pudo conectar. Revisa tu internet e inténtalo de nuevo.';
 
 // ---------------- App ----------------
 const canvas=document.getElementById('c');
-const sim=new Sim();const world=new World(canvas);const hud=new HUD();const input=new Input();if(/[?&]debug=1/.test(location.search))window.__ah={sim,world,hud};
+const sim=new Sim();const world=new World(canvas);const hud=new HUD();const input=new Input();if(/[?&]debug=1/.test(location.search))window.__ah={sim,world,hud,applyCostume,Ach,THREE,renderLogros:()=>renderLogros()};
 ASSETS.onModel=nm=>{for(const [id,m] of world.enemyM)if(ENEMY_MODEL[m.kind]&&ENEMY_MODEL[m.kind][0]===nm){world.scene.remove(m.g);world.enemyM.delete(id);}};
 loadAssets((n,tot)=>{const el=document.getElementById('loadst');if(el)el.textContent=n<7?`Cargando personajes… ${Math.round(n/7*100)}%`:'';})
   .then(()=>{ASSETS.bg&&ASSETS.bg.then(()=>{try{Preview.makeThumbs();if($('story').style.display==='flex')renderStory();}catch(e){}});for(const map of [world.heroM,world.enemyM]){for(const m of map.values())world.scene.remove(m.g);map.clear();}try{Preview.makeThumbs();renderPick();renderStages();if($('story').style.display==='flex')renderStory();if($('sel').style.display==='flex')renderSel();if($('heroes').style.display==='flex'){Preview.key=null;Preview.setHero(heroTab);renderHeroes();}}catch(e){console.warn(e);}const el=document.getElementById('loadst');if(el)el.textContent='';})
@@ -3190,8 +3251,8 @@ function renderHeroes(){
   $('hpts').textContent='⭐ '+P.pts+' punto'+(P.pts===1?'':'s')+' para mejorar';
   $('b-hplay').textContent=k===chosen?'🎮 Juegas con este':'🎮 Jugar con este';
   if(fichaMode==='stats'){
-    $('hright').innerHTML=`<div class="traits"><h4>ESTADÍSTICAS</h4></div>${radarSVG(heroStats(k))}<div class="traits"><h4>TRAJES · 💎 ${crysTotal()} cristales</h4></div><div class="cris">${COSTUMES.map((c,i)=>{const lk=crysTotal()<c.need,on=costumeOf(k)===i;return `<div data-cos="${i}" style="cursor:pointer;flex-direction:column;font-size:24px;width:88px;height:74px;clip-path:none;border-radius:12px;gap:2px;text-align:center;${on?'outline:3px solid #ffd23f;':''}${lk?'opacity:.45;':''}">${lk?'🔒':c.ic}<small style="font-size:11px;font-weight:800">${c.n}${lk?' · '+c.need+'💎':''}</small></div>`;}).join('')}</div><div style="text-align:center;font-size:11px;opacity:.7;margin-top:4px">Junta cristales en los recorridos para desbloquear trajes</div>`;
-    document.querySelectorAll('#hright [data-cos]').forEach(b=>b.onclick=()=>{const i=+b.dataset.cos;if(crysTotal()<COSTUMES[i].need){Snd.play('warn');return;}saveCostume(k,i);Preview.key=null;Preview.setHero(k);try{Preview.makeThumbs();}catch(e){}Snd.play('heal');renderHeroes();});
+    $('hright').innerHTML=`<div class="traits"><h4>ESTADÍSTICAS</h4></div>${radarSVG(heroStats(k))}<div class="traits"><h4>TRAJES · 💎 ${crysTotal()} cristales</h4></div><div class="cris" style="flex-wrap:wrap;max-height:260px;overflow:auto">${COSTUMES.map((c,i)=>{const lk=!costumeOpen(i),on=costumeOf(k)===i;return `<div data-cos="${i}" style="cursor:pointer;flex-direction:column;font-size:24px;width:88px;height:74px;clip-path:none;border-radius:12px;gap:2px;text-align:center;${on?'outline:3px solid #ffd23f;':''}${lk?'opacity:.45;':''}">${lk?'🔒':c.ic}<small style="font-size:11px;font-weight:800">${c.n}${lk?(c.ach?' · 🏅':' · '+c.need+'💎'):''}</small></div>`;}).join('')}</div><div style="text-align:center;font-size:11px;opacity:.7;margin-top:4px">Junta cristales 💎 y consigue logros 🏅 para desbloquear trajes</div>`;
+    document.querySelectorAll('#hright [data-cos]').forEach(b=>b.onclick=()=>{const i=+b.dataset.cos;if(!costumeOpen(i)){Snd.play('warn');const c=COSTUMES[i];if(c.ach){const a=ACHS.find(x=>x.id===c.ach);if(a)status('🏅 Para el traje '+c.n+': '+a.d);}else status('💎 Necesitas '+c.need+' cristales para el traje '+c.n);return;}saveCostume(k,i);Preview.key=null;Preview.setHero(k);try{Preview.makeThumbs();}catch(e){}Snd.play('heal');renderHeroes();});
   }else{
     const sc=SLOT_CATS[slotSel],SC=CAT_INFO[sc];
     const opts=Object.entries(d.abil).filter(([id,ab])=>sc==='syn'?!P.load.slice(0,3).includes(id):ab.cat===sc).map(([id,ab])=>{
@@ -3223,6 +3284,10 @@ function renderStages(){const box=$('stages');const st=STORY.stages[stageSel],bk
 function loadResume(){try{const r=JSON.parse(localStorage.getItem('ah_resume')||'null');if(r&&STORY.stages[r.stage]&&STORY.stages[r.stage].route&&r.node!=null)return r;}catch(e){}return null;}
 renderStages();
 $('b-heroes').onclick=()=>openFicha(chosen);
+function renderLogros(){Ach.check();$('lcount').textContent=Ach.count()+' de '+ACHS.length;
+  $('lgrid').innerHTML=ACHS.map(a=>{const ok=Ach.has(a.id),cos=COSTUMES.find(c=>c.ach===a.id),pr=Ach.prog(a);
+    return `<div class="lg${ok?' ok':''}"><div class="i">${a.ic}</div><div><b>${a.n}</b><p>${a.d}</p>${pr!=null&&!ok?`<div class="pb"><i style="width:${pr/a.goal*100}%"></i></div><p>${pr} / ${a.goal}</p>`:''}${cos?`<small>Premio: traje ${cos.ic} ${cos.n}</small>`:''}${ok?'<small>✔ ¡Conseguido!</small>':''}</div></div>`;}).join('');}
+$('b-logros').onclick=()=>{gesture();renderLogros();$('logros').classList.add('on');};$('b-lclose').onclick=()=>$('logros').classList.remove('on');
 document.querySelectorAll('[data-diff]').forEach(b=>b.onclick=()=>{diff=b.dataset.diff;document.querySelectorAll('[data-diff]').forEach(x=>x.classList.toggle('on',x===b));});
 $('b-fs').onclick=()=>{const el=document.documentElement;try{(el.requestFullscreen||el.webkitRequestFullscreen).call(el);}catch(e){status('En iPad: Compartir → Agregar a inicio para pantalla completa.');}};
 const gesture=()=>{Snd.init();if(Snd.ctx&&Snd.ctx.state==='suspended')Snd.ctx.resume();};
@@ -3302,13 +3367,14 @@ function frame(now){
     if(mode==='host'){for(const e of events)netEv.push(e);netT+=dt;
       if(netT>=0.05){netT=0;const msg={t:'s',v:view,ev:netEv};netEv=[];for(const c of conns)if(c.open){try{c.send(msg);}catch(e){}}}}
   }
+  if(mode!=='menu'){try{Ach.feed(view,events,localIdx);}catch(e){}}
   if(mode!=='menu')world.sync(view,dt,localIdx,events);
   if(mode!=='menu')hud.update(view,localIdx);else{try{Mus.update(null,'menu');}catch(e){}}
 }
 requestAnimationFrame(frame);
 // ---------------- Anti-zoom para Safari en iPad ----------------
 (function(){
-  const inMenu=t=>t&&t.closest&&!t.closest('#touch')&&!!t.closest('#menu,#sel,#heroes,#story,#acc,#accbar,button,a,input,select,textarea,label');
+  const inMenu=t=>t&&t.closest&&!t.closest('#touch')&&!!t.closest('#menu,#sel,#heroes,#story,#logros,#acc,#accbar,button,a,input,select,textarea,label');
   for(const ev of ['gesturestart','gesturechange','gestureend'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
   document.addEventListener('touchstart',e=>{if(e.touches.length>1||!inMenu(e.target))e.preventDefault();},{passive:false});
   document.addEventListener('touchmove',e=>{if(e.touches.length>1||!inMenu(e.target))e.preventDefault();},{passive:false});
