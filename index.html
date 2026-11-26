@@ -473,16 +473,17 @@ const MX_MAP={Idle:['MXA_FightIdle'],Unarmed_Idle:['MXA_FightIdle'],Running_A:['
   MX_Kick:['MXA_FlyingKick',0.3,1.1],MX_FlyKick:['MXA_FlyingKick',0.3,1.1],MX_JumpPunch:['Jumping_Punch',0.9,1.8],MX_Double:['Double_Combo_Attack',0.3,1.7],
   MX_Cast:['MXA_Cast1H',0.4,1.1],MX_Charge:['MXA_AreaCharge',0.2,1.4],MX_Release:['MXA_AreaBurst',1.2,2.2],MX_Sweep:['MXA_Cast1H3',0.4,1.1],MX_SlamJump:['MXA_Slam2H',0.4,1.4],
   Walking_D_Skeletons:['MXA_Walking'],'1H_Melee_Attack_Chop':['MXA_CrossPunch',0.6,1.35],'2H_Melee_Attack_Chop':['MXA_Slam2H',0.4,1.4],Taunt:['MXA_Victory',0,2.3],MX_Hurricane:['MXA_HurricaneKick',0.25,1.35]};
-const HERO_MODEL={volta:['volta',null,'mx'],roca:['roca',null,'mx'],brisa:['brisa',null,'mx'],sombra:['sombra',null,'mx'],escarcha:['escarcha',null,'mx'],fenix:['fenix',null,'mx']};
+const HERO_MODEL={volta:['volta',null,'mx'],roca:['roca',null,'mx'],brisa:['brisa',null,'mx'],sombra:['sombra',null,'mx'],escarcha:['escarcha',null,'mx'],fenix:['fenix',null,'mx'],deadred:['fenix','deadred','mx']};
 const ENEMY_MODEL={escudero:['escudero',null,'mx'],grunt:['grunt',null,'mx'],shooter:['shooter',null,'mx'],brute:['brute',null,'mx'],capataz:['capataz',null,'mx'],centinela:['centinela',null,'mx'],gemelo:['gemelo',null,'mx'],chispa:['chispa',null,'mx'],saltador:['saltador',null,'mx'],invocador:['invocador',null,'mx'],boss:['boss',null,'mx']};
 Object.assign(ENEMY_MODEL,{hgrunt:['grunt','ice','mx'],hshooter:['shooter','ice','mx'],hescudero:['escudero','ice','mx'],hchispa:['chispa','snow','mx'],hsaltador:['saltador','ice','mx'],hbrute:['brute','snow','mx'],hinvocador:['invocador','iceV','mx'],cazador:['gemelo','snow','mx'],guardian:['centinela','iceC','mx'],general:['capataz','iceN','mx'],reina:['boss','iceQ','mx']});
-const LOOKS={ice:{t:[0.25,0.6,1],ta:0.85,sat:1.3,g:0.32,gc:[0.3,0.75,1]},snow:{t:[0.9,0.95,1],ta:0.85,v:1.3,g:0.22,gc:[0.6,0.85,1]},iceV:{t:[0.6,0.6,1],ta:0.7,g:0.25,gc:[0.6,0.5,1]},iceC:{t:[0.4,0.95,1],ta:0.75,g:0.35,gc:[0.3,1,1]},iceN:{t:[0.2,0.3,0.6],ta:0.75,g:0.2,gc:[0.5,0.8,1]},iceQ:{t:[0.92,0.88,1],ta:0.8,g:0.35,gc:[0.7,0.6,1],v:1.05}};
+const LOOKS={deadred:{t:[0.82,0.05,0.12],ta:0.9,sat:1.2,v:0.95},ice:{t:[0.25,0.6,1],ta:0.85,sat:1.3,g:0.32,gc:[0.3,0.75,1]},snow:{t:[0.9,0.95,1],ta:0.85,v:1.3,g:0.22,gc:[0.6,0.85,1]},iceV:{t:[0.6,0.6,1],ta:0.7,g:0.25,gc:[0.6,0.5,1]},iceC:{t:[0.4,0.95,1],ta:0.75,g:0.35,gc:[0.3,1,1]},iceN:{t:[0.2,0.3,0.6],ta:0.75,g:0.2,gc:[0.5,0.8,1]},iceQ:{t:[0.92,0.88,1],ta:0.8,g:0.35,gc:[0.7,0.6,1],v:1.05}};
 const HERO_ANIM={volta:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},roca:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},sombra:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},
-  fenix:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},brisa:{atk:['MX_Cast','MX_Sweep','MX_Cast']},escarcha:{atk:['MX_Cast','MX_Sweep','MX_Cast']}};
+  fenix:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},deadred:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},brisa:{atk:['MX_Cast','MX_Sweep','MX_Cast']},escarcha:{atk:['MX_Cast','MX_Sweep','MX_Cast']}};
 // Animación de cada poder: [clip, duración s]. Solo modelos Meshy/Mixamo.
 const ABIL_ANIM={volta:{chain:['MX_Cast',0.45],dash:['MX_FlyKick',0.38],static:['MX_Charge',0.75],strike:['MX_SlamJump',0.7],pulse:['MX_Release',0.5],fan:['MX_Sweep',0.45]},
   roca:{quake:['MX_SlamJump',0.6],stomp:['MX_SlamJump',0.5],leap:['MX_SlamJump',0.7],shield:['MX_Charge',0.6],boulder:['MX_Cast',0.45],rocks:['MX_Release',0.55]},
   sombra:{daggers:['MX_Sweep',0.4],blink:['MX_FlyKick',0.35],smoke:['MX_Charge',0.5],mark:['MX_Cast',0.45],clones:['MX_Release',0.5]},
+  deadred:{rafaga:['MX_Cast',0.4],corte:['MX_FlyKick',0.38],danza:['MX_Sweep',0.5],regen:['MX_Charge',0.55],tormenta:['MX_Release',0.55],bomba:['MX_Cast',0.45]},
   fenix:{fireball:['MX_Cast',0.45],wing:['MX_FlyKick',0.38],ring:['MX_Charge',0.6],rebirth:['MX_Release',0.6],meteor:['MX_Release',0.6],supernova:['MX_SlamJump',0.7]},
   brisa:{tornado:['MX_Cast',0.45],heal:['MX_Charge',0.6],gust:['MX_Sweep',0.4],feathers:['MX_Release',0.55],bubble:['MX_Charge',0.55],current:['MX_FlyKick',0.38]},
   escarcha:{frostnova:['MX_SlamJump',0.6],lance:['MX_Cast',0.45],blizzard:['MX_Release',0.6],prison:['MX_Cast',0.45],armor:['MX_Charge',0.6],glacier:['MX_Release',0.6]}};
@@ -490,6 +491,7 @@ const ABIL_ANIM={volta:{chain:['MX_Cast',0.45],dash:['MX_FlyKick',0.38],static:[
 const POW_STYLE={volta:{chain:'shoot',dash:'dash',static:'raise',strike:'slam',pulse:'spread',fan:'sweep'},
   roca:{quake:'slam',stomp:'slam',leap:'slam',shield:'raise',boulder:'push',rocks:'spread'},
   sombra:{daggers:'sweep',blink:'dash',smoke:'raise',mark:'shoot',clones:'spread'},
+  deadred:{rafaga:'push',corte:'dash',danza:'sweep',regen:'raise',tormenta:'spread',bomba:'shoot'},
   fenix:{fireball:'shoot',wing:'dash',ring:'spread',rebirth:'raise',meteor:'raise',supernova:'slam'},
   brisa:{tornado:'shoot',heal:'raise',gust:'push',feathers:'spread',bubble:'raise',current:'dash'},
   escarcha:{frostnova:'slam',lance:'shoot',blizzard:'raise',prison:'push',armor:'raise',glacier:'slam'}};
@@ -502,9 +504,9 @@ const POSES={
   spread:{k0:[[0.6,-0.2,-0.5],[0.4,0.3,-0.8],[0.6,-0.2,0.5],[0.4,0.3,0.8]],k1:[[0.2,0.4,1],[0.1,0.5,1],[0.2,0.4,-1],[0.1,0.5,-1]],lean:[0.12,-0.1]},
   sweep:{k0:[[0.5,-0.3,0.6],[0.8,0.5,-0.2],[0.3,0.3,-1],[0.2,0.3,-1]],k1:[[0.5,-0.3,0.6],[0.8,0.5,-0.2],[0.6,0.3,0.8],[0.4,0.2,1]],lean:[0,0.1],twist:[0.5,-0.6]},
   dash:{k0:[[-0.7,-0.5,0.3],[-0.8,-0.3,0],[-0.7,-0.5,-0.3],[-0.8,-0.3,0]],k1:[[-0.7,-0.5,0.3],[-0.8,-0.3,0],[-0.7,-0.5,-0.3],[-0.8,-0.3,0]],lean:[0.25,0.38]}};
-const HEAVY_ANIM={volta:'MX_Kick',sombra:'MX_Kick',roca:'MX_SlamJump',fenix:'MX_Hurricane',brisa:'MX_Release',escarcha:'MX_Release'};
+const HEAVY_ANIM={volta:'MX_Kick',sombra:'MX_Kick',roca:'MX_SlamJump',fenix:'MX_Hurricane',brisa:'MX_Release',escarcha:'MX_Release',deadred:'MX_Hurricane'};
 const ELEM_FX={volta:{c:0x7fd8ff,c2:0xffffff,em:0x1d5fbf},roca:{c:0xffb347,c2:0xc2884c,em:0x5a2a08},brisa:{c:0xc8ffe0,c2:0x3ddc84,em:0x0f4a2a},
-  sombra:{c:0xc58cff,c2:0x8e44ad,em:0x3a0f5a},escarcha:{c:0xbff4ff,c2:0x7fe3ff,em:0x1a4a6a},fenix:{c:0xffb03a,c2:0xff5a1a,em:0x6a1a00}};
+  sombra:{c:0xc58cff,c2:0x8e44ad,em:0x3a0f5a},escarcha:{c:0xbff4ff,c2:0x7fe3ff,em:0x1a4a6a},fenix:{c:0xffb03a,c2:0xff5a1a,em:0x6a1a00},deadred:{c:0xff3048,c2:0xffb000,em:0x5a0010}};
 async function loadAssets(onP){
   const L=new GLTFLoader();const names=[...new Set([...Object.values(HERO_MODEL),...Object.values(ENEMY_MODEL)].map(x=>x[0]))];
   let n=0;const tot=names.length+1;
@@ -604,6 +606,15 @@ const HEROES={
       meteor:{name:'Lluvia de meteoros',ic:'☄',cost:40,cd:7,kind:'meteors',n:4,r:2.5,dmg:30,stag:25,c:0xff6a1a,unlock:5,info:'Meteoros sobre 4 enemigos'},
       supernova:{name:'Supernova',ic:'✺',cost:45,cd:9,kind:'nova',r:6.5,dmg:42,stag:50,knock:10,c:0xffa040,burst:0xff5a1a,unlock:10,info:'Gran explosión de fuego'}},
     load:['fireball','wing','ring','rebirth']},
+  deadred:{name:'DeadRed',color:0xc8102e,accent:0xffb000,skin:0xc8102e,speed:7.3,hp:100,scale:1,desc:'Mercenario bromista: espadas y pistolas.',
+    attack:{type:'melee',dmg:[10,10,18],range:2,arc:1.4,stag:[4,4,10],cd:0.26},
+    abil:{rafaga:{name:'Ráfaga doble',ic:'⁂',cost:25,cd:1.2,kind:'fan',n:6,spread:0.6,dmg:12,stag:7,pk:'spark',c:0xff3048,info:'6 balas de energía en abanico'},
+      corte:{name:'Corte relámpago',ic:'⟋',cost:20,cd:1.2,kind:'dash',c:0xff2a44,trail:true,info:'Atraviesa enemigos con las espadas'},
+      danza:{name:'Danza de espadas',ic:'✕',cost:40,cd:6,kind:'flurry',info:'Ráfaga de cortes rapidísimos'},
+      regen:{name:'¡Como nuevo!',ic:'✚',cost:35,cd:9,kind:'heal',info:'Se cura y cura a los cercanos'},
+      tormenta:{name:'Tormenta de disparos',ic:'✺',cost:35,cd:6,kind:'feathers',pk:'spark',unlock:5,info:'Dispara en todas direcciones'},
+      bomba:{name:'Bomba pegajosa',ic:'✹',cost:30,cd:5,kind:'strike',c:0xff5a1a,unlock:10,info:'Explota sobre el grupo más grande'}},
+    load:['rafaga','danza','regen','corte']},
 };
 // Tipos de ranura: rap=Rápido, pod=Poderoso, esp=Especial; la 4a ranura (Sinergia) acepta cualquiera
 const SLOT_CATS=['rap','pod','esp','syn'];
@@ -622,11 +633,13 @@ const HERO_META={
     cat:{lance:'rap',frostnova:'rap',blizzard:'pod',glacier:'pod',prison:'esp',armor:'esp'},load:['lance','blizzard','prison','frostnova']},
   fenix:{title:'El caballero que renace',bio:'Un caballero que cayó en batalla y volvió envuelto en llamas. Cada vez que el equipo cae, él lo vuelve a levantar.',st:[3,4,4,2],
     cat:{fireball:'rap',wing:'rap',ring:'pod',meteor:'pod',rebirth:'esp',supernova:'esp'},load:['fireball','ring','rebirth','wing']},
+  deadred:{title:'El mercenario bromista',bio:'Era un mercenario que peleaba para quien pagara más… hasta que la Alianza le salvó la vida. Ahora pelea con los buenos, aunque no deja de hacer chistes ni de presumir.',st:[4,3,4,3],
+    cat:{rafaga:'rap',corte:'rap',danza:'pod',tormenta:'pod',regen:'esp',bomba:'esp'},load:['rafaga','danza','regen','corte']},
 };
-const ELEM={volta:'rayo',roca:'tierra',brisa:'viento',sombra:'sombra',escarcha:'hielo',fenix:'fuego'};
+const ELEM={volta:'rayo',roca:'tierra',brisa:'viento',sombra:'sombra',escarcha:'hielo',fenix:'fuego',deadred:'metal'};
 const PASSIVE={volta:'⚡ Doble esquive: puede esquivar dos veces seguidas.',roca:'🪨 Inamovible: no sale volando y recibe 15% menos daño.',
   brisa:'🍃 Levitación: los golpes al suelo le hacen la mitad.',sombra:'🗡 Puñalada: 50% más de daño por la espalda.',
-  escarcha:'❄ Piel helada: quien la golpea queda lento.',fenix:'🔥 Renacer: una vez por etapa se levanta solo al caer.'};
+  escarcha:'❄ Piel helada: quien la golpea queda lento.',fenix:'🔥 Renacer: una vez por etapa se levanta solo al caer.',deadred:'✚ Regeneración: si no le pegan por 3 segundos, se cura poco a poco.'};
 const ATK_TYPE={melee:{n:'Cuerpo a cuerpo',ic:'👊'},ranged:{n:'Distancia',ic:'🏹'},area:{n:'Área',ic:'💥'},dash:{n:'Embestida',ic:'💨'},blink:{n:'Teletransporte',ic:'🌀'}};
 const ATK_INFO={
   volta:{l:['melee','Combo eléctrico de golpes y patadas. El 3er golpe salta como chispa a otro enemigo.'],h:['dash','Patada relámpago: cruza en línea recta golpeando a todos.']},
@@ -634,8 +647,9 @@ const ATK_INFO={
   brisa:{l:['ranged','Ráfagas de viento a distancia.'],h:['ranged','Vendaval: ráfaga enorme que empuja muy lejos.']},
   sombra:{l:['melee','Cuchilladas muy veloces.'],h:['blink','Golpe fantasma: aparece detrás del enemigo y lo apuñala.']},
   escarcha:{l:['ranged','Fragmentos de hielo que frenan.'],h:['ranged','Lanza glacial: atraviesa y congela al primero que toca.']},
-  fenix:{l:['melee','Espadazos que dejan quemado al enemigo.'],h:['area','Giro de llamas: corte en círculo que deja fuego en el piso.']}};
-const ELEM_INFO={rayo:'⚡ Rayo',tierra:'🪨 Tierra',viento:'🍃 Viento',sombra:'🌑 Sombra',hielo:'❄ Hielo',fuego:'🔥 Fuego'};
+  fenix:{l:['melee','Espadazos que dejan quemado al enemigo.'],h:['area','Giro de llamas: corte en círculo que deja fuego en el piso.']},
+  deadred:{l:['melee','Combo de espadas de energía.'],h:['area','Tajo giratorio: gira con las dos espadas y dispara a su alrededor.']}};
+const ELEM_INFO={metal:'⚔️ Metal',rayo:'⚡ Rayo',tierra:'🪨 Tierra',viento:'🍃 Viento',sombra:'🌑 Sombra',hielo:'❄ Hielo',fuego:'🔥 Fuego'};
 for(const k in HERO_META){const H=HEROES[k],M=HERO_META[k];H.elem=ELEM[k];H.passive=PASSIVE[k];H.title=M.title;H.bio=M.bio;H.stats=M.st;H.load=M.load;for(const id in H.abil)H.abil[id].cat=M.cat[id];
   const a=H.attack;H.heavy=a.type==='melee'?{dmg:Math.round(a.dmg[2]*1.6),stag:Math.round(a.stag[2]*2.4),range:a.range+0.4,arc:a.arc+0.2,cd:0.75}:{dmg:a.dmg[2]*2,stag:a.stag[2]*3,cd:0.8};}
 function validLoad(k,load,lvl){const H=HEROES[k];if(!Array.isArray(load)||load.length!==4||new Set(load).size!==4)return false;
@@ -683,6 +697,9 @@ const SYNERGIES={
   'brisa+fenix':{name:'Torbellino de Fuego',c:0xff8a3d,kind:'storm'},
   'fenix+sombra':{name:'Llamas Fantasma',c:0xd05aff,kind:'barrage'},
   'escarcha+fenix':{name:'Choque Elemental',c:0xff9ad5,kind:'nova'},
+  'deadred+volta':{name:'Balas Eléctricas',c:0xffe066,kind:'barrage'},'deadred+roca':{name:'Muralla y Metralla',c:0xff6a3a,kind:'meteor'},
+  'brisa+deadred':{name:'Huracán de Acero',c:0xff8a9a,kind:'storm'},'deadred+sombra':{name:'Emboscada Doble',c:0xd05aff,kind:'barrage'},
+  'deadred+escarcha':{name:'Filo Helado',c:0x9fe8ff,kind:'nova'},'deadred+fenix':{name:'Espadas de Fuego',c:0xff5a1a,kind:'nova'},
 };
 const synKey=(a,b)=>[a,b].sort().join('+');
 // ----- Enemigos y jefes -----
@@ -1227,6 +1244,7 @@ class Sim{
       this.confine(h,0.5);return;
     }
     h.energy=Math.min(100,h.energy+dt*7*((this.bonus&&this.bonus.energy)||1)*(1+(h.gem?h.gem.en:0)));
+    if(h.key==='deadred'){h.rgT=(h.rgT||0)+dt;if(h.rgT>3&&h.hp<h.maxHp)h.hp=Math.min(h.maxHp,h.hp+h.maxHp*0.025*dt);}
     if(h.air){h.y+=h.vy*dt;h.vy-=(h.diving?40:24)*dt;
       if(h.y<=0){h.y=0;h.vy=0;h.air=false;this.ev({k:'land',id:h.id,x:h.x,z:h.z});
         if(h.diving){h.diving=false;this.hitKind='heavy';const H=h.def.heavy;
@@ -1313,6 +1331,9 @@ class Sim{
       case 'sombra':{if(tgt){const sx=h.x,sz=h.z,dx=tgt.x-h.x,dz=tgt.z-h.z,l=Math.hypot(dx,dz)||1;h.x=tgt.x+dx/l*(tgt.def.r+0.8);h.z=tgt.z+dz/l*(tgt.def.r+0.8);h.face=Math.atan2(-dx,-dz);
           this.damage(tgt,H.dmg*mul*1.2,H.stag*mul,h.x,h.z,kn,h);h.iframes=Math.max(h.iframes,0.3);this.ev({k:'burst',x:sx,z:sz,c:0x8e44ad,n:10});this.ev({k:'burst',x:h.x,z:h.z,c:0x8e44ad,n:10});}
         else hitArc(H.range,H.arc);this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0xc58cff,big:true,face:h.face,heavy:true});break;}
+      case 'deadred':{for(const e of this.enemies){if(e.dead||(e.ey||0)>1.8)continue;if(dist2(e,h)<(3.2+e.def.r)**2)this.damage(e,H.dmg*mul,H.stag*mul,h.x,h.z,kn,h);}
+        for(let k=0;k<8;k++){const a=k*TAU/8;this.proj({kind:'spark',x:h.x,z:h.z,vx:Math.sin(a)*22,vz:Math.cos(a)*22,dmg:Math.round(8*mul),stag:4,life:0.45,r:0.4,owner:h,hk:'heavy'});}
+        this.ev({k:'ring',x:h.x,z:h.z,r:3.2,c:0xff3048});this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0xff3048,big:true,heavy:true});this.ev({k:'shake',a:0.3});break;}
       case 'fenix':{for(const e of this.enemies){if(e.dead||(e.ey||0)>1.8)continue;if(dist2(e,h)<(3+e.def.r)**2)this.damage(e,H.dmg*mul,H.stag*mul,h.x,h.z,kn,h);}
         this.zone({kind:'static',x:h.x,z:h.z,r:3,t:2.5,max:2.5,tick:0.2,owner:h,c:0xff6a1a,burn:true});
         this.ev({k:'ring',x:h.x,z:h.z,r:3,c:0xff8a3d});this.ev({k:'swing',id:h.id,x:h.x,z:h.z,c:0xff8a3d,big:true,heavy:true});this.ev({k:'shake',a:0.35});break;}
@@ -1500,7 +1521,7 @@ class Sim{
     this.hitKind='heavy';for(const e of this.enemies)if(!e.dead)this.damage(e,60*mul,110*mul,cx,cz,8,this.heroes[U.m[0]]);this.hitKind='ability';
     for(const o of this.heroes){if(o.down){o.down=false;o.hp=o.maxHp*0.5;}else o.hp=Math.min(o.maxHp,o.hp+20*n);o.iframes=1.5;}
     this.eprojs=[];this.ev({k:'ult',name:U.first,n,ids:U.m.slice(),x:cx,z:cz});this.ev({k:'shake',a:1.2+0.2*n});this.hitstop=0.35;}
-  hurtHero(h,dmg,ox,oz,knock,att){
+  hurtHero(h,dmg,ox,oz,knock,att){h.rgT=0;
     if(h.down||this.phase!=='fight')return;
     if(h.dodgeT>0&&this.t-h.dodgeStartT<0.25&&this.slowmo<=0){this.slowmo=0.9;h.energy=Math.min(100,h.energy+12);h.iframes=Math.max(h.iframes,0.6);
       this.ev({k:'pdodge',id:h.id,x:h.x,z:h.z});this.ev({k:'txt',x:h.x,z:h.z,s:'¡ESQUIVE PERFECTO!',c:'#7fd8ff',big:true});return;}
@@ -1877,7 +1898,10 @@ const VOZ={
   defuse:['Perfecto.'],boom:['¡Ay! Mi armadura de hielo se rajó.'],rest:['Recuperemos fuerzas.'],lowhp:['Me estoy derritiendo…'],down:['¡Resiste, ya llego!'],lift:['¡Hmpf! ¡Pesado!'],win:['¡Victoria para la alianza!'],combo:['¡Congelados!']},
  fenix:{zone:['¡Adelante, compañeros!','¡Síganme!','Nadie se queda atrás.'],arena:['¡Por la ciudad!','¡Que arda la batalla!'],boss:['¡Pelea contra mí, si te atreves!','¡Ni el fuego de un volcán me detiene!'],
   rescue:['¡Eres libre! ¡Ve!'],crystal:['¡Un tesoro brillante!'],secret:['¡Un camino oculto! Bien visto.'],pads:['¡Todos a sus puestos!'],bomb:['¡Rápido, equipo! ¡El tiempo corre!'],defuse:['¡Lo logramos!'],
-  boom:['¡Arriba! ¡Las llamas me levantan!'],rest:['Descansemos un momento.'],lowhp:['¡Aún puedo pelear!'],down:['¡Te levantaré de las cenizas!'],lift:['¡Esto va para ustedes, gólems!'],win:['¡Victoria! ¡Las llamas nunca se apagan!'],combo:['¡Fuego imparable!']}};
+  boom:['¡Arriba! ¡Las llamas me levantan!'],rest:['Descansemos un momento.'],lowhp:['¡Aún puedo pelear!'],down:['¡Te levantaré de las cenizas!'],lift:['¡Esto va para ustedes, gólems!'],win:['¡Victoria! ¡Las llamas nunca se apagan!'],combo:['¡Fuego imparable!']},
+ deadred:{zone:['¿Ya llegamos? ¿Ya llegamos?','Yo voy primero… para salir en la foto.','Esta calle necesita más explosiones.'],arena:['¡Uy, una fiesta! ¿Y mi invitación?','¿Espadas o pistolas? ¿Por qué no las dos?'],boss:['¡Qué grandote! Más grande es la caída.','Tranquilo, grandulón, esto va a doler… a ti.'],
+  rescue:['¡Libre! Me debes un autógrafo.'],crystal:['¡Brillante, como yo!'],secret:['¡Un pasaje secreto! Me encantan los secretos.'],pads:['¡Alguien que se pare en la otra placa, porfa!'],bomb:['¡Una bomba! Yo no fui, lo juro.'],defuse:['¡Desactivada! Ni me despeiné.'],
+  boom:['¡Auch! Eso dolió… un poquito.'],rest:['Tiempo de botana.'],lowhp:['Tranquis, me curo solito.'],down:['¡Levántate, compañero! Te necesito para presumir.'],lift:['¡Ahí te va, gólem!'],win:['¡Ganamos! Y yo fui el más guapo.'],combo:['¡Corte, corte, bang!']}};
 const VOICE_PREF={ // género y voces preferidas (nombres de voces de iPad, Mac, Windows y Chrome)
   volta:{g:'f',p:[1.08,1.1],n:['flo','sandy','paulina','angélica','angelica','marisol']},
   brisa:{g:'f',p:[1.0,1.0],n:['paulina','mónica','monica','isabela','francisca','sabina','google español de estados unidos']},
@@ -1885,6 +1909,7 @@ const VOICE_PREF={ // género y voces preferidas (nombres de voces de iPad, Mac,
   roca:{g:'m',p:[0.78,0.9],n:['grandpa','rocko','jorge','pablo','raul','raúl']},
   sombra:{g:'m',p:[0.9,1.0],n:['reed','diego','jorge','raul','raúl','pablo']},
   fenix:{g:'m',p:[1.0,1.05],n:['eddy','juan','jorge','raul','raúl','diego']},
+  deadred:{g:'m',p:[1.12,1.12],n:['diego','jorge','juan','pablo','eddy','reed']},
   narr:{g:'f',p:[1.0,0.95],n:['paulina','mónica','monica','helena','google español']},
   boss:{g:'m',p:[0.55,0.88],n:['grandpa','rocko','jorge','juan','pablo']},
   reina:{g:'f',p:[0.82,0.88],n:['grandma','mónica','monica','helena','paulina']}};
@@ -1895,7 +1920,7 @@ const Voz={on:true,map:null,
   assign(){let vs=[];try{vs=speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang));}catch(e){}if(!vs.length)return null;
     const mx=v=>/MX|US|419/i.test(v.lang)?0:1;vs.sort((a,b)=>mx(a)-mx(b));const used=new Set(),map={};
     const gen=v=>FEM.test(v.name)?'f':MAS.test(v.name)?'m':'?';
-    for(const k of ['narr','volta','roca','brisa','sombra','escarcha','fenix','boss']){const P=VOICE_PREF[k];let v=null;
+    for(const k of ['narr','volta','roca','brisa','sombra','escarcha','fenix','deadred','boss']){const P=VOICE_PREF[k];let v=null;
       for(const nm of P.n){v=vs.find(x=>x.name.toLowerCase().includes(nm)&&(!used.has(x)||k==='narr'||k==='boss'));if(v)break;}
       if(!v)v=vs.find(x=>gen(x)===P.g&&!used.has(x))||vs.find(x=>gen(x)===P.g)||vs.find(x=>!used.has(x))||vs[0];
       if(k!=='narr'&&k!=='boss')used.add(v);map[k]=v;}
@@ -2462,11 +2487,32 @@ class World{
     if(A){Object.assign(m,{anim:true,mixer:A.mixer,actions:{},cur:null,base:'idle',one:false,oneT:0,combo:0,ha:HERO_ANIM[v.key]||{}});this.playBase(m);}
     return m;
   }
+  attachDeadRed(obj){const B={};obj.traverse(o=>{if(!o.isBone)return;for(const k of ['Head','Spine2','Hips','RightHand','LeftHand'])if(o.name.endsWith(k)&&!B[k])B[k]=o;});
+    obj.updateMatrixWorld(true);const V=new THREE.Vector3();const put=(bone,g)=>{if(!bone)return g;bone.getWorldScale(V);g.scale.set(1/V.x,1/V.y,1/V.z);bone.add(g);return g;};
+    const T=(c,o)=>this.toon(c,o),red=T(0xc8102e),blk=T(0x1c1c22),gold=T(0xffb000),gun=T(0x55585f),amb=new THREE.MeshBasicMaterial({color:0xffc23a});
+    const bladeM=new THREE.MeshBasicMaterial({color:0xff2a44}),coreM=new THREE.MeshBasicMaterial({color:0xffd2d8});
+    const mk=(geo,mat,x,y,z)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);noOutline(m);return m;};
+    const sword=()=>{const g=new THREE.Group();g.add(mk(new THREE.CylinderGeometry(0.022,0.026,0.2,8),blk,0,0.1,0));g.add(mk(new THREE.BoxGeometry(0.15,0.03,0.045),gold,0,0.215,0));g.add(mk(new THREE.SphereGeometry(0.03,8,6),gold,0,-0.01,0));
+      g.add(mk(new THREE.BoxGeometry(0.055,0.78,0.014),bladeM,0,0.62,0));g.add(mk(new THREE.BoxGeometry(0.02,0.74,0.018),coreM,0,0.61,0));g.add(mk(new THREE.ConeGeometry(0.039,0.1,4),bladeM,0,1.05,0).rotateY(Math.PI/4));return g;};
+    const pistol=()=>{const g=new THREE.Group();g.add(mk(new THREE.BoxGeometry(0.045,0.12,0.06),blk,0,-0.06,0));g.add(mk(new THREE.BoxGeometry(0.05,0.065,0.24),gun,0,0.02,0.07));g.add(mk(new THREE.BoxGeometry(0.03,0.02,0.05),gold,0,0.06,-0.02));return g;};
+    const D={};
+    // casco con visor
+    const hm=new THREE.Group();const hs=mk(new THREE.SphereGeometry(0.125,16,12),red,0,0.085,0.005);hs.scale.set(1,1.12,1.06);hm.add(hs);hm.add(mk(new THREE.BoxGeometry(0.2,0.06,0.07),blk,0,0.095,0.095));hm.add(mk(new THREE.BoxGeometry(0.16,0.02,0.02),amb,0,0.097,0.132));D.helm=put(B.Head,hm);
+    // espadas cruzadas en la espalda
+    const bk=new THREE.Group();const s1=sword(),s2=sword();s1.rotation.set(Math.PI,0,0.62);s2.rotation.set(Math.PI,0,-0.62);s1.position.set(-0.02,0.42,0);s2.position.set(0.02,0.42,0);bk.add(s1,s2);bk.position.set(0,0.02,-0.15);D.back=put(B.Spine2,bk);
+    // pistolas en la cintura
+    const hp=new THREE.Group();for(const sx of [-1,1]){const h=new THREE.Group();h.add(mk(new THREE.BoxGeometry(0.075,0.17,0.13),blk,0,-0.06,0));const p=pistol();p.rotation.x=Math.PI/2*0.9;p.position.set(0,0.04,0);h.add(p);h.position.set(sx*0.19,-0.02,0.02);hp.add(h);}D.hol=put(B.Hips,hp);
+    // armas en las manos (se muestran al pelear o disparar)
+    const rs=sword(),ls=sword();rs.rotation.set(0,0,-Math.PI/2);ls.rotation.set(0,0,Math.PI/2);rs.position.set(0,0.08,0.02);ls.position.set(0,0.08,0.02);D.rs=put(B.RightHand,rs);D.ls=put(B.LeftHand,ls);
+    const rp=pistol(),lp=pistol();rp.rotation.set(-Math.PI/2,0,0);lp.rotation.set(-Math.PI/2,0,0);rp.position.set(0,0.1,0.03);lp.position.set(0,0.1,0.03);D.rp=put(B.RightHand,rp);D.lp=put(B.LeftHand,lp);
+    D.mode='rest';this.drMode(D,'rest');return D;}
+  drMode(D,md){if(!D||D.mode===md&&md!=='rest'&&D.init)return;D.mode=md;D.init=true;const sw=md==='sword',gn=md==='gun';D.back.visible=!sw;D.rs.visible=D.ls.visible=sw;D.rp.visible=D.lp.visible=gn;D.hol.children.forEach(h=>h.children[1].visible=!gn);}
   makeAnimated(name,tint,height){
     const src=ASSETS.models[name];if(src.mx)height*=1.12;const obj=SkeletonUtils.clone(src.scene);obj.scale.multiplyScalar(height/src.h);
     const mats=[];obj.traverse(o=>{if(o.isMesh){o.castShadow=true;o.frustumCulled=false;const om=o.material;
       const nm=src.mx?(()=>{const c=om.clone();c.userData.outlineParameters=NO_OUTLINE;for(const k of ['map','normalMap','roughnessMap'])if(c[k]){c[k].anisotropy=8;}return c;})():new THREE.MeshToonMaterial({map:om.map||null,color:tint,gradientMap:this.grad});o.material=nm;mats.push(nm);}});
-    if(src.mx&&HEROES[name])applyCostume(mats,name);else if(typeof tint==='string'&&LOOKS[tint])applyLook(mats,LOOKS[tint],0);
+    if(typeof tint==='string'&&LOOKS[tint])applyLook(mats,LOOKS[tint],0);else if(src.mx&&HEROES[name])applyCostume(mats,name);
+    if(tint==='deadred')obj.userData.dr=this.attachDeadRed(obj);
     const mixer=new THREE.AnimationMixer(obj);mixer.mx=!!src.mx;mixer.mxm=src.mx?name:null;return {obj,mats,mixer};
   }
   playA(m,name,opt={}){const clip=clipFor(m.mixer,name);if(!clip)return;let a=m.actions[name];if(!a){a=m.mixer.clipAction(clip);m.actions[name]=a;}
@@ -2762,7 +2808,7 @@ class World{
       if(m.carryO&&!(m.armB&&m.armB.LeftHand))m.carryO.position.y+=(((v.carry==='auto'?2.2:2.1)*(HEROES[v.key].scale||1)+Math.sin(t*6)*0.05)-m.carryO.position.y)*0.3;
       const I=m.inner;
       if(m.anim){I.rotation.y=lerpAngle(I.rotation.y,v.face,1-Math.exp(-dt*20));m.ring.material.color.set(v.down?'#777':SLOT_COL[v.id]);
-        this.animTick(m,v.down?'down':v.air>0?'jump':v.flurry?'spin':view.phase==='win'?'cheer':v.blk?'block':v.moving?'run':'idle',dt);this.armPose(m,dt);if(!m.carryK)this.powerPose(m,dt);}
+        this.animTick(m,v.down?'down':v.air>0?'jump':v.flurry?'spin':view.phase==='win'?'cheer':v.blk?'block':v.moving?'run':'idle',dt);this.armPose(m,dt);if(!m.carryK)this.powerPose(m,dt);if(m.key==='deadred'){if(m.drD===undefined){m.drD=null;m.inner.traverse(o=>{if(o.userData&&o.userData.dr)m.drD=o.userData.dr;});}if(m.drD){const st=m.pw&&m.pw.style;this.drMode(m.drD,st==='push'||st==='shoot'||st==='spread'?'gun':(m.atkT>-0.5||st==='sweep'||st==='dash')?'sword':'rest');}}}
       else{
       if(v.down){I.rotation.x+=(-1.45-I.rotation.x)*k;I.position.y+=(0.35-I.position.y)*k;m.ring.material.color.set('#777');}
       else{I.rotation.x+=(0-I.rotation.x)*k;m.ring.material.color.set(SLOT_COL[v.id]);
@@ -3225,7 +3271,7 @@ const COSTUMES=[{n:'Clásico',need:0,ic:'👕'},{n:'Alterno',need:3,ic:'🎨',hu
   {n:'Chocolate',ach:'tresestrellas',ic:'🍫',t:[0.45,0.28,0.15],ta:0.6},{n:'Algodón de azúcar',ach:'combo',ic:'🍭',t:[1,0.6,0.85],ta:0.5},
   {n:'Tormenta',ach:'alianza',ic:'⛈️',t:[0.4,0.4,0.55],ta:0.5,g:0.3,gc:[0.5,0.8,1]},{n:'Real',ach:'sincaidas',ic:'🤴',t:[0.5,0.2,0.8],ta:0.55,gold:0.25},
   {n:'Marinero',ach:'rescates',ic:'⚓',t:[0.1,0.55,0.7],ta:0.5},{n:'Leyenda',ach:'leyenda',ic:'🌟',gold:0.8,g:0.4,gc:[1,0.85,0.3]},{n:'Corona de hielo',ach:'historia2',ic:'❄️',t:[0.85,0.95,1],ta:0.7,g:0.35,gc:[0.5,0.85,1]}];
-const COSTUME_HUE={volta:2.4,roca:3.0,brisa:2.1,sombra:2.6,escarcha:-1.7,fenix:2.9};
+const COSTUME_HUE={volta:2.4,roca:3.0,brisa:2.1,sombra:2.6,escarcha:-1.7,fenix:2.9,deadred:2.6};
 function loadCrys(){try{return JSON.parse(localStorage.getItem('ah_crys')||'{}');}catch(e){return {};}}
 function saveCrys(st,i){try{const c=loadCrys();const a=new Set(c[st]||[]);a.add(i);c[st]=[...a];localStorage.setItem('ah_crys',JSON.stringify(c));}catch(e){}}
 function crysTotal(){const c=loadCrys();return Object.values(c).reduce((a,b)=>a+b.length,0);}
