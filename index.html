@@ -476,7 +476,7 @@ const MX_MAP={Idle:['MXA_FightIdle'],Unarmed_Idle:['MXA_FightIdle'],Running_A:['
 const HERO_MODEL={volta:['volta',null,'mx'],roca:['roca',null,'mx'],brisa:['brisa',null,'mx'],sombra:['sombra',null,'mx'],escarcha:['escarcha',null,'mx'],fenix:['fenix',null,'mx'],deadred:['sombra','deadred','mx']};
 const ENEMY_MODEL={escudero:['escudero',null,'mx'],grunt:['grunt',null,'mx'],shooter:['shooter',null,'mx'],brute:['brute',null,'mx'],capataz:['capataz',null,'mx'],centinela:['centinela',null,'mx'],gemelo:['gemelo',null,'mx'],chispa:['chispa',null,'mx'],saltador:['saltador',null,'mx'],invocador:['invocador',null,'mx'],boss:['boss',null,'mx']};
 Object.assign(ENEMY_MODEL,{hgrunt:['grunt','ice','mx'],hshooter:['shooter','ice','mx'],hescudero:['escudero','ice','mx'],hchispa:['chispa','snow','mx'],hsaltador:['saltador','ice','mx'],hbrute:['brute','snow','mx'],hinvocador:['invocador','iceV','mx'],cazador:['gemelo','snow','mx'],guardian:['centinela','iceC','mx'],general:['capataz','iceN','mx'],reina:['boss','iceQ','mx']});
-const LOOKS={deadred:{t:[0.82,0.03,0.04],ta:1,sat:1.25,v:0.95,blk:0.05},ice:{t:[0.25,0.6,1],ta:0.85,sat:1.3,g:0.32,gc:[0.3,0.75,1]},snow:{t:[0.9,0.95,1],ta:0.85,v:1.3,g:0.22,gc:[0.6,0.85,1]},iceV:{t:[0.6,0.6,1],ta:0.7,g:0.25,gc:[0.6,0.5,1]},iceC:{t:[0.4,0.95,1],ta:0.75,g:0.35,gc:[0.3,1,1]},iceN:{t:[0.2,0.3,0.6],ta:0.75,g:0.2,gc:[0.5,0.8,1]},iceQ:{t:[0.92,0.88,1],ta:0.8,g:0.35,gc:[0.7,0.6,1],v:1.05}};
+const LOOKS={deadred:{t:[0.82,0.03,0.04],ta:1,sat:1.25,v:0.95,blk:0.019},ice:{t:[0.25,0.6,1],ta:0.85,sat:1.3,g:0.32,gc:[0.3,0.75,1]},snow:{t:[0.9,0.95,1],ta:0.85,v:1.3,g:0.22,gc:[0.6,0.85,1]},iceV:{t:[0.6,0.6,1],ta:0.7,g:0.25,gc:[0.6,0.5,1]},iceC:{t:[0.4,0.95,1],ta:0.75,g:0.35,gc:[0.3,1,1]},iceN:{t:[0.2,0.3,0.6],ta:0.75,g:0.2,gc:[0.5,0.8,1]},iceQ:{t:[0.92,0.88,1],ta:0.8,g:0.35,gc:[0.7,0.6,1],v:1.05}};
 const HERO_ANIM={volta:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},roca:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},sombra:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},
   fenix:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},deadred:{atk:['MX_Combo1','MX_Combo2','MX_Combo3']},brisa:{atk:['MX_Cast','MX_Sweep','MX_Cast']},escarcha:{atk:['MX_Cast','MX_Sweep','MX_Cast']}};
 // Animación de cada poder: [clip, duración s]. Solo modelos Meshy/Mixamo.
@@ -3288,7 +3288,7 @@ function applyLook(mats,C,hue){const gold=C.gold||0,blk=C.blk||0;
      vec3 y=toY*c;float ch=length(y.yz);float an=atan(y.z,y.y);float skin=(y.y>0.0&&an>-0.2&&an<0.8&&ch<0.22&&y.x>0.25)?1.0:0.0;float amt=(1.0-skin)*smoothstep(0.03,0.09,ch);
      float h2=an+uHue*amt;vec3 r=toR*vec3(y.x,ch*cos(h2),ch*sin(h2));float lum=y.x;vec3 gd=vec3(1.0,0.78,0.28)*(0.3+lum*1.25);
      float msk=(1.0-skin)*(0.4+0.6*smoothstep(0.02,0.08,ch+0.03));ahMask=msk;
-     r=mix(r,gd,uGold*msk);r=mix(r,uTint*(0.3+lum*1.35),uTintA*msk);float l2=dot(r,vec3(0.299,0.587,0.114));r=mix(r,mix(vec3(l2),r,uSat),1.0-skin);r*=mix(1.0,uVal,1.0-skin);if(uBlk>0.0)r=mix(vec3(0.05,0.045,0.055)+lum*0.25,r,mix(1.0,smoothstep(uBlk*0.4,uBlk,ch),1.0-skin));
+     r=mix(r,gd,uGold*msk);r=mix(r,uTint*(0.3+lum*1.35),uTintA*msk);float l2=dot(r,vec3(0.299,0.587,0.114));r=mix(r,mix(vec3(l2),r,uSat),1.0-skin);r*=mix(1.0,uVal,1.0-skin);if(uBlk>0.0)r=mix(vec3(0.03,0.028,0.034)+lum*0.6,r,mix(1.0,smoothstep(uBlk*0.78,uBlk*1.22,lum),1.0-skin));
      diffuseColor.rgb=clamp(r,0.0,1.0);}`).replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n totalEmissiveRadiance+=uGlowC*uGlow*ahMask;');};
     m.customProgramCacheKey=()=>'cos3';m.needsUpdate=true;}}
 // ---------------- Logros ----------------
@@ -3354,7 +3354,7 @@ const NET_HINT='No se pudo conectar. Revisa tu internet e inténtalo de nuevo.';
 
 // ---------------- App ----------------
 const canvas=document.getElementById('c');
-const sim=new Sim();const world=new World(canvas);const hud=new HUD();const input=new Input();if(/[?&]debug=1/.test(location.search))window.__ah={sim,world,hud,applyCostume,Ach,THREE,renderLogros:()=>renderLogros()};
+const sim=new Sim();const world=new World(canvas);const hud=new HUD();const input=new Input();if(/[?&]debug=1/.test(location.search))window.__ah={LOOKS,applyLook,sim,world,hud,applyCostume,Ach,THREE,renderLogros:()=>renderLogros()};
 ASSETS.onModel=nm=>{for(const [id,m] of world.enemyM)if(ENEMY_MODEL[m.kind]&&ENEMY_MODEL[m.kind][0]===nm){world.scene.remove(m.g);world.enemyM.delete(id);}};
 loadAssets((n,tot)=>{const el=document.getElementById('loadst');if(el)el.textContent=n<7?`Cargando personajes… ${Math.round(n/7*100)}%`:'';})
   .then(()=>{ASSETS.bg&&ASSETS.bg.then(()=>{try{Preview.makeThumbs();if($('story').style.display==='flex')renderStory();}catch(e){}});for(const map of [world.heroM,world.enemyM]){for(const m of map.values())world.scene.remove(m.g);map.clear();}try{Preview.makeThumbs();renderPick();renderStages();if($('story').style.display==='flex')renderStory();if($('sel').style.display==='flex')renderSel();if($('heroes').style.display==='flex'){Preview.key=null;Preview.setHero(heroTab);renderHeroes();}}catch(e){console.warn(e);}const el=document.getElementById('loadst');if(el)el.textContent='';})
