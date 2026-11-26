@@ -2499,7 +2499,7 @@ class World{
     // casco con visor
     const hm=new THREE.Group();const hs=mk(new THREE.SphereGeometry(0.125,16,12),red,0,0.085,0.005);hs.scale.set(1,1.12,1.06);hm.add(hs);hm.add(mk(new THREE.BoxGeometry(0.2,0.06,0.07),blk,0,0.095,0.095));hm.add(mk(new THREE.BoxGeometry(0.16,0.02,0.02),amb,0,0.097,0.132));D.helm=put(B.Head,hm);
     // espadas cruzadas en la espalda
-    const bk=new THREE.Group();const s1=sword(),s2=sword();s1.rotation.set(0,0,Math.PI+0.62);s2.rotation.set(0,0,Math.PI-0.62);s1.position.set(-0.16,0.38,-0.012);s2.position.set(0.16,0.38,0.012);bk.add(s1,s2);bk.position.set(0,0.0,-0.17);D.back=put(B.Spine2,bk);
+    const bk=new THREE.Group();const s1=sword(),s2=sword();s1.rotation.set(0,0,Math.PI+0.62);s2.rotation.set(0,0,Math.PI-0.62);s1.position.set(-0.16,0.38,-0.012);s2.position.set(0.16,0.38,0.012);bk.add(s1,s2);bk.position.set(0,0.0,-0.17);bk.rotation.x=-0.42;D.back=put(B.Spine2,bk);
     // pistolas en la cintura
     const hp=new THREE.Group();for(const sx of [-1,1]){const h=new THREE.Group();h.add(mk(new THREE.BoxGeometry(0.075,0.17,0.13),blk,0,-0.06,0));const p=pistol();p.rotation.x=Math.PI/2*0.9;p.position.set(0,0.04,0);h.add(p);h.position.set(sx*0.23,-0.04,0.07);hp.add(h);}D.hol=put(B.Hips,hp);
     // armas en las manos (se muestran al pelear o disparar)
