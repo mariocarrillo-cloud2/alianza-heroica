@@ -3331,9 +3331,9 @@ function saveProgress(n){try{if(n>loadProgress())localStorage.setItem('ah_unlock
 // ---------------- Perfiles de héroe (nivel, XP, poderes) ----------------
 const PROF_KEY='ah_profiles';
 function loadProfiles(){let o={};try{o=JSON.parse(localStorage.getItem(PROF_KEY)||'{}')||{};}catch(e){}
-  const r={};for(const k of HERO_ORDER){const p=o[k]||{},d=defaultProfile(k);const lvl=clamp((p.lvl|0)||1,1,MAX_LVL);
+  const r={};const maxL=Math.max(1,...Object.values(o).map(p=>(p&&p.lvl)|0));for(const k of HERO_ORDER){const p=o[k]||(k==='deadred'?{lvl:maxL,pts:maxL-1}:{}),d=defaultProfile(k);const lvl=clamp((p.lvl|0)||1,1,MAX_LVL);
     const load=validLoad(k,p.load,lvl)?p.load:d.load;
-    r[k]={lvl,xp:p.xp|0,pts:p.pts|0,ranks:p.ranks&&typeof p.ranks==='object'?p.ranks:{},load};}return r;}
+    r[k]={lvl,xp:p.xp|0,pts:p.pts|0,ranks:p.ranks&&typeof p.ranks==='object'?p.ranks:{},load,gems:Array.isArray(p.gems)?p.gems:[]};}return r;}
 let profiles=loadProfiles();
 function saveProfiles(){try{localStorage.setItem(PROF_KEY,JSON.stringify(profiles));}catch(e){}}
 const remoteProf={};
